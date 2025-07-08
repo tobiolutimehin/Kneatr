@@ -1,21 +1,41 @@
 # MVP Scope - Kneatr
 
-## Core Functionality
+This document outlines the phased rollout of features for Kneatr, starting with a focused MVP and
+expanding toward more intelligent, flexible, and integrated relationship management functionality.
 
+---
+
+## Phase 1 - MVP Scope
+
+Core functionality required to make the app usable:
 - Contact management with tier assignment
-- Basic notification system
-- Communication timeline tracking
-- Mark communications as complete
+- Contact detail page (name, tier, next/last contact date)
+- Mark communications as complete (for today)
+- Basic notification system (WorkManager + Notification)
+- Communication timeline tracking (next and last contact date updates)
+- Overdue contact list (contacts with nextContactDate < today)
 
-## Nice-to-Haves (Phase 2)
+---
 
-- Custom communication frequencies
-- Tag system
-- Daily task list
-- Communication history
+## Phase 2 - Enhancements
 
-## Out of Scope (For MVP)
+Nice-to-haves for after MVP is working:
 
-- Analytics/insights
-- Phone/message integration
-- Cloud sync
+- Custom communication frequencies per contact
+- Tag system for organizing contacts (e.g., “family”, “work”)
+- Daily task list view
+- Communication history per contact
+- Backdated communication logging (log a reach-out from a previous date)
+- Randomized selection of due/overdue contacts (e.g., show 3-4 per day to reduce decision fatigue)
+
+---
+
+## Phase 3 - Advanced Features
+
+Stretch goals / high-effort features to improve intelligence, automation, and integration:
+
+- Analytics and insights (e.g., missed reach-outs, longest streaks, etc.)
+- Smart scheduling suggestions (e.g., based on calendar availability)
+- Phone/message integration (e.g., log activity from call/SMS intent)
+- Backup and sync (e.g., Firebase, Google Drive)
+- Multi-device support / cloud-based persistence
