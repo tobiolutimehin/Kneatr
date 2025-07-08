@@ -1,32 +1,44 @@
 # Kneatr
 
-**Tagline:** Relationships, brilliantly organized.
+**Tagline:** Relationships, brilliantly organized.  
+**Package:** `com.hollowvyn.kneatr`
 
-**Namespace:** `com.hollowvyn.kneatr`
-
-Kneatr is a relationship maintenance app that helps users — especially those with ADHD — stay connected through tiered, personalized reminders and clean communication tracking.
-
----
-
-## Core Features
-- Tiered contact system (weekly, biweekly, monthly, quarterly)
-- Personalized reminder engine
-- Tag-based organization
-- Daily actionable communication list
-- Neurodivergent-friendly UI
+Kneatr is a minimalist Android app designed to help users maintain meaningful relationships through
+structured, personalized reminders. Built with neurodivergent users in mind, Kneatr keeps your
+social life organized without overwhelming you.
 
 ---
 
-## Tech Stack
-- **Language:** Kotlin
-- **UI:** Jetpack Compose
-- **Database:** Room
-- **Background Tasks:** WorkManager
-- **Notifications:** Android Channels
+## What It Does
+
+- Organizes contacts by communication tiers (e.g., weekly, monthly)
+- Reminds you when it’s time to reach out
+- Tracks when you last connected with someone
+- Helps surface overdue contacts
+- Provides a simple, clear interface for staying on top of your relationships
 
 ---
 
-## Status
-**Phase:** Setup  
-**Version:** 0.1.0  
-**MVP Target:** TBD
+## Who It's For
+
+- People with ADHD or executive function challenges
+- Anyone who struggles to keep in touch with their people — and wants a system that works
+
+---
+
+## Built With
+
+- **Kotlin** and **Jetpack Compose** for modern Android UI
+- **Room** for local persistence
+- **WorkManager** for background scheduling
+- **Notification Channels** for custom reminders
+
+---
+
+## Project Structure
+
+- `app/` – Android application module
+- `docs/` – Design, planning, and technical documentation
+
+For full technical scope and planning, see [`docs/MVP_SCOPE.md`](docs/MVP_SCOPE.md).
+
