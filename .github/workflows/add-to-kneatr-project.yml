@@ -13,4 +13,4 @@ jobs:
       - uses: actions/add-to-project@v1.0.2
         with:
           project-url: https://github.com/users/tobiolutimehin/projects/3
-          github-token: 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
+          github-token: ${{ secrets.GITHUB_TOKEN }}
