@@ -14,6 +14,12 @@ Core functionality required to make the app usable:
 - Basic notification system (WorkManager + Notification)
 - Communication timeline tracking (next and last contact date updates)
 - Overdue contact list (contacts with nextContactDate < today)
+- Canonical, Responsive Layout:
+    - Use Material3 Scaffold + WindowSizeClass to adapt to screen sizes.
+    - Phones: Bottom Navigation for sectioning.
+    - Tablets / Foldables: Navigation Rail + List-Detail Pane.
+    - Support canonical layouts for Feed / Supporting Pane / Detail where space allows.
+    - Follow Google’s canonical layout recommendations for productivity apps.
 
 ---
 
@@ -27,6 +33,8 @@ Nice-to-haves for after MVP is working:
 - Communication history per contact
 - Backdated communication logging (log a reach-out from a previous date)
 - Randomized selection of due/overdue contacts (e.g., show 3-4 per day to reduce decision fatigue)
+- Android App Shortcuts (Static/Dynamic)
+- Basic Android Widgets (Home Screen)
 
 ---
 
