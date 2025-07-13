@@ -47,6 +47,6 @@ fun Greeting(
 @Composable
 private fun GreetingPreview() {
     KneatrTheme {
-        Greeting("Kneatr, the app to keep connections")
+        Greeting("Kneatr, the app to keep connections on here")
     }
 }
