@@ -1,5 +1,7 @@
 # Kneatr
 
+[![Android CI](https://github.com/tobiolutimehin/Kneatr/actions/workflows/android-ci.yml/badge.svg)](https://github.com/tobiolutimehin/Kneatr/actions/workflows/android-ci.yml)
+
 **Tagline:** Relationships, brilliantly organized.  
 **Package:** `com.hollowvyn.kneatr`
 
