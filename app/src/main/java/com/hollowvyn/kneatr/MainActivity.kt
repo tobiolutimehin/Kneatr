@@ -23,7 +23,7 @@ class MainActivity : ComponentActivity() {
             KneatrTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Greeting(
-                        name = "Kneatr, the app to keep connections",
+                        name = "Kneatr, the app to keep connections sometimes",
                         modifier = Modifier.padding(innerPadding),
                     )
                 }
