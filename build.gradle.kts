@@ -14,4 +14,7 @@ plugins {
 
     // Kotlin Symbol Processing (KSP)
     alias(libs.plugins.ksp) apply false
+
+    // Room
+    alias(libs.plugins.room) apply false
 }
