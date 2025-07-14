@@ -8,6 +8,7 @@ import androidx.room.Transaction
 import androidx.room.Update
 import com.hollowvyn.kneatr.data.local.entity.ContactEntity
 import com.hollowvyn.kneatr.data.local.entity.relation.ContactWithTagsAndTier
+import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.LocalDate
 
 @Dao
@@ -23,15 +24,15 @@ interface ContactDao {
 
     @Transaction
     @Query("SELECT * FROM contacts ORDER BY name ASC")
-    suspend fun getAllContacts(): List<ContactWithTagsAndTier>
+    fun getAllContacts(): Flow<List<ContactWithTagsAndTier>>
 
     @Transaction
     @Query("SELECT * FROM contacts WHERE tierId = :tierId ORDER BY name ASC")
-    suspend fun getContactsByTierId(tierId: Int): List<ContactWithTagsAndTier>
+    fun getContactsByTierId(tierId: Int): Flow<List<ContactWithTagsAndTier>>
 
     @Transaction
     @Query("SELECT * FROM contacts WHERE nextContactDate < :currentDate OR nextContactDate IS NULL ORDER BY name ASC")
-    suspend fun getOverdueContacts(currentDate: LocalDate): List<ContactWithTagsAndTier>
+    fun getOverdueContacts(currentDate: LocalDate): Flow<List<ContactWithTagsAndTier>>
 
     @Transaction
     @Query(
@@ -41,9 +42,9 @@ interface ContactDao {
         ORDER BY name ASC
     """,
     )
-    suspend fun searchContactsByNamePhoneOrEmail(query: String): List<ContactWithTagsAndTier>
+    fun searchContactsByNamePhoneOrEmail(query: String): Flow<List<ContactWithTagsAndTier>>
 
     @Transaction
     @Query("SELECT * FROM contacts WHERE contactId = :id")
-    suspend fun getContactById(id: Int): ContactWithTagsAndTier?
+    fun getContactById(id: Int): Flow<ContactWithTagsAndTier?>
 }

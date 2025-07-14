@@ -8,6 +8,7 @@ import androidx.room.Transaction
 import androidx.room.Update
 import com.hollowvyn.kneatr.data.local.entity.ContactTierEntity
 import com.hollowvyn.kneatr.data.local.entity.relation.TierWithContacts
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ContactTierDao {
@@ -21,23 +22,23 @@ interface ContactTierDao {
     suspend fun updateTier(tier: ContactTierEntity)
 
     @Query("SELECT * FROM contact_tiers")
-    suspend fun getAllTiers(): List<ContactTierEntity>
+    fun getAllTiers(): Flow<List<ContactTierEntity>>
 
     @Query("SELECT * FROM contact_tiers WHERE tierId = :id")
-    suspend fun getTierById(id: Int): ContactTierEntity?
+    fun getTierById(id: Int): Flow<ContactTierEntity?>
 
     @Query("DELETE FROM contact_tiers")
     suspend fun deleteAllTiers()
 
     @Transaction
     @Query("SELECT * FROM contact_tiers")
-    suspend fun getTiersWithContacts(): List<TierWithContacts>
+    fun getTiersWithContacts(): Flow<List<TierWithContacts>>
 
     @Transaction
     @Query("SELECT * FROM contact_tiers WHERE tierId = :id")
-    suspend fun getTierWithContactsById(id: Int): TierWithContacts?
+    fun getTierWithContactsById(id: Int): Flow<TierWithContacts?>
 
     @Transaction
     @Query("SELECT * FROM contact_tiers WHERE name = :name")
-    suspend fun getTierWithContactsByName(name: String): TierWithContacts?
+    fun getTierWithContactsByName(name: String): Flow<TierWithContacts?>
 }

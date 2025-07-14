@@ -5,13 +5,14 @@ import com.hollowvyn.kneatr.data.local.entity.ContactTierEntity
 import com.hollowvyn.kneatr.di.DatabaseModule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import junit.framework.Assert.assertEquals
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import kotlinx.datetime.todayIn
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -48,7 +49,7 @@ class ContactDaoTest : BaseDaoTest() {
                 )
 
             contactDao.insertContacts(listOf(contact1, contact2))
-            val contacts = contactDao.getAllContacts()
+            val contacts = contactDao.getAllContacts().first()
 
             assertEquals(2, contacts.size)
             assertTrue(contacts.any { it.contact.name == "Ada Lovelace" })
@@ -69,7 +70,7 @@ class ContactDaoTest : BaseDaoTest() {
             val updated = contact.copy(email = "ada@history.com")
             contactDao.updateContact(updated)
 
-            val result = contactDao.getContactById(1)
+            val result = contactDao.getContactById(1).first()
             assertEquals("ada@history.com", result?.contact?.email)
         }
 
@@ -93,7 +94,7 @@ class ContactDaoTest : BaseDaoTest() {
                 )
             contactDao.insertContact(contact)
 
-            val result = contactDao.getContactsByTierId(1)
+            val result = contactDao.getContactsByTierId(1).first()
             assertEquals(1, result.size)
             assertEquals("Ada Lovelace", result.first().contact.name)
         }
@@ -110,14 +111,14 @@ class ContactDaoTest : BaseDaoTest() {
                 )
             contactDao.insertContact(contact)
 
-            val result = contactDao.searchContactsByNamePhoneOrEmail("Ada")
+            val result = contactDao.searchContactsByNamePhoneOrEmail("Ada").first()
             assertEquals(1, result.size)
             assertEquals("Ada Lovelace", result.first().contact.name)
 
-            val resultByPhone = contactDao.searchContactsByNamePhoneOrEmail("1234")
+            val resultByPhone = contactDao.searchContactsByNamePhoneOrEmail("1234").first()
             assertEquals(1, resultByPhone.size)
 
-            val resultByEmail = contactDao.searchContactsByNamePhoneOrEmail("history")
+            val resultByEmail = contactDao.searchContactsByNamePhoneOrEmail("history").first()
             assertEquals(1, resultByEmail.size)
         }
 
@@ -143,7 +144,7 @@ class ContactDaoTest : BaseDaoTest() {
                 )
             contactDao.insertContacts(listOf(contact1, contact2))
 
-            val result = contactDao.getOverdueContacts(today)
+            val result = contactDao.getOverdueContacts(today).first()
             assertEquals(1, result.size)
             assertEquals("Ada Lovelace", result.first().contact.name)
         }
@@ -159,7 +160,7 @@ class ContactDaoTest : BaseDaoTest() {
                 )
             contactDao.insertContact(contact)
 
-            val result = contactDao.getContactById(1)
+            val result = contactDao.getContactById(1).first()
 
             assertNotNull(result)
             assertEquals("Ada Lovelace", result?.contact?.name)

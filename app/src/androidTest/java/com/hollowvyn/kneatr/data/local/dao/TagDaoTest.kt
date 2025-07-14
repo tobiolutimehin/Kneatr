@@ -6,6 +6,7 @@ import com.hollowvyn.kneatr.data.local.entity.crossRef.ContactTagCrossRef
 import com.hollowvyn.kneatr.di.DatabaseModule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -31,8 +32,8 @@ class TagDaoTest : BaseDaoTest() {
             val tag = TagEntity(tagId = 1, name = "Friends")
             tagDao.insertTag(tag)
 
-            val retrievedById = tagDao.getTagById(1)
-            val retrievedByName = tagDao.getTagByName("Friends")
+            val retrievedById = tagDao.getTagById(1).first()
+            val retrievedByName = tagDao.getTagByName("Friends").first()
 
             assertNotNull(retrievedById)
             assertEquals("Friends", retrievedById?.name)
@@ -48,7 +49,7 @@ class TagDaoTest : BaseDaoTest() {
             tagDao.insertTag(tag1)
             tagDao.insertTag(tag2)
 
-            val tags = tagDao.getAllTags()
+            val tags = tagDao.getAllTags().first()
             assertEquals(2, tags.size)
         }
 
@@ -61,7 +62,7 @@ class TagDaoTest : BaseDaoTest() {
             val updated = tag.copy(name = "Close Friends")
             tagDao.updateTag(updated)
 
-            val retrieved = tagDao.getTagById(1)
+            val retrieved = tagDao.getTagById(1).first()
             assertEquals("Close Friends", retrieved?.name)
         }
 
@@ -72,7 +73,7 @@ class TagDaoTest : BaseDaoTest() {
             tagDao.insertTag(tag)
             tagDao.deleteTag(tag)
 
-            val tags = tagDao.getAllTags()
+            val tags = tagDao.getAllTags().first()
             assertTrue(tags.isEmpty())
         }
 
@@ -94,7 +95,7 @@ class TagDaoTest : BaseDaoTest() {
                 ContactTagCrossRef(contactId = 1, tagId = 1),
             )
 
-            val tagsWithContacts = tagDao.getTagsWithContacts()
+            val tagsWithContacts = tagDao.getTagsWithContacts().first()
             assertEquals(1, tagsWithContacts.size)
             assertEquals("Friends", tagsWithContacts.first().tag.name)
             assertEquals(1, tagsWithContacts.first().contacts.size)
@@ -126,12 +127,12 @@ class TagDaoTest : BaseDaoTest() {
                 ContactTagCrossRef(contactId = 1, tagId = 1),
             )
 
-            val resultById = tagDao.getTagWithContactsById(1)
+            val resultById = tagDao.getTagWithContactsById(1).first()
             assertNotNull(resultById)
             assertEquals("Friends", resultById?.tag?.name)
             assertEquals(1, resultById?.contacts?.size)
 
-            val resultByName = tagDao.getTagWithContactsByName("Friends")
+            val resultByName = tagDao.getTagWithContactsByName("Friends").first()
             assertNotNull(resultByName)
             assertEquals("Friends", resultByName?.tag?.name)
             assertEquals(1, resultByName?.contacts?.size)

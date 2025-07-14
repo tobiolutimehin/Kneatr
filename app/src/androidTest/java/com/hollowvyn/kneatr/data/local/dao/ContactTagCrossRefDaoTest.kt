@@ -6,9 +6,10 @@ import com.hollowvyn.kneatr.data.local.entity.crossRef.ContactTagCrossRef
 import com.hollowvyn.kneatr.di.DatabaseModule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import junit.framework.Assert.assertEquals
-import junit.framework.Assert.assertTrue
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
@@ -36,7 +37,7 @@ class ContactTagCrossRefDaoTest : BaseDaoTest() {
 
             crossRefDao.addTagToContact(ContactTagCrossRef(contactId = 1, tagId = 1))
 
-            val contactsWithTags = contactDao.getAllContacts()
+            val contactsWithTags = contactDao.getAllContacts().first()
             assertEquals(1, contactsWithTags.first().tags.size)
             assertEquals(
                 "Friends",
@@ -61,7 +62,7 @@ class ContactTagCrossRefDaoTest : BaseDaoTest() {
 
             crossRefDao.removeTagFromContact(crossRef)
 
-            val contactsWithTags = contactDao.getAllContacts()
+            val contactsWithTags = contactDao.getAllContacts().first()
             assertTrue(contactsWithTags.first().tags.isEmpty())
         }
 
@@ -80,7 +81,7 @@ class ContactTagCrossRefDaoTest : BaseDaoTest() {
 
             crossRefDao.removeAllTagsFromContact(1)
 
-            val contactsWithTags = contactDao.getAllContacts()
+            val contactsWithTags = contactDao.getAllContacts().first()
             assertTrue(contactsWithTags.first().tags.isEmpty())
         }
 }

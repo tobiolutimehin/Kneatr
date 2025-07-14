@@ -9,29 +9,30 @@ import androidx.room.Transaction
 import androidx.room.Update
 import com.hollowvyn.kneatr.data.local.entity.TagEntity
 import com.hollowvyn.kneatr.data.local.entity.relation.TagWithContacts
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TagDao {
     @Query("SELECT * FROM tags")
-    suspend fun getAllTags(): List<TagEntity>
+    fun getAllTags(): Flow<List<TagEntity>>
 
     @Transaction
     @Query("SELECT * FROM tags")
-    suspend fun getTagsWithContacts(): List<TagWithContacts>
+    fun getTagsWithContacts(): Flow<List<TagWithContacts>>
 
     @Transaction
     @Query("SELECT * FROM tags WHERE tagId = :id")
-    suspend fun getTagWithContactsById(id: Int): TagWithContacts?
+    fun getTagWithContactsById(id: Int): Flow<TagWithContacts?>
 
     @Transaction
     @Query("SELECT * FROM tags WHERE name = :name")
-    suspend fun getTagWithContactsByName(name: String): TagWithContacts?
+    fun getTagWithContactsByName(name: String): Flow<TagWithContacts?>
 
     @Query("SELECT * FROM tags WHERE tagId = :id")
-    suspend fun getTagById(id: Int): TagEntity?
+    fun getTagById(id: Int): Flow<TagEntity?>
 
     @Query("SELECT * FROM tags WHERE name = :name")
-    suspend fun getTagByName(name: String): TagEntity?
+    fun getTagByName(name: String): Flow<TagEntity?>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertTag(tag: TagEntity)

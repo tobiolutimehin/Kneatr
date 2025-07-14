@@ -5,10 +5,11 @@ import com.hollowvyn.kneatr.data.local.entity.ContactTierEntity
 import com.hollowvyn.kneatr.di.DatabaseModule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import junit.framework.Assert.assertEquals
-import junit.framework.Assert.assertNotNull
-import junit.framework.Assert.assertTrue
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
@@ -34,7 +35,7 @@ class ContactTierDaoTest : BaseDaoTest() {
                 )
             tierDao.insertTiers(tiers)
 
-            val result = tierDao.getAllTiers()
+            val result = tierDao.getAllTiers().first()
             assertEquals(2, result.size)
             assertTrue(result.any { it.name == "Tier 1" })
             assertTrue(result.any { it.name == "Tier 2" })
@@ -46,7 +47,7 @@ class ContactTierDaoTest : BaseDaoTest() {
             val tier = ContactTierEntity(1, "Close Friends", 7)
             tierDao.insertTier(tier)
 
-            val result = tierDao.getTierById(1)
+            val result = tierDao.getTierById(1).first()
             assertNotNull(result)
             assertEquals("Close Friends", result?.name)
         }
@@ -60,7 +61,7 @@ class ContactTierDaoTest : BaseDaoTest() {
             val updated = tier.copy(name = "Very Close Friends", daysBetweenContact = 3)
             tierDao.updateTier(updated)
 
-            val result = tierDao.getTierById(1)
+            val result = tierDao.getTierById(1).first()
             assertEquals("Very Close Friends", result?.name)
             assertEquals(3, result?.daysBetweenContact)
         }
@@ -73,7 +74,7 @@ class ContactTierDaoTest : BaseDaoTest() {
 
             tierDao.deleteAllTiers()
 
-            val result = tierDao.getAllTiers()
+            val result = tierDao.getAllTiers().first()
             assertTrue(result.isEmpty())
         }
 
@@ -92,7 +93,7 @@ class ContactTierDaoTest : BaseDaoTest() {
                 )
             contactDao.insertContact(contact)
 
-            val result = tierDao.getTiersWithContacts()
+            val result = tierDao.getTiersWithContacts().first()
             assertEquals(1, result.size)
             assertEquals(1, result.first().contacts.size)
             assertEquals(
@@ -120,7 +121,7 @@ class ContactTierDaoTest : BaseDaoTest() {
                 )
             contactDao.insertContact(contact)
 
-            val result = tierDao.getTierWithContactsById(1)
+            val result = tierDao.getTierWithContactsById(1).first()
             assertNotNull(result)
             assertEquals(1, result?.contacts?.size)
             assertEquals("Ada Lovelace", result?.contacts?.first()?.name)
@@ -141,7 +142,7 @@ class ContactTierDaoTest : BaseDaoTest() {
                 )
             contactDao.insertContact(contact)
 
-            val result = tierDao.getTierWithContactsByName("Close Friends")
+            val result = tierDao.getTierWithContactsByName("Close Friends").first()
             assertNotNull(result)
             assertEquals(1, result?.contacts?.size)
             assertEquals("Ada Lovelace", result?.contacts?.first()?.name)
