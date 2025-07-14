@@ -17,6 +17,12 @@ class LocalDateConvertersTest {
     @Test
     fun `null converts safely`() {
         assertEquals(null, LocalDateConverters.localDateToEpochDays(null))
-        assertEquals(null, LocalDateConverters.localDateToEpochDays(null))
+    }
+
+    @Test
+    fun `localDateToEpochDays converts correctly`() {
+        val date = LocalDate(2025, 1, 1)
+        val epochDay = LocalDateConverters.localDateToEpochDays(date)
+        assertEquals(LocalDateConverters.fromEpochDays(epochDay), date)
     }
 }

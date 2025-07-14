@@ -16,7 +16,13 @@
       <SelectionState runConfigName="ContactTagCrossRefDaoTest">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="ContactTierDaoTest">
+      <SelectionState runConfigName="ContactTierDaoTest (1)">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="insert_and_get_all_tiers()">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="TagDaoTest">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>
