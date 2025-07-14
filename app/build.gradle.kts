@@ -22,7 +22,7 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.hollowvyn.kneatr.CustomTestRunner"
     }
 
     buildTypes {
@@ -83,13 +83,29 @@ dependencies {
     // DI / Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
+    kspAndroidTest(libs.hilt.android.compiler)
+    androidTestImplementation(libs.hilt.android.testing)
 
     // Testing
     testImplementation(libs.junit)
+    testImplementation(libs.androidx.room.testing)
+
+    // UI Testing
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    // Room
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.room.paging)
+
+    // Date/Time
+    implementation(libs.kotlinx.datetime)
+    testImplementation(libs.kotlinx.datetime)
+    testImplementation(kotlin("test"))
 }
