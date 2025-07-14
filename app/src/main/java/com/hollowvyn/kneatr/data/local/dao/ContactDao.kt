@@ -1,0 +1,49 @@
+package com.hollowvyn.kneatr.data.local.dao
+
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Transaction
+import androidx.room.Update
+import com.hollowvyn.kneatr.data.local.entity.ContactEntity
+import com.hollowvyn.kneatr.data.local.entity.relation.ContactWithTagsAndTier
+import kotlinx.datetime.LocalDate
+
+@Dao
+interface ContactDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertContacts(contacts: List<ContactEntity>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertContact(contact: ContactEntity)
+
+    @Update
+    suspend fun updateContact(contact: ContactEntity)
+
+    @Transaction
+    @Query("SELECT * FROM contacts ORDER BY name ASC")
+    suspend fun getAllContacts(): List<ContactWithTagsAndTier>
+
+    @Transaction
+    @Query("SELECT * FROM contacts WHERE tierId = :tierId ORDER BY name ASC")
+    suspend fun getContactsByTierId(tierId: Int): List<ContactWithTagsAndTier>
+
+    @Transaction
+    @Query("SELECT * FROM contacts WHERE nextContactDate < :currentDate OR nextContactDate IS NULL ORDER BY name ASC")
+    suspend fun getOverdueContacts(currentDate: LocalDate): List<ContactWithTagsAndTier>
+
+    @Transaction
+    @Query(
+        """
+        SELECT * FROM contacts
+        WHERE name LIKE '%' || :query || '%' OR phoneNumber LIKE '%' || :query || '%' OR email LIKE '%' || :query || '%'
+        ORDER BY name ASC
+    """,
+    )
+    suspend fun searchContactsByNamePhoneOrEmail(query: String): List<ContactWithTagsAndTier>
+
+    @Transaction
+    @Query("SELECT * FROM contacts WHERE contactId = :id")
+    suspend fun getContactById(id: Int): ContactWithTagsAndTier?
+}
