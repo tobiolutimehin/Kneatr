@@ -14,7 +14,7 @@ lifecycleViewmodelNav3 = "1.0.0-alpha03"
 
 # AndroidX Activity / Compose
 activityCompose = "1.10.1"
-composeBom = "2025.06.01"
+composeBom = "2025.07.00"
 androidxComposeMaterial3Adaptive = "1.1.0"
 
 # AndroidX Navigation
