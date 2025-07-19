@@ -1,7 +1,7 @@
 package com.hollowvyn.kneatr.data.local.dao
 
 import com.hollowvyn.kneatr.data.local.entity.ContactEntity
-import com.hollowvyn.kneatr.data.local.entity.TagEntity
+import com.hollowvyn.kneatr.data.local.entity.ContactTagEntity
 import com.hollowvyn.kneatr.data.local.entity.crossRef.ContactTagCrossRef
 import com.hollowvyn.kneatr.di.DatabaseModule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -18,22 +18,22 @@ import org.junit.Test
 class ContactTagCrossRefDaoTest : BaseDaoTest() {
     private lateinit var crossRefDao: ContactTagCrossRefDao
     private lateinit var contactDao: ContactDao
-    private lateinit var tagDao: TagDao
+    private lateinit var contactTagDao: ContactTagDao
 
     @Before
     fun setupDao() {
         crossRefDao = database.contactTagCrossRefDao()
         contactDao = database.contactDao()
-        tagDao = database.tagDao()
+        contactTagDao = database.tagDao()
     }
 
     @Test
     fun addTagToContact_insertsCorrectly() =
         runTest {
             val contact = ContactEntity(contactId = 1, name = "Ada Lovelace", phoneNumber = "123")
-            val tag = TagEntity(tagId = 1, name = "Friends")
+            val tag = ContactTagEntity(tagId = 1, name = "Friends")
             contactDao.insertContact(contact)
-            tagDao.insertTag(tag)
+            contactTagDao.insertTag(tag)
 
             crossRefDao.addTagToContact(ContactTagCrossRef(contactId = 1, tagId = 1))
 
@@ -53,9 +53,9 @@ class ContactTagCrossRefDaoTest : BaseDaoTest() {
     fun removeTagFromContact_deletesSingleRelation() =
         runTest {
             val contact = ContactEntity(contactId = 1, name = "Ada Lovelace", phoneNumber = "123")
-            val tag = TagEntity(tagId = 1, name = "Friends")
+            val tag = ContactTagEntity(tagId = 1, name = "Friends")
             contactDao.insertContact(contact)
-            tagDao.insertTag(tag)
+            contactTagDao.insertTag(tag)
 
             val crossRef = ContactTagCrossRef(contactId = 1, tagId = 1)
             crossRefDao.addTagToContact(crossRef)
@@ -70,11 +70,11 @@ class ContactTagCrossRefDaoTest : BaseDaoTest() {
     fun removeAllTagsFromContact_clearsAllRelations() =
         runTest {
             val contact = ContactEntity(contactId = 1, name = "Ada Lovelace", phoneNumber = "123")
-            val tag1 = TagEntity(tagId = 1, name = "Friends")
-            val tag2 = TagEntity(tagId = 2, name = "Work")
+            val tag1 = ContactTagEntity(tagId = 1, name = "Friends")
+            val tag2 = ContactTagEntity(tagId = 2, name = "Work")
             contactDao.insertContact(contact)
-            tagDao.insertTag(tag1)
-            tagDao.insertTag(tag2)
+            contactTagDao.insertTag(tag1)
+            contactTagDao.insertTag(tag2)
 
             crossRefDao.addTagToContact(ContactTagCrossRef(contactId = 1, tagId = 1))
             crossRefDao.addTagToContact(ContactTagCrossRef(contactId = 1, tagId = 2))

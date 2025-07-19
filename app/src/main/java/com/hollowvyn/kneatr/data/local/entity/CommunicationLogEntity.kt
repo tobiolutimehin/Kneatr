@@ -5,8 +5,8 @@ import androidx.room.PrimaryKey
 import kotlinx.datetime.LocalDate
 
 @Entity(tableName = "communication_logs")
-data class CommunicationLog(
-    @PrimaryKey(autoGenerate = true) val communicationId: Int,
+data class CommunicationLogEntity(
+    @PrimaryKey(autoGenerate = true) val communicationId: Long,
     val type: CommunicationType,
     val date: LocalDate,
     val contactId: Int,

@@ -1,6 +1,6 @@
 package com.hollowvyn.kneatr.data.local
 
-import com.hollowvyn.kneatr.data.local.entity.CommunicationLog
+import com.hollowvyn.kneatr.data.local.entity.CommunicationLogEntity
 import com.hollowvyn.kneatr.data.local.entity.CommunicationType
 import com.hollowvyn.kneatr.data.local.entity.ContactEntity
 import com.hollowvyn.kneatr.data.local.entity.ContactTierEntity
@@ -34,8 +34,14 @@ class ContactExtensionsTest {
     fun lastContactedDate_returnsMostRecentDate() {
         val logs =
             listOf(
-                CommunicationLog(1, CommunicationType.PHONE_CALL, LocalDate(2023, 12, 1), 1, null),
-                CommunicationLog(2, CommunicationType.EMAIL, LocalDate(2023, 12, 5), 1, null),
+                CommunicationLogEntity(
+                    1,
+                    CommunicationType.PHONE_CALL,
+                    LocalDate(2023, 12, 1),
+                    1,
+                    null,
+                ),
+                CommunicationLogEntity(2, CommunicationType.EMAIL, LocalDate(2023, 12, 5), 1, null),
             )
         val contactWithLogs = ContactWithDetails(baseContact, emptyList(), null, logs)
         val result = contactExtensions.lastContactedDate(contactWithLogs)
@@ -54,7 +60,13 @@ class ContactExtensionsTest {
         val contact = baseContact.copy(customFrequencyDays = 10)
         val logs =
             listOf(
-                CommunicationLog(1, CommunicationType.PHONE_CALL, LocalDate(2023, 12, 1), 1, null),
+                CommunicationLogEntity(
+                    1,
+                    CommunicationType.PHONE_CALL,
+                    LocalDate(2023, 12, 1),
+                    1,
+                    null,
+                ),
             )
         val contactWithLogs = ContactWithDetails(contact, emptyList(), null, logs)
         val result = contactExtensions.nextContactDate(contactWithLogs)
@@ -66,7 +78,13 @@ class ContactExtensionsTest {
         val tier = ContactTierEntity(1, "Tier 1", 7)
         val logs =
             listOf(
-                CommunicationLog(1, CommunicationType.PHONE_CALL, LocalDate(2023, 12, 1), 1, null),
+                CommunicationLogEntity(
+                    1,
+                    CommunicationType.PHONE_CALL,
+                    LocalDate(2023, 12, 1),
+                    1,
+                    null,
+                ),
             )
         val contactWithLogs = ContactWithDetails(baseContact, emptyList(), tier, logs)
         val result = contactExtensions.nextContactDate(contactWithLogs)
@@ -78,7 +96,13 @@ class ContactExtensionsTest {
         val contact = baseContact.copy(customFrequencyDays = 10)
         val logs =
             listOf(
-                CommunicationLog(1, CommunicationType.PHONE_CALL, LocalDate(2023, 12, 1), 1, null),
+                CommunicationLogEntity(
+                    1,
+                    CommunicationType.PHONE_CALL,
+                    LocalDate(2023, 12, 1),
+                    1,
+                    null,
+                ),
             )
         val contactWithLogs = ContactWithDetails(contact, emptyList(), null, logs)
         val result = contactExtensions.isOverdue(contactWithLogs)
@@ -90,7 +114,13 @@ class ContactExtensionsTest {
         val contact = baseContact.copy(customFrequencyDays = 10)
         val logs =
             listOf(
-                CommunicationLog(1, CommunicationType.PHONE_CALL, LocalDate(2023, 12, 31), 1, null),
+                CommunicationLogEntity(
+                    1,
+                    CommunicationType.PHONE_CALL,
+                    LocalDate(2023, 12, 31),
+                    1,
+                    null,
+                ),
             )
         val contactWithLogs = ContactWithDetails(contact, emptyList(), null, logs)
         val result = contactExtensions.isOverdue(contactWithLogs)

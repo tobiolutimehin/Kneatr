@@ -5,12 +5,12 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.hollowvyn.kneatr.data.local.dao.ContactDao
 import com.hollowvyn.kneatr.data.local.dao.ContactTagCrossRefDao
+import com.hollowvyn.kneatr.data.local.dao.ContactTagDao
 import com.hollowvyn.kneatr.data.local.dao.ContactTierDao
-import com.hollowvyn.kneatr.data.local.dao.TagDao
-import com.hollowvyn.kneatr.data.local.entity.CommunicationLog
+import com.hollowvyn.kneatr.data.local.entity.CommunicationLogEntity
 import com.hollowvyn.kneatr.data.local.entity.ContactEntity
+import com.hollowvyn.kneatr.data.local.entity.ContactTagEntity
 import com.hollowvyn.kneatr.data.local.entity.ContactTierEntity
-import com.hollowvyn.kneatr.data.local.entity.TagEntity
 import com.hollowvyn.kneatr.data.local.entity.crossRef.ContactTagCrossRef
 import com.hollowvyn.kneatr.data.local.typeconverter.CommunicationTypeConverters
 import com.hollowvyn.kneatr.data.local.typeconverter.LocalDateConverters
@@ -19,11 +19,11 @@ import com.hollowvyn.kneatr.data.local.typeconverter.LocalDateConverters
     entities = [
         ContactEntity::class,
         ContactTierEntity::class,
-        TagEntity::class,
+        ContactTagEntity::class,
         ContactTagCrossRef::class,
-        CommunicationLog::class,
+        CommunicationLogEntity::class,
     ],
-    version = 3,
+    version = 4,
     exportSchema = false,
 )
 @TypeConverters(LocalDateConverters::class, CommunicationTypeConverters::class)
@@ -32,7 +32,7 @@ abstract class KneatrDatabase : RoomDatabase() {
 
     abstract fun contactTierDao(): ContactTierDao
 
-    abstract fun tagDao(): TagDao
+    abstract fun tagDao(): ContactTagDao
 
     abstract fun contactTagCrossRefDao(): ContactTagCrossRefDao
 }

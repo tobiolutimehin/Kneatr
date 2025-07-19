@@ -3,10 +3,10 @@ package com.hollowvyn.kneatr.data.local.entity.relation
 import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
-import com.hollowvyn.kneatr.data.local.entity.CommunicationLog
+import com.hollowvyn.kneatr.data.local.entity.CommunicationLogEntity
 import com.hollowvyn.kneatr.data.local.entity.ContactEntity
+import com.hollowvyn.kneatr.data.local.entity.ContactTagEntity
 import com.hollowvyn.kneatr.data.local.entity.ContactTierEntity
-import com.hollowvyn.kneatr.data.local.entity.TagEntity
 import com.hollowvyn.kneatr.data.local.entity.crossRef.ContactTagCrossRef
 
 data class ContactWithDetails(
@@ -16,7 +16,7 @@ data class ContactWithDetails(
         entityColumn = "tagId",
         associateBy = Junction(ContactTagCrossRef::class),
     )
-    val tags: List<TagEntity>,
+    val tags: List<ContactTagEntity>,
     @Relation(
         parentColumn = "tierId",
         entityColumn = "tierId",
@@ -26,5 +26,5 @@ data class ContactWithDetails(
         parentColumn = "contactId",
         entityColumn = "contactId",
     )
-    val communicationLogs: List<CommunicationLog>,
+    val communicationLogs: List<CommunicationLogEntity>,
 )
