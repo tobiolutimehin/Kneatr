@@ -27,7 +27,7 @@ interface ContactDao {
 
     @Transaction
     @Query("SELECT * FROM contacts WHERE tierId = :tierId ORDER BY name ASC")
-    fun getContactsByTierId(tierId: Int): Flow<List<ContactWithDetails>>
+    fun getContactsByTierId(tierId: Long): Flow<List<ContactWithDetails>>
 
     @Transaction
     @Query(
@@ -41,5 +41,17 @@ interface ContactDao {
 
     @Transaction
     @Query("SELECT * FROM contacts WHERE contactId = :id")
-    fun getContactById(id: Int): Flow<ContactWithDetails?>
+    fun getContactById(id: Long): Flow<ContactWithDetails?>
+
+    @Transaction
+    @Query(
+        """
+    SELECT * FROM contacts
+    WHERE contactId IN (
+        SELECT contactId FROM ContactTagCrossRef WHERE tagId = :tagId
+    )
+    ORDER BY name ASC
+""",
+    )
+    fun getContactsByTagId(tagId: Long): Flow<List<ContactWithDetails>>
 }

@@ -16,5 +16,5 @@ interface ContactTagCrossRefDao {
     suspend fun removeTagFromContact(crossRef: ContactTagCrossRef)
 
     @Query("DELETE FROM ContactTagCrossRef WHERE contactId = :contactId")
-    suspend fun removeAllTagsFromContact(contactId: Int)
+    suspend fun removeAllTagsFromContact(contactId: Long)
 }

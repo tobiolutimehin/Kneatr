@@ -25,7 +25,7 @@ interface ContactTierDao {
     fun getAllTiers(): Flow<List<ContactTierEntity>>
 
     @Query("SELECT * FROM contact_tiers WHERE tierId = :id")
-    fun getTierById(id: Int): Flow<ContactTierEntity?>
+    fun getTierById(id: Long): Flow<ContactTierEntity?>
 
     @Query("DELETE FROM contact_tiers")
     suspend fun deleteAllTiers()
@@ -36,7 +36,7 @@ interface ContactTierDao {
 
     @Transaction
     @Query("SELECT * FROM contact_tiers WHERE tierId = :id")
-    fun getTierWithContactsById(id: Int): Flow<TierWithContacts?>
+    fun getTierWithContactsById(id: Long): Flow<TierWithContacts?>
 
     @Transaction
     @Query("SELECT * FROM contact_tiers WHERE name = :name")

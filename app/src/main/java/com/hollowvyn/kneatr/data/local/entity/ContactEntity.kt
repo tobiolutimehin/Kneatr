@@ -1,5 +1,6 @@
 package com.hollowvyn.kneatr.data.local.entity
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
@@ -16,10 +17,12 @@ import androidx.room.PrimaryKey
     ],
 )
 data class ContactEntity(
-    @PrimaryKey(autoGenerate = true) val contactId: Long,
+    @PrimaryKey(autoGenerate = true)
+    val contactId: Long,
     val name: String,
     val phoneNumber: String,
     val email: String? = null,
+    @ColumnInfo(index = true)
     val tierId: Long? = null,
     val customFrequencyDays: Int? = null,
 )

@@ -24,3 +24,7 @@ fun ContactWithDetails.toModel(): ContactDto =
         tier = tier?.toModel(),
         customFrequencyDays = contact.customFrequencyDays,
     )
+
+fun List<ContactDto>.toListEntity() = map { it.toEntity() }
+
+fun List<ContactWithDetails>.toListModel() = map { it.toModel() }
