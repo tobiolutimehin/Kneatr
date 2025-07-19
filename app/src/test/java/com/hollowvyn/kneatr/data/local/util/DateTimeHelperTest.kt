@@ -1,4 +1,4 @@
-package com.hollowvyn.kneatr.data.local
+package com.hollowvyn.kneatr.data.local.util
 
 import com.hollowvyn.kneatr.data.util.DateTimeHelper
 import kotlinx.datetime.LocalDate

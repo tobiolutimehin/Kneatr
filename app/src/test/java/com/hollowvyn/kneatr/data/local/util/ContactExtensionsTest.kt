@@ -1,4 +1,4 @@
-package com.hollowvyn.kneatr.data.local
+package com.hollowvyn.kneatr.data.local.util
 
 import com.hollowvyn.kneatr.data.local.entity.CommunicationLogEntity
 import com.hollowvyn.kneatr.data.local.entity.CommunicationType
