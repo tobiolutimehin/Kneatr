@@ -26,5 +26,5 @@ data class ContactWithDetails(
         parentColumn = "contactId",
         entityColumn = "contactId",
     )
-    val communicationLogEntities: List<CommunicationLogEntity>,
+    val communicationLogs: List<CommunicationLogEntity>,
 )
