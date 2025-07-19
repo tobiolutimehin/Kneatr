@@ -21,8 +21,8 @@ data class ContactEntity(
     val name: String,
     val phoneNumber: String,
     val email: String? = null,
-    val lastContactedDate: LocalDate? = null,
-    val nextContactDate: LocalDate? = null,
+    val lastContactedDate: LocalDate? = null, // remove soon
+    val nextContactDate: LocalDate? = null, // remove soon
     val tierId: Int? = null,
     val customFrequencyDays: Int? = null,
 )
