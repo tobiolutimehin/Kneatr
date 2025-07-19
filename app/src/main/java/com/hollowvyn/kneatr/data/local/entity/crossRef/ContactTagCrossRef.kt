@@ -4,6 +4,6 @@ import androidx.room.Entity
 
 @Entity(primaryKeys = ["contactId", "tagId"])
 data class ContactTagCrossRef(
-    val contactId: Int,
-    val tagId: Int,
+    val contactId: Long,
+    val tagId: Long,
 )

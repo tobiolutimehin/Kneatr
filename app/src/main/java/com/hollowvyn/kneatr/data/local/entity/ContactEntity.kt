@@ -16,10 +16,10 @@ import androidx.room.PrimaryKey
     ],
 )
 data class ContactEntity(
-    @PrimaryKey(autoGenerate = true) val contactId: Int,
+    @PrimaryKey(autoGenerate = true) val contactId: Long,
     val name: String,
     val phoneNumber: String,
     val email: String? = null,
-    val tierId: Int? = null,
+    val tierId: Long? = null,
     val customFrequencyDays: Int? = null,
 )

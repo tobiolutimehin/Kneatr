@@ -9,7 +9,7 @@ class ContactExtensions
     constructor(
         private val dateTimeHelper: DateTimeHelper,
     ) {
-        fun lastContactedDate(contact: ContactWithDetails): LocalDate? = contact.communicationLogs.maxByOrNull { it.date }?.date
+        fun lastContactedDate(contact: ContactWithDetails): LocalDate? = contact.communicationLogEntities.maxByOrNull { it.date }?.date
 
         @Suppress("ReturnCount")
         fun nextContactDate(contact: ContactWithDetails): LocalDate? {

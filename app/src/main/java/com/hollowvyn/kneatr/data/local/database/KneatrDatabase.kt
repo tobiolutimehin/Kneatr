@@ -7,7 +7,7 @@ import com.hollowvyn.kneatr.data.local.dao.ContactDao
 import com.hollowvyn.kneatr.data.local.dao.ContactTagCrossRefDao
 import com.hollowvyn.kneatr.data.local.dao.ContactTierDao
 import com.hollowvyn.kneatr.data.local.dao.TagDao
-import com.hollowvyn.kneatr.data.local.entity.CommunicationLog
+import com.hollowvyn.kneatr.data.local.entity.CommunicationLogEntity
 import com.hollowvyn.kneatr.data.local.entity.ContactEntity
 import com.hollowvyn.kneatr.data.local.entity.ContactTierEntity
 import com.hollowvyn.kneatr.data.local.entity.TagEntity
@@ -21,9 +21,9 @@ import com.hollowvyn.kneatr.data.local.typeconverter.LocalDateConverters
         ContactTierEntity::class,
         TagEntity::class,
         ContactTagCrossRef::class,
-        CommunicationLog::class,
+        CommunicationLogEntity::class,
     ],
-    version = 3,
+    version = 4,
     exportSchema = false,
 )
 @TypeConverters(LocalDateConverters::class, CommunicationTypeConverters::class)
