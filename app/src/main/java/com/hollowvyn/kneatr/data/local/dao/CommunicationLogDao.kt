@@ -16,13 +16,13 @@ interface CommunicationLogDao {
     suspend fun insertCommunicationLog(communicationLog: CommunicationLogEntity)
 
     @Query("SELECT * FROM communication_logs WHERE contactId = :contactId")
-    fun getCommunicationLogsForContact(contactId: Int): Flow<List<CommunicationLogEntity>>
+    fun getCommunicationLogsForContact(contactId: Long): Flow<List<CommunicationLogEntity>>
 
     @Delete
     suspend fun deleteCommunicationLog(communicationLog: CommunicationLogEntity)
 
     @Query("DELETE FROM communication_logs WHERE contactId = :contactId")
-    suspend fun deleteCommunicationLogsForContact(contactId: Int)
+    suspend fun deleteCommunicationLogsForContact(contactId: Long)
 
     @Query("DELETE FROM communication_logs")
     suspend fun deleteAllCommunicationLogs()

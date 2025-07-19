@@ -9,6 +9,6 @@ data class CommunicationLogEntity(
     @PrimaryKey(autoGenerate = true) val communicationId: Long,
     val type: CommunicationType,
     val date: LocalDate,
-    val contactId: Int,
+    val contactId: Long,
     val notes: String? = null,
 )
