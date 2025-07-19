@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.room.Room
 import com.hollowvyn.kneatr.data.local.dao.ContactDao
 import com.hollowvyn.kneatr.data.local.dao.ContactTagCrossRefDao
+import com.hollowvyn.kneatr.data.local.dao.ContactTagDao
 import com.hollowvyn.kneatr.data.local.dao.ContactTierDao
-import com.hollowvyn.kneatr.data.local.dao.TagDao
 import com.hollowvyn.kneatr.data.local.database.KneatrDatabase
 import dagger.Module
 import dagger.Provides
@@ -31,7 +31,7 @@ object DatabaseModule {
             .build()
 
     @Provides
-    fun provideTagDao(database: KneatrDatabase): TagDao = database.tagDao()
+    fun provideContactTagDao(database: KneatrDatabase): ContactTagDao = database.tagDao()
 
     @Provides
     fun provideContactTagCrossRefDao(database: KneatrDatabase): ContactTagCrossRefDao = database.contactTagCrossRefDao()

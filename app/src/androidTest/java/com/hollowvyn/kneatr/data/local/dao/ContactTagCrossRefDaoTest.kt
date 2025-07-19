@@ -18,13 +18,13 @@ import org.junit.Test
 class ContactTagCrossRefDaoTest : BaseDaoTest() {
     private lateinit var crossRefDao: ContactTagCrossRefDao
     private lateinit var contactDao: ContactDao
-    private lateinit var tagDao: TagDao
+    private lateinit var contactTagDao: ContactTagDao
 
     @Before
     fun setupDao() {
         crossRefDao = database.contactTagCrossRefDao()
         contactDao = database.contactDao()
-        tagDao = database.tagDao()
+        contactTagDao = database.tagDao()
     }
 
     @Test
@@ -33,7 +33,7 @@ class ContactTagCrossRefDaoTest : BaseDaoTest() {
             val contact = ContactEntity(contactId = 1, name = "Ada Lovelace", phoneNumber = "123")
             val tag = ContactTagEntity(tagId = 1, name = "Friends")
             contactDao.insertContact(contact)
-            tagDao.insertTag(tag)
+            contactTagDao.insertTag(tag)
 
             crossRefDao.addTagToContact(ContactTagCrossRef(contactId = 1, tagId = 1))
 
@@ -55,7 +55,7 @@ class ContactTagCrossRefDaoTest : BaseDaoTest() {
             val contact = ContactEntity(contactId = 1, name = "Ada Lovelace", phoneNumber = "123")
             val tag = ContactTagEntity(tagId = 1, name = "Friends")
             contactDao.insertContact(contact)
-            tagDao.insertTag(tag)
+            contactTagDao.insertTag(tag)
 
             val crossRef = ContactTagCrossRef(contactId = 1, tagId = 1)
             crossRefDao.addTagToContact(crossRef)
@@ -73,8 +73,8 @@ class ContactTagCrossRefDaoTest : BaseDaoTest() {
             val tag1 = ContactTagEntity(tagId = 1, name = "Friends")
             val tag2 = ContactTagEntity(tagId = 2, name = "Work")
             contactDao.insertContact(contact)
-            tagDao.insertTag(tag1)
-            tagDao.insertTag(tag2)
+            contactTagDao.insertTag(tag1)
+            contactTagDao.insertTag(tag2)
 
             crossRefDao.addTagToContact(ContactTagCrossRef(contactId = 1, tagId = 1))
             crossRefDao.addTagToContact(ContactTagCrossRef(contactId = 1, tagId = 2))

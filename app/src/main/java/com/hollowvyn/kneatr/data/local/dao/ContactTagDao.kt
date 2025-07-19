@@ -12,7 +12,7 @@ import com.hollowvyn.kneatr.data.local.entity.relation.TagWithContacts
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface TagDao {
+interface ContactTagDao {
     @Query("SELECT * FROM tags")
     fun getAllTags(): Flow<List<ContactTagEntity>>
 

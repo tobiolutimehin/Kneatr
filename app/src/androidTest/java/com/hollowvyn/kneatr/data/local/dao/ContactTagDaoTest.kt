@@ -16,13 +16,13 @@ import org.junit.Test
 
 @HiltAndroidTest
 @UninstallModules(DatabaseModule::class)
-class TagDaoTest : BaseDaoTest() {
-    private lateinit var tagDao: TagDao
+class ContactTagDaoTest : BaseDaoTest() {
+    private lateinit var contactTagDao: ContactTagDao
     private lateinit var contactDao: ContactDao
 
     @Before
     fun setupDao() {
-        tagDao = database.tagDao()
+        contactTagDao = database.tagDao()
         contactDao = database.contactDao()
     }
 
@@ -30,10 +30,10 @@ class TagDaoTest : BaseDaoTest() {
     fun insert_and_query_tag_by_id_and_name() =
         runTest {
             val tag = ContactTagEntity(tagId = 1, name = "Friends")
-            tagDao.insertTag(tag)
+            contactTagDao.insertTag(tag)
 
-            val retrievedById = tagDao.getTagById(1).first()
-            val retrievedByName = tagDao.getTagByName("Friends").first()
+            val retrievedById = contactTagDao.getTagById(1).first()
+            val retrievedByName = contactTagDao.getTagByName("Friends").first()
 
             assertNotNull(retrievedById)
             assertEquals("Friends", retrievedById?.name)
@@ -46,10 +46,10 @@ class TagDaoTest : BaseDaoTest() {
         runTest {
             val tag1 = ContactTagEntity(tagId = 1, name = "Friends")
             val tag2 = ContactTagEntity(tagId = 2, name = "Work")
-            tagDao.insertTag(tag1)
-            tagDao.insertTag(tag2)
+            contactTagDao.insertTag(tag1)
+            contactTagDao.insertTag(tag2)
 
-            val tags = tagDao.getAllTags().first()
+            val tags = contactTagDao.getAllTags().first()
             assertEquals(2, tags.size)
         }
 
@@ -57,12 +57,12 @@ class TagDaoTest : BaseDaoTest() {
     fun update_tag_successfully() =
         runTest {
             val tag = ContactTagEntity(tagId = 1, name = "Friends")
-            tagDao.insertTag(tag)
+            contactTagDao.insertTag(tag)
 
             val updated = tag.copy(name = "Close Friends")
-            tagDao.updateTag(updated)
+            contactTagDao.updateTag(updated)
 
-            val retrieved = tagDao.getTagById(1).first()
+            val retrieved = contactTagDao.getTagById(1).first()
             assertEquals("Close Friends", retrieved?.name)
         }
 
@@ -70,10 +70,10 @@ class TagDaoTest : BaseDaoTest() {
     fun delete_tag_successfully() =
         runTest {
             val tag = ContactTagEntity(tagId = 1, name = "Friends")
-            tagDao.insertTag(tag)
-            tagDao.deleteTag(tag)
+            contactTagDao.insertTag(tag)
+            contactTagDao.deleteTag(tag)
 
-            val tags = tagDao.getAllTags().first()
+            val tags = contactTagDao.getAllTags().first()
             assertTrue(tags.isEmpty())
         }
 
@@ -81,7 +81,7 @@ class TagDaoTest : BaseDaoTest() {
     fun get_tags_with_contacts() =
         runTest {
             val tag = ContactTagEntity(tagId = 1, name = "Friends")
-            tagDao.insertTag(tag)
+            contactTagDao.insertTag(tag)
 
             val contact =
                 ContactEntity(
@@ -95,7 +95,7 @@ class TagDaoTest : BaseDaoTest() {
                 ContactTagCrossRef(contactId = 1, tagId = 1),
             )
 
-            val tagsWithContacts = tagDao.getTagsWithContacts().first()
+            val tagsWithContacts = contactTagDao.getTagsWithContacts().first()
             assertEquals(1, tagsWithContacts.size)
             assertEquals("Friends", tagsWithContacts.first().tag.name)
             assertEquals(1, tagsWithContacts.first().contacts.size)
@@ -113,7 +113,7 @@ class TagDaoTest : BaseDaoTest() {
     fun get_tag_with_contacts_by_id_and_name() =
         runTest {
             val tag = ContactTagEntity(tagId = 1, name = "Friends")
-            tagDao.insertTag(tag)
+            contactTagDao.insertTag(tag)
 
             val contact =
                 ContactEntity(
@@ -127,12 +127,12 @@ class TagDaoTest : BaseDaoTest() {
                 ContactTagCrossRef(contactId = 1, tagId = 1),
             )
 
-            val resultById = tagDao.getTagWithContactsById(1).first()
+            val resultById = contactTagDao.getTagWithContactsById(1).first()
             assertNotNull(resultById)
             assertEquals("Friends", resultById?.tag?.name)
             assertEquals(1, resultById?.contacts?.size)
 
-            val resultByName = tagDao.getTagWithContactsByName("Friends").first()
+            val resultByName = contactTagDao.getTagWithContactsByName("Friends").first()
             assertNotNull(resultByName)
             assertEquals("Friends", resultByName?.tag?.name)
             assertEquals(1, resultByName?.contacts?.size)
