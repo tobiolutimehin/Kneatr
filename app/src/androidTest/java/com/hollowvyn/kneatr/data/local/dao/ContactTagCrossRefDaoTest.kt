@@ -1,7 +1,7 @@
 package com.hollowvyn.kneatr.data.local.dao
 
 import com.hollowvyn.kneatr.data.local.entity.ContactEntity
-import com.hollowvyn.kneatr.data.local.entity.TagEntity
+import com.hollowvyn.kneatr.data.local.entity.ContactTagEntity
 import com.hollowvyn.kneatr.data.local.entity.crossRef.ContactTagCrossRef
 import com.hollowvyn.kneatr.di.DatabaseModule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -31,7 +31,7 @@ class ContactTagCrossRefDaoTest : BaseDaoTest() {
     fun addTagToContact_insertsCorrectly() =
         runTest {
             val contact = ContactEntity(contactId = 1, name = "Ada Lovelace", phoneNumber = "123")
-            val tag = TagEntity(tagId = 1, name = "Friends")
+            val tag = ContactTagEntity(tagId = 1, name = "Friends")
             contactDao.insertContact(contact)
             tagDao.insertTag(tag)
 
@@ -53,7 +53,7 @@ class ContactTagCrossRefDaoTest : BaseDaoTest() {
     fun removeTagFromContact_deletesSingleRelation() =
         runTest {
             val contact = ContactEntity(contactId = 1, name = "Ada Lovelace", phoneNumber = "123")
-            val tag = TagEntity(tagId = 1, name = "Friends")
+            val tag = ContactTagEntity(tagId = 1, name = "Friends")
             contactDao.insertContact(contact)
             tagDao.insertTag(tag)
 
@@ -70,8 +70,8 @@ class ContactTagCrossRefDaoTest : BaseDaoTest() {
     fun removeAllTagsFromContact_clearsAllRelations() =
         runTest {
             val contact = ContactEntity(contactId = 1, name = "Ada Lovelace", phoneNumber = "123")
-            val tag1 = TagEntity(tagId = 1, name = "Friends")
-            val tag2 = TagEntity(tagId = 2, name = "Work")
+            val tag1 = ContactTagEntity(tagId = 1, name = "Friends")
+            val tag2 = ContactTagEntity(tagId = 2, name = "Work")
             contactDao.insertContact(contact)
             tagDao.insertTag(tag1)
             tagDao.insertTag(tag2)

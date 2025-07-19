@@ -1,7 +1,7 @@
 package com.hollowvyn.kneatr.data.local.dao
 
 import com.hollowvyn.kneatr.data.local.entity.ContactEntity
-import com.hollowvyn.kneatr.data.local.entity.TagEntity
+import com.hollowvyn.kneatr.data.local.entity.ContactTagEntity
 import com.hollowvyn.kneatr.data.local.entity.crossRef.ContactTagCrossRef
 import com.hollowvyn.kneatr.di.DatabaseModule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -29,7 +29,7 @@ class TagDaoTest : BaseDaoTest() {
     @Test
     fun insert_and_query_tag_by_id_and_name() =
         runTest {
-            val tag = TagEntity(tagId = 1, name = "Friends")
+            val tag = ContactTagEntity(tagId = 1, name = "Friends")
             tagDao.insertTag(tag)
 
             val retrievedById = tagDao.getTagById(1).first()
@@ -44,8 +44,8 @@ class TagDaoTest : BaseDaoTest() {
     @Test
     fun get_all_tags() =
         runTest {
-            val tag1 = TagEntity(tagId = 1, name = "Friends")
-            val tag2 = TagEntity(tagId = 2, name = "Work")
+            val tag1 = ContactTagEntity(tagId = 1, name = "Friends")
+            val tag2 = ContactTagEntity(tagId = 2, name = "Work")
             tagDao.insertTag(tag1)
             tagDao.insertTag(tag2)
 
@@ -56,7 +56,7 @@ class TagDaoTest : BaseDaoTest() {
     @Test
     fun update_tag_successfully() =
         runTest {
-            val tag = TagEntity(tagId = 1, name = "Friends")
+            val tag = ContactTagEntity(tagId = 1, name = "Friends")
             tagDao.insertTag(tag)
 
             val updated = tag.copy(name = "Close Friends")
@@ -69,7 +69,7 @@ class TagDaoTest : BaseDaoTest() {
     @Test
     fun delete_tag_successfully() =
         runTest {
-            val tag = TagEntity(tagId = 1, name = "Friends")
+            val tag = ContactTagEntity(tagId = 1, name = "Friends")
             tagDao.insertTag(tag)
             tagDao.deleteTag(tag)
 
@@ -80,7 +80,7 @@ class TagDaoTest : BaseDaoTest() {
     @Test
     fun get_tags_with_contacts() =
         runTest {
-            val tag = TagEntity(tagId = 1, name = "Friends")
+            val tag = ContactTagEntity(tagId = 1, name = "Friends")
             tagDao.insertTag(tag)
 
             val contact =
@@ -112,7 +112,7 @@ class TagDaoTest : BaseDaoTest() {
     @Test
     fun get_tag_with_contacts_by_id_and_name() =
         runTest {
-            val tag = TagEntity(tagId = 1, name = "Friends")
+            val tag = ContactTagEntity(tagId = 1, name = "Friends")
             tagDao.insertTag(tag)
 
             val contact =

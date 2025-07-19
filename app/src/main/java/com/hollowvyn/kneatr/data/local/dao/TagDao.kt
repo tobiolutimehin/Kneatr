@@ -7,14 +7,14 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
-import com.hollowvyn.kneatr.data.local.entity.TagEntity
+import com.hollowvyn.kneatr.data.local.entity.ContactTagEntity
 import com.hollowvyn.kneatr.data.local.entity.relation.TagWithContacts
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TagDao {
     @Query("SELECT * FROM tags")
-    fun getAllTags(): Flow<List<TagEntity>>
+    fun getAllTags(): Flow<List<ContactTagEntity>>
 
     @Transaction
     @Query("SELECT * FROM tags")
@@ -29,17 +29,17 @@ interface TagDao {
     fun getTagWithContactsByName(name: String): Flow<TagWithContacts?>
 
     @Query("SELECT * FROM tags WHERE tagId = :id")
-    fun getTagById(id: Int): Flow<TagEntity?>
+    fun getTagById(id: Int): Flow<ContactTagEntity?>
 
     @Query("SELECT * FROM tags WHERE name = :name")
-    fun getTagByName(name: String): Flow<TagEntity?>
+    fun getTagByName(name: String): Flow<ContactTagEntity?>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertTag(tag: TagEntity)
+    suspend fun insertTag(tag: ContactTagEntity)
 
     @Update
-    suspend fun updateTag(tag: TagEntity)
+    suspend fun updateTag(tag: ContactTagEntity)
 
     @Delete
-    suspend fun deleteTag(tag: TagEntity)
+    suspend fun deleteTag(tag: ContactTagEntity)
 }
