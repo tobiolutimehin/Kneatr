@@ -2,6 +2,8 @@ package com.hollowvyn.kneatr.domain.mappers
 
 import com.hollowvyn.kneatr.data.local.entity.ContactTagEntity
 import com.hollowvyn.kneatr.domain.model.ContactTagDto
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class ContactTagMappersTest {
     @Test
