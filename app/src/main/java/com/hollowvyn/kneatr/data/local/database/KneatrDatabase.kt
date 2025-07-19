@@ -3,6 +3,7 @@ package com.hollowvyn.kneatr.data.local.database
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.hollowvyn.kneatr.data.local.dao.CommunicationLogDao
 import com.hollowvyn.kneatr.data.local.dao.ContactDao
 import com.hollowvyn.kneatr.data.local.dao.ContactTagCrossRefDao
 import com.hollowvyn.kneatr.data.local.dao.ContactTagDao
@@ -23,7 +24,7 @@ import com.hollowvyn.kneatr.data.local.typeconverter.LocalDateConverters
         ContactTagCrossRef::class,
         CommunicationLogEntity::class,
     ],
-    version = 4,
+    version = 5,
     exportSchema = false,
 )
 @TypeConverters(LocalDateConverters::class, CommunicationTypeConverters::class)
@@ -35,4 +36,6 @@ abstract class KneatrDatabase : RoomDatabase() {
     abstract fun tagDao(): ContactTagDao
 
     abstract fun contactTagCrossRefDao(): ContactTagCrossRefDao
+
+    abstract fun communicationLogDao(): CommunicationLogDao
 }

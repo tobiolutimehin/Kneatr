@@ -2,6 +2,7 @@ package com.hollowvyn.kneatr.di
 
 import android.content.Context
 import androidx.room.Room
+import com.hollowvyn.kneatr.data.local.dao.CommunicationLogDao
 import com.hollowvyn.kneatr.data.local.dao.ContactDao
 import com.hollowvyn.kneatr.data.local.dao.ContactTagCrossRefDao
 import com.hollowvyn.kneatr.data.local.dao.ContactTagDao
@@ -41,4 +42,7 @@ object DatabaseModule {
 
     @Provides
     fun provideContactDao(database: KneatrDatabase): ContactDao = database.contactDao()
+
+    @Provides
+    fun provideCommunicationLogDao(database: KneatrDatabase): CommunicationLogDao = database.communicationLogDao()
 }
