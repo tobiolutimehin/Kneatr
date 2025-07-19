@@ -4,7 +4,7 @@ import com.hollowvyn.kneatr.data.local.entity.CommunicationLog
 import com.hollowvyn.kneatr.data.local.entity.CommunicationType
 import com.hollowvyn.kneatr.data.local.entity.ContactEntity
 import com.hollowvyn.kneatr.data.local.entity.ContactTierEntity
-import com.hollowvyn.kneatr.data.local.entity.relation.ContactWithTagsAndTier
+import com.hollowvyn.kneatr.data.local.entity.relation.ContactWithDetails
 import com.hollowvyn.kneatr.data.util.ContactExtensions
 import com.hollowvyn.kneatr.data.util.DateTimeHelper
 import kotlinx.datetime.LocalDate
@@ -37,14 +37,14 @@ class ContactExtensionsTest {
                 CommunicationLog(1, CommunicationType.PHONE_CALL, LocalDate(2023, 12, 1), 1, null),
                 CommunicationLog(2, CommunicationType.EMAIL, LocalDate(2023, 12, 5), 1, null),
             )
-        val contactWithLogs = ContactWithTagsAndTier(baseContact, emptyList(), null, logs)
+        val contactWithLogs = ContactWithDetails(baseContact, emptyList(), null, logs)
         val result = contactExtensions.lastContactedDate(contactWithLogs)
         assertEquals(LocalDate(2023, 12, 5), result)
     }
 
     @Test
     fun nextContactDate_returnsNull_whenNoLogs() {
-        val contactWithNoLogs = ContactWithTagsAndTier(baseContact, emptyList(), null, emptyList())
+        val contactWithNoLogs = ContactWithDetails(baseContact, emptyList(), null, emptyList())
         val result = contactExtensions.nextContactDate(contactWithNoLogs)
         assertNull(result)
     }
@@ -56,7 +56,7 @@ class ContactExtensionsTest {
             listOf(
                 CommunicationLog(1, CommunicationType.PHONE_CALL, LocalDate(2023, 12, 1), 1, null),
             )
-        val contactWithLogs = ContactWithTagsAndTier(contact, emptyList(), null, logs)
+        val contactWithLogs = ContactWithDetails(contact, emptyList(), null, logs)
         val result = contactExtensions.nextContactDate(contactWithLogs)
         assertEquals(LocalDate(2023, 12, 11), result)
     }
@@ -68,7 +68,7 @@ class ContactExtensionsTest {
             listOf(
                 CommunicationLog(1, CommunicationType.PHONE_CALL, LocalDate(2023, 12, 1), 1, null),
             )
-        val contactWithLogs = ContactWithTagsAndTier(baseContact, emptyList(), tier, logs)
+        val contactWithLogs = ContactWithDetails(baseContact, emptyList(), tier, logs)
         val result = contactExtensions.nextContactDate(contactWithLogs)
         assertEquals(LocalDate(2023, 12, 8), result)
     }
@@ -80,7 +80,7 @@ class ContactExtensionsTest {
             listOf(
                 CommunicationLog(1, CommunicationType.PHONE_CALL, LocalDate(2023, 12, 1), 1, null),
             )
-        val contactWithLogs = ContactWithTagsAndTier(contact, emptyList(), null, logs)
+        val contactWithLogs = ContactWithDetails(contact, emptyList(), null, logs)
         val result = contactExtensions.isOverdue(contactWithLogs)
         assertTrue(result)
     }
@@ -92,14 +92,14 @@ class ContactExtensionsTest {
             listOf(
                 CommunicationLog(1, CommunicationType.PHONE_CALL, LocalDate(2023, 12, 31), 1, null),
             )
-        val contactWithLogs = ContactWithTagsAndTier(contact, emptyList(), null, logs)
+        val contactWithLogs = ContactWithDetails(contact, emptyList(), null, logs)
         val result = contactExtensions.isOverdue(contactWithLogs)
         assertFalse(result)
     }
 
     @Test
     fun isOverdue_returnsFalse_whenNoNextContact() {
-        val contactWithNoLogs = ContactWithTagsAndTier(baseContact, emptyList(), null, emptyList())
+        val contactWithNoLogs = ContactWithDetails(baseContact, emptyList(), null, emptyList())
         val result = contactExtensions.isOverdue(contactWithNoLogs)
         assertFalse(result)
     }

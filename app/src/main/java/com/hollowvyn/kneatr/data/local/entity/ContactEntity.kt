@@ -3,7 +3,6 @@ package com.hollowvyn.kneatr.data.local.entity
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import kotlinx.datetime.LocalDate
 
 @Entity(
     tableName = "contacts",
@@ -21,8 +20,6 @@ data class ContactEntity(
     val name: String,
     val phoneNumber: String,
     val email: String? = null,
-    val lastContactedDate: LocalDate? = null, // remove soon
-    val nextContactDate: LocalDate? = null, // remove soon
     val tierId: Int? = null,
     val customFrequencyDays: Int? = null,
 )

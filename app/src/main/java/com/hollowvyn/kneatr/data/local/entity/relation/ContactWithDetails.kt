@@ -9,7 +9,7 @@ import com.hollowvyn.kneatr.data.local.entity.ContactTierEntity
 import com.hollowvyn.kneatr.data.local.entity.TagEntity
 import com.hollowvyn.kneatr.data.local.entity.crossRef.ContactTagCrossRef
 
-data class ContactWithTagsAndTier(
+data class ContactWithDetails(
     @Embedded val contact: ContactEntity,
     @Relation(
         parentColumn = "contactId",

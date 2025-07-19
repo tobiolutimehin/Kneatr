@@ -115,34 +115,6 @@ class ContactDaoTest : BaseDaoTest() {
             assertEquals(1, resultByEmail.size)
         }
 
-//
-//    @OptIn(ExperimentalTime::class)
-//    @Test
-//    fun query_overdue_contacts() =
-//        runTest {
-//            val today = Clock.System.todayIn(TimeZone.currentSystemDefault())
-//
-//            val contact1 =
-//                ContactEntity(
-//                    contactId = 1,
-//                    name = "Ada Lovelace",
-//                    phoneNumber = "1234567890",
-//                    nextContactDate = today.minus(2, DateTimeUnit.DAY),
-//                )
-//            val contact2 =
-//                ContactEntity(
-//                    contactId = 2,
-//                    name = "Alan Turing",
-//                    phoneNumber = "0987654321",
-//                    nextContactDate = today.plus(10, DateTimeUnit.DAY),
-//                )
-//            contactDao.insertContacts(listOf(contact1, contact2))
-//
-//            val result = contactDao.getOverdueContacts(today).first()
-//            assertEquals(1, result.size)
-//            assertEquals("Ada Lovelace", result.first().contact.name)
-//        }
-
     @Test
     fun get_contact_by_id_returns_correct_contact() =
         runTest {
