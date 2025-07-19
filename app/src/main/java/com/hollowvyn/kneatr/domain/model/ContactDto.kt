@@ -23,7 +23,7 @@ data class CommunicationLogDto(
     val id: Long,
     val type: CommunicationType,
     val date: LocalDate,
-    val contactId: Int,
+    val contactId: Long,
     val notes: String? = null,
 )
 
