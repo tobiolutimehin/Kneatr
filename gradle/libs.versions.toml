@@ -20,7 +20,7 @@ androidxComposeMaterial3Adaptive = "1.1.0"
 
 # AndroidX Navigation
 androidxNavigation = "2.9.1"
-nav3Core = "1.0.0-alpha05"
+nav3Core = "1.0.0-alpha06"
 androidxHiltNavigationCompose = "1.2.0"
 
 # Testing
