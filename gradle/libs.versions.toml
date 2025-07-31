@@ -26,7 +26,7 @@ androidxHiltNavigationCompose = "1.2.0"
 # Testing
 junit = "4.13.2"
 junitVersion = "1.2.1"
-espressoCore = "3.6.1"
+espressoCore = "3.7.0"
 ui-test-manifest = "1.8.3"
 
 # DI / Tooling
