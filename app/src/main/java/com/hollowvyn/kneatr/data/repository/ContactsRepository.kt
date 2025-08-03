@@ -78,4 +78,6 @@ interface ContactsRepository {
     fun getAllCommunicationLogs(): Flow<List<CommunicationLogDto>>
 
     fun getCommunicationLogsByDate(date: LocalDate): Flow<List<CommunicationLogDto>>
+
+    suspend fun syncContacts()
 }

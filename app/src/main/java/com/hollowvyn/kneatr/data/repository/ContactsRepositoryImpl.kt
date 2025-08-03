@@ -6,6 +6,7 @@ import com.hollowvyn.kneatr.data.local.dao.ContactTagCrossRefDao
 import com.hollowvyn.kneatr.data.local.dao.ContactTagDao
 import com.hollowvyn.kneatr.data.local.dao.ContactTierDao
 import com.hollowvyn.kneatr.data.local.entity.crossRef.ContactTagCrossRef
+import com.hollowvyn.kneatr.data.remote.ContactFetcher
 import com.hollowvyn.kneatr.domain.mappers.toEntity
 import com.hollowvyn.kneatr.domain.mappers.toListEntity
 import com.hollowvyn.kneatr.domain.mappers.toListModel
@@ -16,6 +17,7 @@ import com.hollowvyn.kneatr.domain.model.ContactDto
 import com.hollowvyn.kneatr.domain.model.ContactTagDto
 import com.hollowvyn.kneatr.domain.model.ContactTierDto
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
@@ -33,6 +35,7 @@ class ContactsRepositoryImpl
         private val contactTagDao: ContactTagDao,
         private val contactTierDao: ContactTierDao,
         private val communicationLogDao: CommunicationLogDao,
+        private val contactFetcher: ContactFetcher,
     ) : ContactsRepository {
         // Contact operations
         override suspend fun insertContact(contact: ContactDto) =
@@ -158,4 +161,46 @@ class ContactsRepositoryImpl
             communicationLogDao.getCommunicationLogsByDate(date).map { logs ->
                 logs.map { it.toModel() }
             }
+
+        override suspend fun syncContacts() {
+            coroutineScope {
+                val phoneContacts = contactFetcher.fetchContacts()
+                val dbContacts = contactDao.getAllContactsAtOnce()
+
+                val phoneContactIds = phoneContacts.map { it.id }.toSet()
+                val dbContactIds = dbContacts.map { it.contact.contactId }.toSet()
+
+                // Contacts to add or update
+                val toUpsert =
+                    phoneContacts.mapNotNull { phoneContact ->
+                        val matchingDbContact =
+                            dbContacts.find { it.contact.contactId == phoneContact.id }
+                        if (matchingDbContact == null) {
+                            phoneContact.toEntity()
+                        } else {
+                            // Existing contact, check if update needed
+                            val dbEntity = matchingDbContact.contact
+                            if (
+                                dbEntity.name != phoneContact.name ||
+                                dbEntity.phoneNumber != phoneContact.phoneNumber ||
+                                dbEntity.email != phoneContact.email
+                            ) {
+                                phoneContact.toEntity() // updated entity
+                            } else {
+                                null // no change needed
+                            }
+                        }
+                    }
+
+                // Contacts to delete (in DB but not on phone)
+                val toDeleteIds = dbContactIds.subtract(phoneContactIds)
+
+                // Perform DB operations
+                contactDao.insertContacts(toUpsert)
+                toDeleteIds.forEach { id -> contactDao.deleteContactById(id) }
+
+                // Return fresh contacts including tiers/tags/etc
+            contactDao.getAllContactsAtOnce().map { it.toModel() }
+        }
+    }
     }
