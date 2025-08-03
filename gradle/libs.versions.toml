@@ -1,6 +1,8 @@
 [versions]
 # Core
 agp = "8.12.0"
+hiltCompiler = "1.2.0"
+hiltCompilerVersion = "2.57"
 kotlin = "2.2.0"
 kotlinSerialization = "2.2.0"
 kotlinxCoroutinesTest = "1.10.2"
@@ -30,7 +32,7 @@ espressoCore = "3.6.1"
 ui-test-manifest = "1.8.3"
 
 # DI / Tooling
-hilt = "2.56.2"
+hilt = "2.57"
 ksp = "2.2.0-2.0.2"
 
 # Room
@@ -103,6 +105,8 @@ kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime",
 # Workmanager
 androidx-work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workRuntimeKtx" }
 androidx-hilt-work = { module = "androidx.hilt:hilt-work", version.ref = "hiltWork" }
+androidx-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hiltCompiler" }
+hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hiltCompilerVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

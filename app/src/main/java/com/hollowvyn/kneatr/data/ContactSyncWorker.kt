@@ -15,7 +15,7 @@ class ContactSyncWorker
     constructor(
         @Assisted appContext: Context,
         @Assisted workerParams: WorkerParameters,
-        @Assisted private val contactsRepository: ContactsRepository,
+        private val contactsRepository: ContactsRepository,
     ) : CoroutineWorker(appContext, workerParams) {
         override suspend fun doWork(): Result =
             try {
