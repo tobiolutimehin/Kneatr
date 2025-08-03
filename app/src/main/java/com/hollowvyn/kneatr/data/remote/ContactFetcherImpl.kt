@@ -2,24 +2,27 @@ package com.hollowvyn.kneatr.data.remote
 
 import android.content.ContentResolver
 import android.provider.ContactsContract
+import com.hollowvyn.kneatr.di.IoDispatcher
 import com.hollowvyn.kneatr.domain.model.ContactDto
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class ContactFetcherImpl(
-    private val contentResolver: ContentResolver,
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
-) : ContactFetcher {
-    private val cacheMutex = Mutex()
-    private var cache: Set<ContactDto>? = null
+class ContactFetcherImpl
+    @Inject
+    constructor(
+        private val contentResolver: ContentResolver,
+        @param:IoDispatcher private val dispatcher: CoroutineDispatcher,
+    ) : ContactFetcher {
+        private val cacheMutex = Mutex()
+        private var cache: Set<ContactDto>? = null
 
-    // TODO: Update ContactDto and fetcher to support multiple phone numbers and emails per contact.
-    override suspend fun fetchContacts(): List<ContactDto> =
-        cacheMutex.withLock {
-            cache?.let { return it.toList() }
+        // TODO: Update ContactDto and fetcher to support multiple phone numbers and emails per contact.
+        override suspend fun fetchContacts(): List<ContactDto> =
+            cacheMutex.withLock {
+                cache?.let { return it.toList() }
 
             return withContext(dispatcher) {
                 val contacts = mutableListOf<ContactDto>()
