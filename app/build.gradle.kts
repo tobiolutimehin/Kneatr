@@ -109,4 +109,10 @@ dependencies {
     implementation(libs.kotlinx.datetime)
     testImplementation(libs.kotlinx.datetime)
     testImplementation(kotlin("test"))
+
+    // WorkManager
+    implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.androidx.hilt.work)
+    ksp(libs.androidx.hilt.compiler)
+    ksp(libs.hilt.compiler)
 }

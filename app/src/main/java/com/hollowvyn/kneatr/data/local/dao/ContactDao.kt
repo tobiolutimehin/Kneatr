@@ -26,6 +26,10 @@ interface ContactDao {
     fun getAllContacts(): Flow<List<ContactWithDetails>>
 
     @Transaction
+    @Query("SELECT * FROM contacts ORDER BY name ASC")
+    suspend fun getAllContactsAtOnce(): List<ContactWithDetails>
+
+    @Transaction
     @Query("SELECT * FROM contacts WHERE tierId = :tierId ORDER BY name ASC")
     fun getContactsByTierId(tierId: Long): Flow<List<ContactWithDetails>>
 
@@ -54,4 +58,7 @@ interface ContactDao {
 """,
     )
     fun getContactsByTagId(tagId: Long): Flow<List<ContactWithDetails>>
+
+    @Query("DELETE FROM contacts WHERE contactId = :id")
+    suspend fun deleteContactById(id: Long)
 }
