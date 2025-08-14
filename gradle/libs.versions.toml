@@ -7,7 +7,7 @@ kotlinxCoroutinesTest = "1.10.2"
 kotlinxSerializationCore = "1.9.0"
 
 # AndroidX Core
-coreKtx = "1.16.0"
+coreKtx = "1.17.0"
 
 # AndroidX Lifecycle
 lifecycleRuntimeKtx = "2.9.2"
