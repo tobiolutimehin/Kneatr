@@ -2,7 +2,7 @@
 # Core
 agp = "8.12.0"
 kotlin = "2.2.0"
-kotlinSerialization = "2.2.0"
+kotlinSerialization = "2.2.10"
 kotlinxCoroutinesTest = "1.10.2"
 kotlinxSerializationCore = "1.9.0"
 
