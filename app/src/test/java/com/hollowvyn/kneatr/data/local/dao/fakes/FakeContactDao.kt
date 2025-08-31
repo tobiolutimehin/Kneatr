@@ -57,6 +57,8 @@ class FakeContactDao : ContactDao {
 
     override fun getAllContacts(): Flow<List<ContactWithDetails>> = contactsFlow
 
+    override suspend fun getAllContactsAtOnce(): List<ContactWithDetails> = emptyList()
+
     override fun getContactsByTierId(tierId: Long): Flow<List<ContactWithDetails>> =
         contactsFlow.map { list -> list.filter { it.contact.tierId == tierId } }
 
@@ -80,6 +82,10 @@ class FakeContactDao : ContactDao {
                 )
             }
         }
+
+    override suspend fun deleteContactById(id: Long) {
+        return
+    }
 
     // Utility functions for test setup:
     fun setTagsForContact(
