@@ -4,7 +4,6 @@ import android.Manifest
 import android.app.Application
 import android.content.Context
 import android.content.pm.PackageManager
-import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
@@ -15,7 +14,10 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
+import com.hollowvyn.kneatr.data.CONTACT_SYNC_TAG
 import com.hollowvyn.kneatr.data.ContactSyncWorker
+import com.hollowvyn.kneatr.data.MANUAL_CONTACT_REFRESH_WORKER_NAME
+import com.hollowvyn.kneatr.data.PERIODIC_CONTACT_SYNC_WORKER_NAME
 import dagger.hilt.android.HiltAndroidApp
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -47,10 +49,11 @@ class KneatrApplication :
                         .Builder()
                         .setRequiresBatteryNotLow(true)
                         .build(),
-                ).build()
+                ).addTag(CONTACT_SYNC_TAG)
+                .build()
 
         WorkManager.getInstance(context.applicationContext).enqueueUniquePeriodicWork(
-            "ContactSyncWork",
+            PERIODIC_CONTACT_SYNC_WORKER_NAME,
             ExistingPeriodicWorkPolicy.KEEP,
             workRequest,
         )
@@ -62,7 +65,6 @@ class KneatrApplication :
                 Manifest.permission.READ_CONTACTS,
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            Log.w("UserRefresh", "READ_CONTACTS permission not granted. Cannot sync.")
             return
         }
 
@@ -75,14 +77,13 @@ class KneatrApplication :
         val immediateRefreshWorkRequest =
             OneTimeWorkRequestBuilder<ContactSyncWorker>()
                 .setConstraints(constraints)
-                .addTag("ImmediateContactSync")
+                .addTag(CONTACT_SYNC_TAG)
                 .build()
 
         WorkManager.getInstance(context.applicationContext).enqueueUniqueWork(
-            "ManualContactRefresh",
+            MANUAL_CONTACT_REFRESH_WORKER_NAME,
             ExistingWorkPolicy.KEEP,
             immediateRefreshWorkRequest,
         )
-        Log.d("UserRefresh", "Immediate contact sync requested by user.")
     }
 }

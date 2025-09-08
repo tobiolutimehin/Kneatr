@@ -26,3 +26,12 @@ class ContactSyncWorker
                 Result.retry()
             }
     }
+
+// This tag will be applied to BOTH periodic and one-time sync workers.
+const val CONTACT_SYNC_TAG = "ContactSyncTag"
+
+// This unique name is ONLY for the periodic worker, to prevent scheduling it multiple times.
+const val PERIODIC_CONTACT_SYNC_WORKER_NAME = "PeriodicContactSyncWork"
+
+// This unique name is ONLY for the one-time manual refresh.
+const val MANUAL_CONTACT_REFRESH_WORKER_NAME = "ManualContactRefresh"
