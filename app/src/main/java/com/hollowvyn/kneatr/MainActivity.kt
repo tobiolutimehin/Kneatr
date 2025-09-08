@@ -1,7 +1,6 @@
 package com.hollowvyn.kneatr
 
 import android.Manifest
-import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -17,13 +16,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
-import androidx.core.content.edit
+import com.hollowvyn.kneatr.data.cache.PrefsManager
 import com.hollowvyn.kneatr.ui.contact.ContactsListScreen
 import com.hollowvyn.kneatr.ui.theme.KneatrTheme
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
-import javax.inject.Singleton
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -75,21 +72,4 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-}
-
-@Singleton
-class PrefsManager
-    @Inject
-    constructor(
-        @ApplicationContext context: Context,
-    ) {
-        private val prefs = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
-
-        companion object {
-            private const val KEY_IS_FIRST_RUN = "is_first_run"
-        }
-
-        var isFirstLaunch: Boolean
-            get() = prefs.getBoolean(KEY_IS_FIRST_RUN, true)
-            set(value) = prefs.edit { putBoolean(KEY_IS_FIRST_RUN, value) }
 }
