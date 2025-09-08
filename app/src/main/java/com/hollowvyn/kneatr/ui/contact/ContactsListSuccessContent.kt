@@ -1,11 +1,14 @@
 package com.hollowvyn.kneatr.ui.contact
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -34,7 +37,9 @@ fun ContactsList(
 ) {
     LazyColumn(
         modifier = modifier,
+        verticalArrangement = Arrangement.Top,
         contentPadding = PaddingValues(vertical = 12.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         itemsIndexed(contacts) { idx, contact ->
             ContactListItem(
@@ -43,7 +48,7 @@ fun ContactsList(
                 tier = contact.tier,
                 onClick = { onContactClick(contact) },
             )
-            if (idx < contacts.lastIndex) {
+            if (idx < contacts.lastIndex && contacts.size > 1) {
                 HorizontalDivider()
             }
         }
@@ -95,5 +100,5 @@ private fun ContactsListPreview() {
                 email = "jane.smith@example.com",
             ),
         )
-    ContactsList(contacts = contacts)
+    ContactsList(contacts = contacts, modifier = Modifier.fillMaxSize())
 }
