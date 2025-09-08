@@ -1,0 +1,89 @@
+package com.hollowvyn.kneatr.ui.contact
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.hollowvyn.kneatr.domain.model.ContactTierDto
+
+@Composable
+fun ContactListItem(
+    name: String,
+    phoneNumber: String,
+    tier: ContactTierDto?,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {},
+) {
+    ListItem(
+        headlineContent = {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.Start),
+            ) {
+                Text(text = name, style = MaterialTheme.typography.headlineSmall)
+                tier?.let { ContactTierPill(it) }
+            }
+        },
+        supportingContent = {
+            Text(text = phoneNumber, style = MaterialTheme.typography.bodyMedium)
+        },
+        trailingContent = {
+            Icon(
+                Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                contentDescription = null,
+            )
+        },
+        modifier = modifier.clickable { onClick() },
+    )
+}
+
+@Composable
+private fun ContactTierPill(
+    tier: ContactTierDto?,
+    modifier: Modifier = Modifier,
+) {
+    tier?.let {
+        Text(
+            text = it.name,
+            modifier =
+                modifier
+                    .background(Color.Blue, RoundedCornerShape(50))
+                    .padding(horizontal = 6.dp, vertical = 2.dp),
+            style = MaterialTheme.typography.labelSmall,
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun ContactListItemPreview() {
+    val name = "John Doe"
+    val phoneNumber = "123-456-7890"
+    val tier = ContactTierDto(id = 1, name = "Tier 1", daysBetweenContact = 7)
+    ContactListItem(
+        name = name,
+        phoneNumber = phoneNumber,
+        tier = tier,
+    )
+}
+
+@Preview
+@Composable
+private fun ContactTierPillPreview() {
+    val tier = ContactTierDto(id = 1, name = "Tier 1", daysBetweenContact = 7)
+    ContactTierPill(tier)
+}
