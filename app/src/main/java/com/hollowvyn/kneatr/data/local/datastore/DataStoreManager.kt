@@ -1,4 +1,4 @@
-package com.hollowvyn.kneatr.data.local.cache
+package com.hollowvyn.kneatr.data.local.datastore
 
 import android.content.Context
 import androidx.datastore.core.DataStore
