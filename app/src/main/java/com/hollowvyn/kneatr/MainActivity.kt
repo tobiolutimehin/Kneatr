@@ -16,16 +16,17 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
-import com.hollowvyn.kneatr.data.local.cache.PrefsManager
+import com.hollowvyn.kneatr.data.local.cache.DataStoreManager
 import com.hollowvyn.kneatr.ui.contact.ContactsListScreen
 import com.hollowvyn.kneatr.ui.theme.KneatrTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @Inject
-    lateinit var prefsManager: PrefsManager
+    lateinit var dataStoreManager: DataStoreManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,9 +64,10 @@ class MainActivity : ComponentActivity() {
                     Manifest.permission.READ_CONTACTS,
                 )
             ) {
-                if (prefsManager.isFirstLaunch) {
+                val isFirstRun = dataStoreManager.isFirstRunFlow.first()
+                if (isFirstRun) {
                     application.triggerImmediateContactSync(context)
-                    prefsManager.isFirstLaunch = false // Mark it as done.
+                    dataStoreManager.setIsFirstRun(true)
                 }
             } else {
                 launcher.launch(Manifest.permission.READ_CONTACTS)
