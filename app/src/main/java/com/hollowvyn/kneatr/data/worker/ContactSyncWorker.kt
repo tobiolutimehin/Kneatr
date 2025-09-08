@@ -1,11 +1,11 @@
-package com.hollowvyn.kneatr.data
+package com.hollowvyn.kneatr.data.worker
 
 import android.content.Context
 import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.hollowvyn.kneatr.data.repository.ContactsRepository
+import com.hollowvyn.kneatr.domain.repository.ContactsRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 

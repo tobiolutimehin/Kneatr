@@ -16,7 +16,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
-import com.hollowvyn.kneatr.data.cache.PrefsManager
+import com.hollowvyn.kneatr.data.local.cache.PrefsManager
 import com.hollowvyn.kneatr.ui.contact.ContactsListScreen
 import com.hollowvyn.kneatr.ui.theme.KneatrTheme
 import dagger.hilt.android.AndroidEntryPoint

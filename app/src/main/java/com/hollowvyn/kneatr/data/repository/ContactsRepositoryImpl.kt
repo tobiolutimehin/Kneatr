@@ -16,6 +16,7 @@ import com.hollowvyn.kneatr.domain.model.CommunicationLogDto
 import com.hollowvyn.kneatr.domain.model.ContactDto
 import com.hollowvyn.kneatr.domain.model.ContactTagDto
 import com.hollowvyn.kneatr.domain.model.ContactTierDto
+import com.hollowvyn.kneatr.domain.repository.ContactsRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow

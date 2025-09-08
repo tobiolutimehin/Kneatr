@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
-import com.hollowvyn.kneatr.data.CONTACT_SYNC_TAG
-import com.hollowvyn.kneatr.data.repository.ContactsRepository
+import com.hollowvyn.kneatr.data.worker.CONTACT_SYNC_TAG
+import com.hollowvyn.kneatr.domain.repository.ContactsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -44,6 +44,6 @@ class ContactsListViewModel
             }.stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5000),
-            initialValue = ContactsListUiState.Loading,
-        )
+                initialValue = ContactsListUiState.Loading,
+            )
     }

@@ -14,10 +14,10 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import com.hollowvyn.kneatr.data.CONTACT_SYNC_TAG
-import com.hollowvyn.kneatr.data.ContactSyncWorker
-import com.hollowvyn.kneatr.data.MANUAL_CONTACT_REFRESH_WORKER_NAME
-import com.hollowvyn.kneatr.data.PERIODIC_CONTACT_SYNC_WORKER_NAME
+import com.hollowvyn.kneatr.data.worker.CONTACT_SYNC_TAG
+import com.hollowvyn.kneatr.data.worker.ContactSyncWorker
+import com.hollowvyn.kneatr.data.worker.MANUAL_CONTACT_REFRESH_WORKER_NAME
+import com.hollowvyn.kneatr.data.worker.PERIODIC_CONTACT_SYNC_WORKER_NAME
 import dagger.hilt.android.HiltAndroidApp
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject

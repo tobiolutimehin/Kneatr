@@ -1,4 +1,4 @@
-package com.hollowvyn.kneatr
+package com.hollowvyn.kneatr.ui.components.screenstates
 
 import android.app.Activity
 import android.content.Context

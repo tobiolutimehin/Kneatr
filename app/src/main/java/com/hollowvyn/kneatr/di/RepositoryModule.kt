@@ -2,8 +2,8 @@ package com.hollowvyn.kneatr.di
 
 import com.hollowvyn.kneatr.data.remote.ContactFetcher
 import com.hollowvyn.kneatr.data.remote.ContactFetcherImpl
-import com.hollowvyn.kneatr.data.repository.ContactsRepository
 import com.hollowvyn.kneatr.data.repository.ContactsRepositoryImpl
+import com.hollowvyn.kneatr.domain.repository.ContactsRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

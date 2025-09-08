@@ -1,4 +1,4 @@
-package com.hollowvyn.kneatr.data.repository
+package com.hollowvyn.kneatr.domain.repository
 
 import com.hollowvyn.kneatr.domain.model.CommunicationLogDto
 import com.hollowvyn.kneatr.domain.model.ContactDto

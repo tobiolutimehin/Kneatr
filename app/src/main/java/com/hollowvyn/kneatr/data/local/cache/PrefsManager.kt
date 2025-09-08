@@ -1,4 +1,4 @@
-package com.hollowvyn.kneatr.data.cache
+package com.hollowvyn.kneatr.data.local.cache
 
 import android.content.Context
 import androidx.core.content.edit
