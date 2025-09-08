@@ -47,10 +47,7 @@ class ContactsRepositoryImpl
 
         override suspend fun updateContact(contact: ContactDto) = contact.toEntity().let { contactDao.updateContact(it) }
 
-        override fun getAllContacts(): Flow<List<ContactDto>> =
-            contactDao.getAllContacts().transform { contacts ->
-                contacts.toListModel()
-            }
+        override fun getAllContacts(): Flow<List<ContactDto>> = contactDao.getAllContacts().map { contacts -> contacts.toListModel() }
 
         override fun getContactsByTierId(tierId: Long): Flow<List<ContactDto>> =
             contactDao
@@ -61,7 +58,7 @@ class ContactsRepositoryImpl
                 }
 
         override fun searchContactsByNamePhoneOrEmail(query: String): Flow<List<ContactDto>> =
-            contactDao.searchContactsByNamePhoneOrEmail(query).transform { it.toListModel() }
+            contactDao.searchContactsByNamePhoneOrEmail(query).map { it.toListModel() }
 
         override fun getContactById(id: Long): Flow<ContactDto?> = contactDao.getContactById(id).transform { it?.toModel() }
 
@@ -200,7 +197,7 @@ class ContactsRepositoryImpl
                 toDeleteIds.forEach { id -> contactDao.deleteContactById(id) }
 
                 // Return fresh contacts including tiers/tags/etc
-            contactDao.getAllContactsAtOnce().map { it.toModel() }
+                contactDao.getAllContactsAtOnce().map { it.toModel() }
+            }
         }
-    }
     }

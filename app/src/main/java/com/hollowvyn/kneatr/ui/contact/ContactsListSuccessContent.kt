@@ -1,0 +1,99 @@
+package com.hollowvyn.kneatr.ui.contact
+
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.hollowvyn.kneatr.domain.model.ContactDto
+import com.hollowvyn.kneatr.domain.model.ContactTierDto
+
+@Composable
+fun ContactsListSuccessContent(
+    contacts: List<ContactDto>,
+    modifier: Modifier = Modifier,
+    onContactClick: (ContactDto) -> Unit = {},
+) {
+    Column(modifier = modifier) {
+        ContactsList(
+            contacts = contacts,
+            onContactClick = onContactClick,
+        )
+    }
+}
+
+@Composable
+fun ContactsList(
+    contacts: List<ContactDto>,
+    modifier: Modifier = Modifier,
+    onContactClick: (ContactDto) -> Unit = {},
+) {
+    LazyColumn(
+        modifier = modifier,
+        contentPadding = PaddingValues(vertical = 12.dp),
+    ) {
+        itemsIndexed(contacts) { idx, contact ->
+            ContactListItem(
+                name = contact.name,
+                phoneNumber = contact.phoneNumber,
+                tier = contact.tier,
+                onClick = { onContactClick(contact) },
+            )
+            if (idx < contacts.lastIndex) {
+                HorizontalDivider()
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun ContactsListSuccessContentPreview() {
+    val contacts =
+        listOf(
+            ContactDto(
+                id = 1,
+                name = "John Doe",
+                phoneNumber = "123-456-7890",
+                tier = ContactTierDto(id = 1, name = "Tier 1", daysBetweenContact = 7),
+                email = "john.doe@example.com",
+            ),
+            ContactDto(
+                id = 2,
+                name = "Jane Smith",
+                phoneNumber = "987-654-3210",
+                tier = ContactTierDto(id = 2, name = "Tier 2", daysBetweenContact = 14),
+                email = "jane.smith@example.com",
+            ),
+        )
+    ContactsListSuccessContent(
+        contacts = contacts,
+    )
+}
+
+@Preview
+@Composable
+private fun ContactsListPreview() {
+    val contacts =
+        listOf(
+            ContactDto(
+                id = 1,
+                name = "John Doe",
+                phoneNumber = "123-456-7890",
+                tier = ContactTierDto(id = 1, name = "Tier 1", daysBetweenContact = 7),
+                email = "john.doe@example.com",
+            ),
+            ContactDto(
+                id = 2,
+                name = "Jane Smith",
+                phoneNumber = "987-654-3210",
+                tier = ContactTierDto(id = 2, name = "Tier 2", daysBetweenContact = 14),
+                email = "jane.smith@example.com",
+            ),
+        )
+    ContactsList(contacts = contacts)
+}
