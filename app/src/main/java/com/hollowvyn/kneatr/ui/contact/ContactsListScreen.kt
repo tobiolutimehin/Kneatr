@@ -8,6 +8,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hollowvyn.kneatr.ui.components.screenstates.EmptyScreen
 import com.hollowvyn.kneatr.ui.components.screenstates.ErrorScreen
 import com.hollowvyn.kneatr.ui.components.screenstates.LoadingScreen
+import com.hollowvyn.kneatr.ui.contact.viewmodel.ContactsListUiState
+import com.hollowvyn.kneatr.ui.contact.viewmodel.ContactsListViewModel
 
 @Composable
 fun ContactsListScreen(

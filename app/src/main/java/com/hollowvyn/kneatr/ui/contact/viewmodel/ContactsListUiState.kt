@@ -1,4 +1,4 @@
-package com.hollowvyn.kneatr.ui.contact
+package com.hollowvyn.kneatr.ui.contact.viewmodel
 
 import com.hollowvyn.kneatr.domain.model.ContactDto
 import javax.annotation.concurrent.Immutable
