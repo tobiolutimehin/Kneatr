@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Kneatr</string>
+
+    <string name="contact_list_search_hint">Search for contacts</string>
+    <string name="contact_list_search_icon_description">Search contacts</string>
+    <string name="contact_list_clear_search_icon_description">Clear search</string>
+    <string name="contact_list_close_search_icon_description">Close search</string>
 </resources>

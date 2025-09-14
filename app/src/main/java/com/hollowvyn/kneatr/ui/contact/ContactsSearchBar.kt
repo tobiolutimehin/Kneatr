@@ -17,7 +17,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.hollowvyn.kneatr.R
 import com.hollowvyn.kneatr.domain.model.ContactDto
 import com.hollowvyn.kneatr.domain.model.ContactTierDto
 
@@ -41,16 +43,26 @@ fun ContactsSearchBar(
                 onSearch = { expanded = false },
                 expanded = expanded,
                 onExpandedChange = { expanded = it },
-                placeholder = { Text("Search for contacts") },
+                placeholder = { Text(text = stringResource(id = R.string.contact_list_search_hint)) },
                 leadingIcon = {
                     Icon(Icons.Default.Search, contentDescription = null)
                 },
                 trailingIcon = {
                     Icon(
+                        // make this more accessible by updating label and state
                         Icons.Default.Close,
-                        contentDescription = null,
+                        contentDescription =
+                            stringResource(
+                                if (query.isEmpty() && expanded) {
+                                    R.string.contact_list_close_search_icon_description
+                                } else {
+                                    R.string.contact_list_clear_search_icon_description
+                                },
+                            ),
                         modifier =
-                            Modifier.clickable {
+                            Modifier.clickable(
+                                enabled = expanded || query.isNotEmpty(),
+                            ) {
                                 if (query.isEmpty()) {
                                     expanded = false
                                 } else {
