@@ -14,16 +14,19 @@ fun ContactsListScreen(
     modifier: Modifier = Modifier,
     viewModel: ContactsListViewModel = hiltViewModel<ContactsListViewModel>(),
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    when (uiState) {
+    val uiStateDelegate by viewModel.uiState.collectAsStateWithLifecycle()
+
+    when (uiStateDelegate) {
         is ContactsListUiState.Success -> {
-            val list = (uiState as ContactsListUiState.Success).contacts
+            val uiState = uiStateDelegate as ContactsListUiState.Success
+
             ContactsListSuccessContent(
-                contacts = list,
+                contacts = uiState.contacts,
                 modifier = modifier,
-                onContactClick = {
-                    // navigate to contact details
-                },
+                onContactClick = {},
+                searchedContacts = uiState.searchedContacts,
+                query = uiState.query,
+                onQueryChange = viewModel::onQueryChange,
             )
         }
 
