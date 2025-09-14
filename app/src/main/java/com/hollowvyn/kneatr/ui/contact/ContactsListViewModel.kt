@@ -39,7 +39,7 @@ class ContactsListViewModel
                 contactsFlow,
                 workInfoFlow,
                 searchedContacts,
-                query
+                query,
             ) { contacts, workInfoList, searchedContacts, queryString ->
                 val isWorkerRunning =
                     workInfoList.any {
@@ -63,7 +63,7 @@ class ContactsListViewModel
                 initialValue = ContactsListUiState.Loading,
             )
 
-    fun onQueryChange(newQuery: String) {
-        _query.value = newQuery
-    }
+        fun onQueryChange(newQuery: String) {
+            _query.value = newQuery
+        }
     }
