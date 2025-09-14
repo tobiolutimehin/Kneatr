@@ -24,7 +24,11 @@ fun ContactsListSuccessContent(
     onContactClick: (ContactDto) -> Unit = {},
     onQueryChange: (String) -> Unit = {},
 ) {
-    Column(modifier = modifier) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.Top),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
         ContactsSearchBar(
             query = query,
             onQueryChange = onQueryChange,

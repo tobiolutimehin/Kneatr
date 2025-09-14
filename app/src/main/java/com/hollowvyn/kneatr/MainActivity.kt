@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import com.hollowvyn.kneatr.data.local.datastore.DataStoreManager
 import com.hollowvyn.kneatr.ui.contact.ContactsListScreen
@@ -36,7 +37,12 @@ class MainActivity : ComponentActivity() {
             KneatrTheme {
                 RequestContactsPermissionEffect()
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    ContactsListScreen(modifier = Modifier.padding(innerPadding))
+                    ContactsListScreen(
+                        modifier =
+                            Modifier
+                                .padding(paddingValues = innerPadding)
+                                .padding(horizontal = 12.dp),
+                    )
                 }
 //                GoToSettingsPermissionScreen()
             }
