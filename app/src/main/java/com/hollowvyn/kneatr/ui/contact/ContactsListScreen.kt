@@ -8,22 +8,27 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hollowvyn.kneatr.ui.components.screenstates.EmptyScreen
 import com.hollowvyn.kneatr.ui.components.screenstates.ErrorScreen
 import com.hollowvyn.kneatr.ui.components.screenstates.LoadingScreen
+import com.hollowvyn.kneatr.ui.contact.viewmodel.ContactsListUiState
+import com.hollowvyn.kneatr.ui.contact.viewmodel.ContactsListViewModel
 
 @Composable
 fun ContactsListScreen(
     modifier: Modifier = Modifier,
     viewModel: ContactsListViewModel = hiltViewModel<ContactsListViewModel>(),
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    when (uiState) {
+    val uiStateDelegate by viewModel.uiState.collectAsStateWithLifecycle()
+
+    when (uiStateDelegate) {
         is ContactsListUiState.Success -> {
-            val list = (uiState as ContactsListUiState.Success).contacts
+            val uiState = uiStateDelegate as ContactsListUiState.Success
+
             ContactsListSuccessContent(
-                contacts = list,
+                contacts = uiState.contacts,
                 modifier = modifier,
-                onContactClick = {
-                    // navigate to contact details
-                },
+                onContactClick = {},
+                searchedContacts = uiState.searchedContacts,
+                query = uiState.query,
+                onQueryChange = viewModel::onQueryChange,
             )
         }
 

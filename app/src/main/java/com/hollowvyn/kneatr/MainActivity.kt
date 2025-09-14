@@ -36,7 +36,7 @@ class MainActivity : ComponentActivity() {
             KneatrTheme {
                 RequestContactsPermissionEffect()
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    ContactsListScreen(modifier = Modifier.padding(innerPadding))
+                    ContactsListScreen(modifier = Modifier.padding(paddingValues = innerPadding))
                 }
 //                GoToSettingsPermissionScreen()
             }

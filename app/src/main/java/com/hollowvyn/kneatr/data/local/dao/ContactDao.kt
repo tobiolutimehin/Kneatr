@@ -37,7 +37,14 @@ interface ContactDao {
     @Query(
         """
         SELECT * FROM contacts
-        WHERE name LIKE '%' || :query || '%' OR phoneNumber LIKE '%' || :query || '%' OR email LIKE '%' || :query || '%'
+        WHERE 
+            CASE 
+                WHEN :query = '' THEN 0
+                ELSE 
+                    name LIKE '%' || :query || '%' OR 
+                    phoneNumber LIKE '%' || :query || '%' OR 
+                    email LIKE '%' || :query || '%' 
+            END
         ORDER BY name ASC
     """,
     )
