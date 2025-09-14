@@ -31,6 +31,9 @@ fun ContactsListSuccessContent(
             searchedContacts = searchedContacts,
             onContactClick = onContactClick,
         )
+
+        // todo Mini filter for overdue contacts, find by pills, etc. lazy row for options
+
         ContactsList(
             contacts = contacts,
             onContactClick = onContactClick,
