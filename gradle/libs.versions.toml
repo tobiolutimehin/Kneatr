@@ -23,6 +23,7 @@ androidxComposeMaterial3Adaptive = "1.1.0"
 androidxNavigation = "2.9.3"
 nav3Core = "1.0.0-alpha08"
 androidxHilt = "1.2.0"
+adaptiveNavigation3 = "1.0.0-alpha03"
 
 # Testing
 junit = "4.13.2"
@@ -76,6 +77,7 @@ androidx-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", vers
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidxNavigation" }
 androidx-navigation-testing = { group = "androidx.navigation", name = "navigation-testing", version.ref = "androidxNavigation" }
 androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "androidxHilt" }
+androidx-compose-adaptive-navigation3 = { group = "androidx.compose.material3.adaptive", name = "adaptive-navigation3", version.ref = "adaptiveNavigation3" }
 
 # DI / Hilt
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
