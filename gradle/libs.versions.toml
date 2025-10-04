@@ -21,7 +21,7 @@ composeBom = "2025.08.01"
 androidxComposeMaterial3Adaptive = "1.1.0"
 
 # AndroidX Navigation
-androidxNavigation = "2.9.3"
+androidxNavigation = "2.9.5"
 nav3Core = "1.0.0-alpha08"
 androidxHilt = "1.2.0"
 adaptiveNavigation3 = "1.0.0-alpha03"
