@@ -9,13 +9,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
 import androidx.compose.material3.adaptive.navigation3.rememberListDetailSceneStrategy
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -35,81 +35,104 @@ fun KneatrApp(modifier: Modifier = Modifier) {
     val listDetailStrategy: SceneStrategy<NavKey> = rememberListDetailSceneStrategy()
     val topLevelBackStack = remember { TopLevelBackStack<NavKey>(ContactsList) }
 
-    Scaffold(
-        modifier = modifier,
-        bottomBar = { KneatrNavigationBar(topLevelBackStack = topLevelBackStack) },
-    ) { innerPadding ->
-        NavDisplay(
-            modifier =
-                Modifier
-                    .padding(paddingValues = innerPadding)
-                    .consumeWindowInsets(
-                        WindowInsets.statusBars,
-                    ),
-            backStack = topLevelBackStack.backStack,
-            onBack = { topLevelBackStack.removeLast() },
-            sceneStrategy = listDetailStrategy,
-            entryProvider =
-                entryProvider {
-                    entry<ContactsList>(
-                        metadata =
-                            ListDetailSceneStrategy.listPane(
-                                detailPlaceholder = {
-                                    Column(
-                                        modifier =
-                                            Modifier
-                                                .fillMaxSize()
-                                                .background(Color.Yellow.copy(alpha = 0.4f)),
-                                        verticalArrangement = Arrangement.Center,
-                                    ) {
-                                        Text("Choose an Item from the List")
-                                    }
+    NavigationSuiteScaffold(
+        navigationSuiteItems = { kneatrNavigationItems(topLevelBackStack) },
+    ) {
+        Scaffold(
+            modifier = modifier,
+//        bottomBar = { KneatrNavigationBar(topLevelBackStack = topLevelBackStack) },
+        ) { innerPadding ->
+            NavDisplay(
+                modifier =
+                    Modifier
+                        .padding(paddingValues = innerPadding)
+                        .consumeWindowInsets(
+                            WindowInsets.statusBars,
+                        ),
+                backStack = topLevelBackStack.backStack,
+                onBack = { topLevelBackStack.removeLast() },
+                sceneStrategy = listDetailStrategy,
+                entryProvider =
+                    entryProvider {
+                        entry<ContactsList>(
+                            metadata =
+                                ListDetailSceneStrategy.listPane(
+                                    detailPlaceholder = {
+                                        Column(
+                                            modifier =
+                                                Modifier
+                                                    .fillMaxSize()
+                                                    .background(Color.Yellow.copy(alpha = 0.4f)),
+                                            verticalArrangement = Arrangement.Center,
+                                        ) {
+                                            Text("Choose an Item from the List")
+                                        }
+                                    },
+                                ),
+                        ) {
+                            ContactsListScreen(
+                                onContactClick = { contact ->
+                                    topLevelBackStack.add(ContactDetail(id = contact.id))
                                 },
-                            ),
-                    ) {
-                        ContactsListScreen(
-                            onContactClick = { contact ->
-                                topLevelBackStack.add(ContactDetail(id = contact.id))
-                            },
-                        )
-                    }
+                            )
+                        }
 
-                    entry<ContactDetail>(
-                        metadata = ListDetailSceneStrategy.detailPane(),
-                    ) { contactDetail ->
-                        ContactDetailScreen(
-                            contactId = contactDetail.id,
-                        )
-                    }
-                },
-        )
+                        entry<ContactDetail>(
+                            metadata = ListDetailSceneStrategy.detailPane(),
+                        ) { contactDetail ->
+                            ContactDetailScreen(
+                                contactId = contactDetail.id,
+                            )
+                        }
+                    },
+            )
+        }
     }
 }
 
-@Composable
-fun KneatrNavigationBar(
-    topLevelBackStack: TopLevelBackStack<NavKey>,
-    modifier: Modifier = Modifier,
-) {
-    NavigationBar(modifier = modifier) {
-        TopLevelRoute.entries.forEach { topLevelRoute ->
-            val isSelected = topLevelRoute == topLevelBackStack.topLevelKey
+// @Composable
+// fun KneatrNavigationBar(
+//    topLevelBackStack: TopLevelBackStack<NavKey>,
+//    modifier: Modifier = Modifier,
+// ) {
+//    NavigationBar(modifier = modifier) {
+//        TopLevelRoute.entries.forEach { topLevelRoute ->
+//            val isSelected = topLevelRoute == topLevelBackStack.topLevelKey
+//
+//            NavigationBarItem(
+//                selected = isSelected,
+//                onClick = {
+//                    topLevelBackStack.addTopLevel(topLevelRoute)
+//                },
+//                icon = {
+//                    Icon(
+//                        painter = painterResource(topLevelRoute.icon),
+//                        contentDescription = stringResource(topLevelRoute.contentDescription),
+//                    )
+//                },
+//                label = {
+//                    Text(stringResource(topLevelRoute.label))
+//                },
+//            )
+//        }
+//    }
+// }
 
-            NavigationBarItem(
-                selected = isSelected,
-                onClick = {
-                    topLevelBackStack.addTopLevel(topLevelRoute)
-                },
-                icon = {
-                    Icon(
-                        painter = painterResource(topLevelRoute.icon),
-                        contentDescription = stringResource(topLevelRoute.contentDescription),
-                    )
-                },
-                label = {
-                    Text(stringResource(topLevelRoute.label))
-                },
-            )
-        }
+private fun NavigationSuiteScope.kneatrNavigationItems(topLevelBackStack: TopLevelBackStack<NavKey>) {
+    TopLevelRoute.entries.forEach { topLevelRoute ->
+        val selected = topLevelRoute == topLevelBackStack.topLevelKey
+
+        item(
+            selected = selected,
+            onClick = { topLevelBackStack.addTopLevel(topLevelRoute) },
+            icon = {
+                Icon(
+                    painter = painterResource(topLevelRoute.icon),
+                    contentDescription = stringResource(topLevelRoute.contentDescription),
+                )
+            },
+            label = { Text(stringResource(topLevelRoute.label)) },
+            alwaysShowLabel = false,
+        )
     }
 }
