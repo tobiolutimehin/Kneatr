@@ -67,6 +67,7 @@ dependencies {
     implementation(libs.androidx.compose.material3.adaptive.layout)
     implementation(libs.androidx.compose.material3.adaptive.navigation)
     implementation(libs.androidx.compose.adaptive.navigation3)
+    implementation(libs.androidx.compose.adaptive.navigation3.android)
 
     // Navigation
     implementation(libs.androidx.navigation3.ui)
@@ -120,4 +121,6 @@ dependencies {
 
     // Datastore
     implementation(libs.androidx.datastore.preferences)
+
+    implementation(libs.kotlin.reflect) // Use your project's Kotlin version
 }
