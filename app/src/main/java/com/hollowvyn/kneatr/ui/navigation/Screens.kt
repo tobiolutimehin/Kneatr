@@ -20,10 +20,12 @@ data class ContactDetail(
 
 sealed interface TopLevelRoute : NavKey {
     val icon: ImageVector
-}
 
-val TOP_LEVEL_ROUTES: List<TopLevelRoute>
-    get() =
-        TopLevelRoute::class
-            .sealedSubclasses
-            .mapNotNull { it.objectInstance }
+    companion object {
+        val entries: List<TopLevelRoute>
+            get() =
+                TopLevelRoute::class
+                    .sealedSubclasses
+                    .mapNotNull { it.objectInstance }
+    }
+}

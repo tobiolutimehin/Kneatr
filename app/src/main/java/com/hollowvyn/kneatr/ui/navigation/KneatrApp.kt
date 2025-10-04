@@ -37,7 +37,7 @@ fun KneatrApp(modifier: Modifier = Modifier) {
         modifier = modifier,
         bottomBar = {
             NavigationBar {
-                TOP_LEVEL_ROUTES.forEach { topLevelRoute ->
+                TopLevelRoute.entries.forEach { topLevelRoute ->
 
                     val isSelected = topLevelRoute == topLevelBackStack.topLevelKey
                     NavigationBarItem(
