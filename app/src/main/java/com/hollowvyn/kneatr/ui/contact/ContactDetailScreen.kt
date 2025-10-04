@@ -5,7 +5,6 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -122,7 +121,7 @@ fun ContactDetailScreen(
                 Text(
                     "Loading...",
                     modifier = Modifier.padding(innerPadding),
-            )
+                )
         }
     }
 }
@@ -143,16 +142,11 @@ private fun ContactDetailContent(
         state = listState,
     ) {
         item {
-            AnimatedVisibility(
-                visible = !isScrolled,
-                exit = shrinkVertically() + fadeOut(),
-            ) {
-                Text(
-                    text = contact.name,
-                    style = MaterialTheme.typography.headlineLarge,
-                    modifier = Modifier.padding(vertical = 16.dp),
-                )
-            }
+            Text(
+                text = contact.name,
+                style = MaterialTheme.typography.headlineLarge,
+                modifier = Modifier.padding(vertical = 16.dp),
+            )
         }
         item {
             if (contact.tags.isNotEmpty()) {
