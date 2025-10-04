@@ -37,29 +37,7 @@ fun KneatrApp(modifier: Modifier = Modifier) {
 
     Scaffold(
         modifier = modifier,
-        bottomBar = {
-            NavigationBar {
-                TopLevelRoute.entries.forEach { topLevelRoute ->
-
-                    val isSelected = topLevelRoute == topLevelBackStack.topLevelKey
-                    NavigationBarItem(
-                        selected = isSelected,
-                        onClick = {
-                            topLevelBackStack.addTopLevel(topLevelRoute)
-                        },
-                        icon = {
-                            Icon(
-                                painter = painterResource(topLevelRoute.icon),
-                                contentDescription = stringResource(topLevelRoute.contentDescription),
-                            )
-                        },
-                        label = {
-                            Text(stringResource(topLevelRoute.label))
-                        },
-                    )
-                }
-            }
-        },
+        bottomBar = { KneatrNavigationBar(topLevelBackStack = topLevelBackStack) },
     ) { innerPadding ->
         NavDisplay(
             modifier =
@@ -105,5 +83,33 @@ fun KneatrApp(modifier: Modifier = Modifier) {
                     }
                 },
         )
+    }
+}
+
+@Composable
+fun KneatrNavigationBar(
+    topLevelBackStack: TopLevelBackStack<NavKey>,
+    modifier: Modifier = Modifier,
+) {
+    NavigationBar(modifier = modifier) {
+        TopLevelRoute.entries.forEach { topLevelRoute ->
+            val isSelected = topLevelRoute == topLevelBackStack.topLevelKey
+
+            NavigationBarItem(
+                selected = isSelected,
+                onClick = {
+                    topLevelBackStack.addTopLevel(topLevelRoute)
+                },
+                icon = {
+                    Icon(
+                        painter = painterResource(topLevelRoute.icon),
+                        contentDescription = stringResource(topLevelRoute.contentDescription),
+                    )
+                },
+                label = {
+                    Text(stringResource(topLevelRoute.label))
+                },
+            )
+        }
     }
 }
