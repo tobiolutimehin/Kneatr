@@ -1,22 +1,16 @@
 package com.hollowvyn.kneatr.ui.navigation
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
-import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
 import androidx.compose.material3.adaptive.navigation3.rememberListDetailSceneStrategy
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScope
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.scene.SceneStrategy
@@ -26,9 +20,12 @@ import com.hollowvyn.kneatr.ui.contact.ContactsListScreen
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-fun KneatrApp(modifier: Modifier = Modifier) {
+fun KneatrApp(
+    modifier: Modifier = Modifier,
+    navViewModel: NavigationViewModel = hiltViewModel(),
+) {
     val listDetailStrategy: SceneStrategy<NavKey> = rememberListDetailSceneStrategy()
-    val topLevelBackStack = remember { TopLevelBackStack<NavKey>(ContactsList) }
+    val topLevelBackStack = navViewModel.topLevelBackStack.value
 
     NavigationSuiteScaffold(
         navigationSuiteItems = { kneatrNavigationItems(topLevelBackStack) },
@@ -40,22 +37,7 @@ fun KneatrApp(modifier: Modifier = Modifier) {
             sceneStrategy = listDetailStrategy,
             entryProvider =
                 entryProvider {
-                    entry<ContactsList>(
-                        metadata =
-                            ListDetailSceneStrategy.listPane(
-                                detailPlaceholder = {
-                                    Column(
-                                        modifier =
-                                            Modifier
-                                                .fillMaxSize()
-                                                .background(Color.Yellow.copy(alpha = 0.4f)),
-                                        verticalArrangement = Arrangement.Center,
-                                    ) {
-                                        Text("Choose an Item from the List")
-                                    }
-                                },
-                            ),
-                    ) {
+                    entry<ContactsList> {
                         ContactsListScreen(
                             onContactClick = { contact ->
                                 topLevelBackStack.add(ContactDetail(id = contact.id))
@@ -63,9 +45,7 @@ fun KneatrApp(modifier: Modifier = Modifier) {
                         )
                     }
 
-                    entry<ContactDetail>(
-                        metadata = ListDetailSceneStrategy.detailPane(),
-                    ) { contactDetail ->
+                    entry<ContactDetail> { contactDetail ->
                         ContactDetailScreen(
                             contactId = contactDetail.id,
                             onNavigateBack = {

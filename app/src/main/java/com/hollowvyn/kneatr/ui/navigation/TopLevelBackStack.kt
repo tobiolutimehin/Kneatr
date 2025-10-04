@@ -54,6 +54,9 @@ class TopLevelBackStack<T : Any>(
     }
 
     fun add(key: T) {
+        if (topLevelStacks[topLevelKey]?.last()?.javaClass == key.javaClass) {
+            topLevelStacks[topLevelKey]?.removeLastOrNull()
+        }
         topLevelStacks[topLevelKey]?.add(key)
         updateBackStack()
     }
