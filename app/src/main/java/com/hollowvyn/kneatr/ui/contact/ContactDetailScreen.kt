@@ -2,13 +2,12 @@ package com.hollowvyn.kneatr.ui.contact
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -68,16 +67,17 @@ fun ContactDetailScreen(
                 },
             )
         },
-        bottomBar = {
-            Button(
+        floatingActionButton = {
+            ExtendedFloatingActionButton(
+                text = { Text("Add log") },
                 onClick = { /*TODO*/ },
-                modifier =
-                    Modifier
-                        .padding(16.dp)
-                        .fillMaxWidth(),
-            ) {
-                Text("Mark as completed")
-            }
+                icon = {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = null,
+                    )
+                },
+            )
         },
     ) { innerPadding ->
         val contentModifier = Modifier.padding(innerPadding)
