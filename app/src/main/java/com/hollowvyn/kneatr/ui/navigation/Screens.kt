@@ -17,15 +17,3 @@ data object ContactsList :
 data class ContactDetail(
     val id: Long,
 ) : NavKey
-
-sealed interface TopLevelRoute : NavKey {
-    val icon: ImageVector
-
-    companion object {
-        val entries: List<TopLevelRoute>
-            get() =
-                TopLevelRoute::class
-                    .sealedSubclasses
-                    .mapNotNull { it.objectInstance }
-    }
-}
