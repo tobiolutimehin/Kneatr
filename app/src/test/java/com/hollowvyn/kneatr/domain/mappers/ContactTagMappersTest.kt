@@ -1,14 +1,14 @@
 package com.hollowvyn.kneatr.domain.mappers
 
 import com.hollowvyn.kneatr.data.local.entity.ContactTagEntity
-import com.hollowvyn.kneatr.domain.model.ContactTagDto
+import com.hollowvyn.kneatr.domain.model.ContactTag
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class ContactTagMappersTest {
     @Test
     fun `ContactTagDto to ContactTagEntity and back mapping`() {
-        val tagDto = ContactTagDto(id = 10L, name = "Family")
+        val tagDto = ContactTag(id = 10L, name = "Family")
         val entity = tagDto.toEntity()
         assertEquals(tagDto.id, entity.tagId)
         assertEquals(tagDto.name, entity.name)

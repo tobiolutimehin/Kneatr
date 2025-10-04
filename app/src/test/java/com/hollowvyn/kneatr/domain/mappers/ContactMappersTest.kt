@@ -6,7 +6,7 @@ import com.hollowvyn.kneatr.data.local.entity.ContactEntity
 import com.hollowvyn.kneatr.data.local.entity.ContactTagEntity
 import com.hollowvyn.kneatr.data.local.entity.ContactTierEntity
 import com.hollowvyn.kneatr.data.local.entity.relation.ContactWithDetails
-import com.hollowvyn.kneatr.domain.model.ContactDto
+import com.hollowvyn.kneatr.domain.model.Contact
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -16,7 +16,7 @@ class ContactMappersTest {
     @Test
     fun `ContactDto to ContactEntity and back mappings`() {
         val dto =
-            ContactDto(
+            Contact(
                 id = 10L,
                 name = "Alice",
                 phoneNumber = "1234567890",

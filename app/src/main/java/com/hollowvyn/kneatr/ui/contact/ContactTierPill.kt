@@ -10,11 +10,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.hollowvyn.kneatr.domain.model.ContactTierDto
+import com.hollowvyn.kneatr.domain.model.ContactTier
 
 @Composable
 fun ContactTierPill(
-    tier: ContactTierDto?,
+    tier: ContactTier?,
     modifier: Modifier = Modifier,
 ) {
     tier?.let {
@@ -32,6 +32,6 @@ fun ContactTierPill(
 @Preview
 @Composable
 private fun ContactTierPillPreview() {
-    val tier = ContactTierDto(id = 1, name = "Tier 1", daysBetweenContact = 7)
+    val tier = ContactTier(id = 1, name = "Tier 1", daysBetweenContact = 7)
     ContactTierPill(tier)
 }

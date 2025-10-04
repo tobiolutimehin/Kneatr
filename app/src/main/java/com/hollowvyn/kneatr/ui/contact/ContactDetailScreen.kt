@@ -17,12 +17,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.hollowvyn.kneatr.domain.model.ContactDto
+import com.hollowvyn.kneatr.domain.model.Contact
 import com.hollowvyn.kneatr.ui.contact.viewmodel.ContactDetailViewModel
 
 sealed class ContactDetailUiState {
     data class Success(
-        val contact: ContactDto?,
+        val contact: Contact?,
     ) : ContactDetailUiState()
 
     data object Error : ContactDetailUiState()
@@ -85,7 +85,7 @@ fun ContactDetailScreen(
 
 @Composable
 private fun ContactDetailContent(
-    contact: ContactDto,
+    contact: Contact,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier.padding(16.dp)) {

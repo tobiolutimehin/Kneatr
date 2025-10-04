@@ -20,16 +20,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.hollowvyn.kneatr.R
-import com.hollowvyn.kneatr.domain.model.ContactDto
-import com.hollowvyn.kneatr.domain.model.ContactTierDto
+import com.hollowvyn.kneatr.domain.model.Contact
+import com.hollowvyn.kneatr.domain.model.ContactTier
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ContactsSearchBar(
     query: String,
-    searchedContacts: List<ContactDto>,
+    searchedContacts: List<Contact>,
     onQueryChange: (String) -> Unit,
-    onContactClick: (ContactDto) -> Unit,
+    onContactClick: (Contact) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var expanded by rememberSaveable { mutableStateOf(false) }
@@ -99,18 +99,18 @@ fun ContactsSearchBar(
 private fun ContactsSearchBarPreview() {
     val contacts =
         listOf(
-            ContactDto(
+            Contact(
                 id = 1,
                 name = "John Doe",
                 phoneNumber = "123-456-7890",
-                tier = ContactTierDto(id = 1, name = "Tier 1", daysBetweenContact = 7),
+                tier = ContactTier(id = 1, name = "Tier 1", daysBetweenContact = 7),
                 email = "john.doe@example.com",
             ),
-            ContactDto(
+            Contact(
                 id = 2,
                 name = "Jane Smith",
                 phoneNumber = "987-654-3210",
-                tier = ContactTierDto(id = 2, name = "Tier 2", daysBetweenContact = 14),
+                tier = ContactTier(id = 2, name = "Tier 2", daysBetweenContact = 14),
                 email = "jane.smith@example.com",
             ),
         )

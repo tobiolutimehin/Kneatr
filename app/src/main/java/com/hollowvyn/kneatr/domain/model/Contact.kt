@@ -3,23 +3,23 @@ package com.hollowvyn.kneatr.domain.model
 import com.hollowvyn.kneatr.data.local.entity.CommunicationType
 import kotlinx.datetime.LocalDate
 
-data class ContactDto(
+data class Contact(
     val id: Long,
     val name: String,
     val phoneNumber: String, // TODO: support multiple phone numbers later
     val email: String?, // TODO: support multiple emails later
-    val tags: Set<ContactTagDto> = emptySet(),
-    val communicationLogs: List<CommunicationLogDto> = emptyList(),
-    val tier: ContactTierDto? = null,
+    val tags: Set<ContactTag> = emptySet(),
+    val communicationLogs: List<CommunicationLog> = emptyList(),
+    val tier: ContactTier? = null,
     val customFrequencyDays: Int? = null,
 )
 
-data class ContactTagDto(
+data class ContactTag(
     val id: Long,
     val name: String,
 )
 
-data class CommunicationLogDto(
+data class CommunicationLog(
     val id: Long,
     val type: CommunicationType,
     val date: LocalDate,
@@ -27,7 +27,7 @@ data class CommunicationLogDto(
     val notes: String? = null,
 )
 
-data class ContactTierDto(
+data class ContactTier(
     val id: Long,
     val name: String,
     val daysBetweenContact: Int,

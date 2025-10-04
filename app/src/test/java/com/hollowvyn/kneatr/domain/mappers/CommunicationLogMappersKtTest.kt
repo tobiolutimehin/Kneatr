@@ -2,7 +2,7 @@ package com.hollowvyn.kneatr.domain.mappers
 
 import com.hollowvyn.kneatr.data.local.entity.CommunicationLogEntity
 import com.hollowvyn.kneatr.data.local.entity.CommunicationType
-import com.hollowvyn.kneatr.domain.model.CommunicationLogDto
+import com.hollowvyn.kneatr.domain.model.CommunicationLog
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -12,7 +12,7 @@ class CommunicationLogMappersKtTest {
     @Test
     fun `CommunicationLogDto to CommunicationLogEntity and back mapping`() {
         val commDto =
-            CommunicationLogDto(
+            CommunicationLog(
                 id = 1L,
                 type = CommunicationType.PHONE_CALL,
                 date = sampleDate,

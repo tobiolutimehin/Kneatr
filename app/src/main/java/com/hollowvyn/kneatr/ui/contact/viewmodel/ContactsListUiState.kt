@@ -1,13 +1,13 @@
 package com.hollowvyn.kneatr.ui.contact.viewmodel
 
-import com.hollowvyn.kneatr.domain.model.ContactDto
+import com.hollowvyn.kneatr.domain.model.Contact
 import javax.annotation.concurrent.Immutable
 
 @Immutable
 sealed interface ContactsListUiState {
     data class Success(
-        val contacts: List<ContactDto>,
-        val searchedContacts: List<ContactDto>,
+        val contacts: List<Contact>,
+        val searchedContacts: List<Contact>,
         val query: String,
     ) : ContactsListUiState
 
