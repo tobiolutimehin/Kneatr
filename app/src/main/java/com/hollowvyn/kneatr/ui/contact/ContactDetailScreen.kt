@@ -36,12 +36,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.hollowvyn.kneatr.data.local.entity.startEmail
-import com.hollowvyn.kneatr.data.local.entity.startPhoneCall
-import com.hollowvyn.kneatr.data.local.entity.startTextMessage
 import com.hollowvyn.kneatr.domain.model.Contact
 import com.hollowvyn.kneatr.domain.util.formatPhoneNumber
 import com.hollowvyn.kneatr.ui.contact.viewmodel.ContactDetailViewModel
+import com.hollowvyn.kneatr.ui.util.startEmail
+import com.hollowvyn.kneatr.ui.util.startPhoneCall
+import com.hollowvyn.kneatr.ui.util.startTextMessage
 
 sealed class ContactDetailUiState {
     data class Success(
@@ -172,7 +172,7 @@ private fun ContactDetailContent(
                 horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
                 if (contact.phoneNumber.isNotBlank()) {
-                    Button(onClick = { context.startPhoneCall(phone = contact.phoneNumber) }) {
+                    Button(onClick = { context.startPhoneCall(contact.phoneNumber) }) {
                         Text("Call")
                     }
 
@@ -195,7 +195,7 @@ private fun ContactDetailContent(
 
         item {
             Text(
-                text = "Phone: ${formatPhoneNumber(contact.phoneNumber)}",
+                text = "Phone: ${contact.phoneNumber.formatPhoneNumber()}",
             )
             contact.email?.let { email ->
                 Text(text = "Email: $email")

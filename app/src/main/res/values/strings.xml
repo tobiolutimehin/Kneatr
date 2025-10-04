@@ -7,4 +7,7 @@
     <string name="contact_list_close_search_icon_description">Close search</string>
     <string name="contacts">Contacts</string>
     <string name="contacts_tab_content_description">Contacts, tab.</string>
+    <string name="error_could_not_open_dialer">Could not open dialer</string>
+    <string name="error_could_not_open_messaging">Could not open messaging</string>
+    <string name="error_could_not_open_email">Could not open email</string>
 </resources>

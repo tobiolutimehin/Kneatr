@@ -36,7 +36,10 @@ fun ContactListItem(
             }
         },
         supportingContent = {
-            Text(text = formatPhoneNumber(phoneNumber), style = MaterialTheme.typography.bodyMedium)
+            Text(
+                text = phoneNumber.formatPhoneNumber(),
+                style = MaterialTheme.typography.bodyMedium,
+            )
         },
         trailingContent = {
             Icon(
