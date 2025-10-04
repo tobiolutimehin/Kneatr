@@ -1,22 +1,35 @@
 package com.hollowvyn.kneatr.ui.contact
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -47,6 +60,9 @@ fun ContactDetailScreen(
 
     val uiState by viewModel.uiState.collectAsState()
 
+    val listState = rememberLazyListState()
+    val isScrolled = remember { derivedStateOf { listState.firstVisibleItemIndex > 0 } }
+
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -55,13 +71,17 @@ fun ContactDetailScreen(
                     val title =
                         (uiState as? ContactDetailUiState.Success)?.contact?.name
                             ?: "" // Or a default title
-                    Text(text = title)
+                    AnimatedVisibility(
+                        visible = isScrolled.value,
+                        enter = fadeIn(spring(stiffness = Spring.StiffnessLow)),
+                        exit = fadeOut(spring(stiffness = Spring.StiffnessLow)),
+                    ) { Text(text = title) }
                 },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "stringResource(id = R.string.navigate_back)",
+                            contentDescription = "Navigate back",
                         )
                     }
                 },
@@ -73,27 +93,36 @@ fun ContactDetailScreen(
                 onClick = { /*TODO*/ },
                 icon = {
                     Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = null,
+                        imageVector = Icons.Filled.Add,
+                        contentDescription = "Add communication log",
                     )
                 },
             )
         },
     ) { innerPadding ->
-        val contentModifier = Modifier.padding(innerPadding)
-
         when (val state = uiState) {
             is ContactDetailUiState.Success -> {
                 state.contact?.let {
                     ContactDetailContent(
                         contact = it,
-                        modifier = contentModifier,
+                        modifier = Modifier.padding(innerPadding),
+                        listState = listState,
+                        isScrolled = isScrolled.value,
                     )
-                } ?: Text("Contact not found", modifier = contentModifier) // Handle null contact
+                } ?: Text("Contact not found", modifier = Modifier.padding(innerPadding))
             }
 
-            ContactDetailUiState.Error -> Text("Error loading contact", modifier = contentModifier)
-            ContactDetailUiState.Loading -> Text("Loading...", modifier = contentModifier)
+            ContactDetailUiState.Error ->
+                Text(
+                    "Error loading contact",
+                    modifier = Modifier.padding(innerPadding),
+                )
+
+            ContactDetailUiState.Loading ->
+                Text(
+                    "Loading...",
+                    modifier = Modifier.padding(innerPadding),
+            )
         }
     }
 }
@@ -101,14 +130,29 @@ fun ContactDetailScreen(
 @Composable
 private fun ContactDetailContent(
     contact: Contact,
+    listState: LazyListState,
+    isScrolled: Boolean,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
-        modifier = modifier,
-        contentPadding = PaddingValues(16.dp),
+        modifier =
+            modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp),
+        contentPadding = PaddingValues(bottom = 16.dp),
+        state = listState,
     ) {
         item {
-            Text(text = "Name: ${contact.name}")
+            AnimatedVisibility(
+                visible = !isScrolled,
+                exit = shrinkVertically() + fadeOut(),
+            ) {
+                Text(
+                    text = contact.name,
+                    style = MaterialTheme.typography.headlineLarge,
+                    modifier = Modifier.padding(vertical = 16.dp),
+                )
+            }
         }
         item {
             if (contact.tags.isNotEmpty()) {
@@ -130,6 +174,10 @@ private fun ContactDetailContent(
             contact.email?.let { email ->
                 Text(text = "Email: $email")
             }
+        }
+
+        items(100) {
+            Text(text = "Log $it")
         }
     }
 }
