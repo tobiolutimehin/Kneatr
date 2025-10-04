@@ -1,15 +1,14 @@
 package com.hollowvyn.kneatr.ui.contact
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -17,7 +16,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
@@ -33,15 +31,10 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.hollowvyn.kneatr.domain.model.Contact
-import com.hollowvyn.kneatr.domain.util.formatPhoneNumber
 import com.hollowvyn.kneatr.ui.contact.viewmodel.ContactDetailViewModel
-import com.hollowvyn.kneatr.ui.util.startEmail
-import com.hollowvyn.kneatr.ui.util.startPhoneCall
-import com.hollowvyn.kneatr.ui.util.startTextMessage
 
 sealed class ContactDetailUiState {
     data class Success(
@@ -70,6 +63,10 @@ fun ContactDetailScreen(
     val listState = rememberLazyListState()
     val isScrolled = remember { derivedStateOf { listState.firstVisibleItemIndex > 0 } }
 
+    val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val scope = rememberCoroutineScope()
+    var showBottomSheet by remember { mutableStateOf(false) }
+
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -97,7 +94,9 @@ fun ContactDetailScreen(
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 text = { Text("Add log") },
-                onClick = { /*TODO*/ },
+                onClick = {
+                    showBottomSheet = true
+                },
                 icon = {
                     Icon(
                         imageVector = Icons.Filled.Add,
