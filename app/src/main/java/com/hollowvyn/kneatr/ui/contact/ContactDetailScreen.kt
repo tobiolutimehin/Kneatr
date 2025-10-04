@@ -35,7 +35,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.hollowvyn.kneatr.domain.model.Contact
 import com.hollowvyn.kneatr.domain.util.formatPhoneNumber
 import com.hollowvyn.kneatr.ui.contact.viewmodel.ContactDetailViewModel
@@ -59,7 +59,7 @@ fun ContactDetailScreen(
     contactId: Long,
     onNavigateBack: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: ContactDetailViewModel = hiltViewModel<ContactDetailViewModel>(),
+    viewModel: ContactDetailViewModel = hiltViewModel(),
 ) {
     LaunchedEffect(key1 = contactId) {
         viewModel.loadContactId(contactId)
