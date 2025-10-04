@@ -1,9 +1,13 @@
 package com.hollowvyn.kneatr.ui.contact
 
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -64,6 +68,17 @@ fun ContactDetailScreen(
                 },
             )
         },
+        bottomBar = {
+            Button(
+                onClick = { /*TODO*/ },
+                modifier =
+                    Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth(),
+            ) {
+                Text("Mark as completed")
+            }
+        },
     ) { innerPadding ->
         val contentModifier = Modifier.padding(innerPadding)
 
@@ -88,11 +103,33 @@ private fun ContactDetailContent(
     contact: Contact,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier = modifier.padding(16.dp)) {
-        Text(text = "Name: ${contact.name}")
-        Text(text = "Phone: ${contact.phoneNumber}")
-        contact.email?.let { email ->
-            Text(text = "Email: $email")
+    LazyColumn(
+        modifier = modifier,
+        contentPadding = PaddingValues(16.dp),
+    ) {
+        item {
+            Text(text = "Name: ${contact.name}")
+        }
+        item {
+            if (contact.tags.isNotEmpty()) {
+                Text(text = "Tags: ${contact.tags.joinToString(", ") { it.name }}")
+            }
+        }
+        item {
+            Row {
+                Text("last time contacted: ${contact.communicationLogs.lastOrNull()?.date ?: "Never"}")
+                Text("next contact in: ${contact.customFrequencyDays ?: "Never"}")
+            }
+        }
+        item {
+            contact.tier?.let { Text(text = "Tier: ${contact.tier.name}") }
+        }
+
+        item {
+            Text(text = "Phone: ${contact.phoneNumber}")
+            contact.email?.let { email ->
+                Text(text = "Email: $email")
+            }
         }
     }
 }
