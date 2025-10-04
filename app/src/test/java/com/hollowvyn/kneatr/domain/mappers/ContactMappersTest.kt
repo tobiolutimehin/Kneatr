@@ -6,6 +6,7 @@ import com.hollowvyn.kneatr.data.local.entity.ContactEntity
 import com.hollowvyn.kneatr.data.local.entity.ContactTagEntity
 import com.hollowvyn.kneatr.data.local.entity.ContactTierEntity
 import com.hollowvyn.kneatr.data.local.entity.relation.ContactWithDetails
+import com.hollowvyn.kneatr.domain.DateFakes.dateTimeHelper
 import com.hollowvyn.kneatr.domain.model.Contact
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -21,9 +22,6 @@ class ContactMappersTest {
                 name = "Alice",
                 phoneNumber = "1234567890",
                 email = "alice@example.com",
-                tags = emptySet(),
-                communicationLogs = emptyList(),
-                tier = null,
                 customFrequencyDays = 7,
             )
 
@@ -75,7 +73,7 @@ class ContactMappersTest {
                 tier = tierEntity,
             )
 
-        val dto = contactWithDetails.toModel()
+        val dto = contactWithDetails.toModel(dateTimeHelper)
 
         assertEquals(contactEntity.contactId, dto.id)
         assertEquals(contactEntity.name, dto.name)

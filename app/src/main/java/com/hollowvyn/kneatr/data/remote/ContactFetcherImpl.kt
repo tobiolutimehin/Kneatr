@@ -24,52 +24,56 @@ class ContactFetcherImpl
             cacheMutex.withLock {
                 cache?.let { return it.toList() }
 
-            return withContext(dispatcher) {
+                return withContext(dispatcher) {
                     val contacts = mutableListOf<Contact>()
                     val projection =
-                    arrayOf(ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME)
-                val cursor =
-                    contentResolver.query(
-                        ContactsContract.Contacts.CONTENT_URI,
-                        projection,
-                        null,
-                        null,
-                        "${ContactsContract.Contacts.DISPLAY_NAME} ASC",
-                    )
-                cursor?.use { c ->
-                    val idIndex = c.getColumnIndexOrThrow(ContactsContract.Contacts._ID)
-                    val nameIndex = c.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME)
+                        arrayOf(
+                            ContactsContract.Contacts._ID,
+                            ContactsContract.Contacts.DISPLAY_NAME,
+                        )
+                    val cursor =
+                        contentResolver.query(
+                            ContactsContract.Contacts.CONTENT_URI,
+                            projection,
+                            null,
+                            null,
+                            "${ContactsContract.Contacts.DISPLAY_NAME} ASC",
+                        )
+                    cursor?.use { c ->
+                        val idIndex = c.getColumnIndexOrThrow(ContactsContract.Contacts._ID)
+                        val nameIndex =
+                            c.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME)
 
-                    while (c.moveToNext()) {
-                        val id = c.getLong(idIndex)
-                        val name = c.getString(nameIndex) ?: "Unknown"
+                        while (c.moveToNext()) {
+                            val id = c.getLong(idIndex)
+                            val name = c.getString(nameIndex) ?: "Unknown"
 
-                        val phone = fetchPhoneNumbers(id).firstOrNull() ?: ""
-                        val email = fetchEmails(id).firstOrNull()
+                            val phone = fetchPhoneNumbers(id).firstOrNull() ?: ""
+                            val email = fetchEmails(id).firstOrNull()
 
                             contacts.add(Contact(id, name, phone, email))
                         }
+                    }
+                    cache = contacts.toSet()
+                    contacts
                 }
-                cache = contacts.toSet()
-                contacts
             }
-        }
 
-    private fun fetchPhoneNumbers(contactId: Long): List<String> {
-        val phones = mutableListOf<String>()
-        val cursor =
-            contentResolver.query(
-                ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                arrayOf(ContactsContract.CommonDataKinds.Phone.NUMBER),
-                "${ContactsContract.CommonDataKinds.Phone.CONTACT_ID} = ?",
-                arrayOf(contactId.toString()),
-                null,
-            )
-        cursor?.use {
-            val index = it.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER)
-            while (it.moveToNext()) {
-                phones.add(it.getString(index))
-            }
+        private fun fetchPhoneNumbers(contactId: Long): List<String> {
+            val phones = mutableListOf<String>()
+            val cursor =
+                contentResolver.query(
+                    ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                    arrayOf(ContactsContract.CommonDataKinds.Phone.NUMBER),
+                    "${ContactsContract.CommonDataKinds.Phone.CONTACT_ID} = ?",
+                    arrayOf(contactId.toString()),
+                    null,
+                )
+            cursor?.use {
+                val index = it.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER)
+                while (it.moveToNext()) {
+                    phones.add(it.getString(index))
+                }
         }
         return phones
     }

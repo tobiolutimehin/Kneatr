@@ -1,6 +1,7 @@
 package com.hollowvyn.kneatr.data.local.util
 
 import com.hollowvyn.kneatr.data.util.DateTimeHelper
+import com.hollowvyn.kneatr.domain.DateFakes
 import kotlinx.datetime.LocalDate
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -9,8 +10,8 @@ import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
 class DateTimeHelperTest {
-    private val fixedClock: Clock = DateMocks.fixedClock
-    private val timeZone = DateMocks.timeZone
+    private val fixedClock: Clock = DateFakes.fixedClock
+    private val timeZone = DateFakes.timeZone
     private val dateTimeHelper = DateTimeHelper(fixedClock, timeZone)
 
     @Test

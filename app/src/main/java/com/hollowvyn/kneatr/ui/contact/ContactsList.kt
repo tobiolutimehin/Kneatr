@@ -49,15 +49,15 @@ private fun ContactsListPreview() {
                 id = 1,
                 name = "John Doe",
                 phoneNumber = "123-456-7890",
-                tier = ContactTier(id = 1, name = "Tier 1", daysBetweenContact = 7),
                 email = "john.doe@example.com",
+                tier = ContactTier(id = 1, name = "Tier 1", daysBetweenContact = 7),
             ),
             Contact(
                 id = 2,
                 name = "Jane Smith",
                 phoneNumber = "987-654-3210",
-                tier = ContactTier(id = 2, name = "Tier 2", daysBetweenContact = 14),
                 email = "jane.smith@example.com",
+                tier = ContactTier(id = 2, name = "Tier 2", daysBetweenContact = 14),
             ),
         )
     ContactsList(contacts = contacts, modifier = Modifier.fillMaxSize())

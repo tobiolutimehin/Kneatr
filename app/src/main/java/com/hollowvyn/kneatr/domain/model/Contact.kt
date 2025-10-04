@@ -12,6 +12,10 @@ data class Contact(
     val communicationLogs: List<CommunicationLog> = emptyList(),
     val tier: ContactTier? = null,
     val customFrequencyDays: Int? = null,
+    val isOverdue: Boolean = false,
+    val isDueToday: Boolean = false,
+    val nextContactDate: LocalDate? = null,
+    val lastDate: LocalDate? = null,
 )
 
 data class ContactTag(

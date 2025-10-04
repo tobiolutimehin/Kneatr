@@ -117,8 +117,8 @@ private fun ContactDetailContent(
         }
         item {
             Row {
-                Text("last time contacted: ${contact.communicationLogs.lastOrNull()?.date ?: "Never"}")
-                Text("next contact in: ${contact.customFrequencyDays ?: "Never"}")
+                Text("last time contacted: ${contact.lastDate ?: "Never"}")
+                Text("next contact in: ${contact.nextContactDate ?: "Never"}")
             }
         }
         item {
