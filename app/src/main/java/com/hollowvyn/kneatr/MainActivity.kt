@@ -9,20 +9,20 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import com.hollowvyn.kneatr.data.local.datastore.DataStoreManager
-import com.hollowvyn.kneatr.ui.contact.ContactsListScreen
+import com.hollowvyn.kneatr.ui.navigation.KneatrApp
 import com.hollowvyn.kneatr.ui.theme.KneatrTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @Inject
@@ -35,9 +35,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             KneatrTheme {
                 RequestContactsPermissionEffect()
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    ContactsListScreen(modifier = Modifier.padding(paddingValues = innerPadding))
-                }
+                KneatrApp(modifier = Modifier.fillMaxSize())
 //                GoToSettingsPermissionScreen()
             }
         }

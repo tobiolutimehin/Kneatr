@@ -3,6 +3,7 @@
 agp = "8.13.0"
 datastorePreferences = "1.1.7"
 kotlin = "2.2.10"
+kotlinReflect = "2.2.10"
 kotlinSerialization = "2.2.10"
 kotlinxCoroutinesTest = "1.10.2"
 kotlinxSerializationCore = "1.9.0"
@@ -23,6 +24,7 @@ androidxComposeMaterial3Adaptive = "1.1.0"
 androidxNavigation = "2.9.3"
 nav3Core = "1.0.0-alpha08"
 androidxHilt = "1.2.0"
+adaptiveNavigation3 = "1.0.0-alpha03"
 
 # Testing
 junit = "4.13.2"
@@ -76,6 +78,8 @@ androidx-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", vers
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidxNavigation" }
 androidx-navigation-testing = { group = "androidx.navigation", name = "navigation-testing", version.ref = "androidxNavigation" }
 androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "androidxHilt" }
+androidx-compose-adaptive-navigation3 = { group = "androidx.compose.material3.adaptive", name = "adaptive-navigation3", version.ref = "adaptiveNavigation3" }
+androidx-compose-adaptive-navigation3-android = { group = "androidx.compose.material3.adaptive", name = "adaptive-navigation3-android", version.ref = "adaptiveNavigation3" }
 
 # DI / Hilt
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
@@ -84,6 +88,7 @@ hilt-android-testing = { group = "com.google.dagger", name = "hilt-android-testi
 hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
 
 # Serialization
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlinReflect" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
 kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinxSerializationCore" }
 
