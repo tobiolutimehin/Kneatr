@@ -123,4 +123,6 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
 
     implementation(libs.kotlin.reflect) // Use your project's Kotlin version
+
+    implementation("com.googlecode.libphonenumber:libphonenumber:9.0.15")
 }

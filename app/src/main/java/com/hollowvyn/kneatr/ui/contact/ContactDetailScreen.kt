@@ -5,9 +5,11 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -15,6 +17,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
@@ -30,9 +33,14 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.hollowvyn.kneatr.data.local.entity.startEmail
+import com.hollowvyn.kneatr.data.local.entity.startPhoneCall
+import com.hollowvyn.kneatr.data.local.entity.startTextMessage
 import com.hollowvyn.kneatr.domain.model.Contact
+import com.hollowvyn.kneatr.domain.util.formatPhoneNumber
 import com.hollowvyn.kneatr.ui.contact.viewmodel.ContactDetailViewModel
 
 sealed class ContactDetailUiState {
@@ -106,7 +114,6 @@ fun ContactDetailScreen(
                         contact = it,
                         modifier = Modifier.padding(innerPadding),
                         listState = listState,
-                        isScrolled = isScrolled.value,
                     )
                 } ?: Text("Contact not found", modifier = Modifier.padding(innerPadding))
             }
@@ -130,9 +137,9 @@ fun ContactDetailScreen(
 private fun ContactDetailContent(
     contact: Contact,
     listState: LazyListState,
-    isScrolled: Boolean,
     modifier: Modifier = Modifier,
 ) {
+    val context = LocalContext.current
     LazyColumn(
         modifier =
             modifier
@@ -160,11 +167,36 @@ private fun ContactDetailContent(
             }
         }
         item {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+            ) {
+                if (contact.phoneNumber.isNotBlank()) {
+                    Button(onClick = { context.startPhoneCall(phone = contact.phoneNumber) }) {
+                        Text("Call")
+                    }
+
+                    // Message Button
+                    Button(onClick = { context.startTextMessage(contact.phoneNumber) }) {
+                        Text("Message")
+                    }
+                }
+
+                contact.email?.let { email ->
+                    Button(onClick = { context.startEmail(email) }) {
+                        Text("Email")
+                    }
+                }
+            }
+        }
+        item {
             contact.tier?.let { Text(text = "Tier: ${contact.tier.name}") }
         }
 
         item {
-            Text(text = "Phone: ${contact.phoneNumber}")
+            Text(
+                text = "Phone: ${formatPhoneNumber(contact.phoneNumber)}",
+            )
             contact.email?.let { email ->
                 Text(text = "Email: $email")
             }
