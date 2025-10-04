@@ -12,10 +12,10 @@ import com.hollowvyn.kneatr.domain.mappers.toListEntity
 import com.hollowvyn.kneatr.domain.mappers.toListModel
 import com.hollowvyn.kneatr.domain.mappers.toModel
 import com.hollowvyn.kneatr.domain.mappers.toModelSet
-import com.hollowvyn.kneatr.domain.model.CommunicationLogDto
-import com.hollowvyn.kneatr.domain.model.ContactDto
-import com.hollowvyn.kneatr.domain.model.ContactTagDto
-import com.hollowvyn.kneatr.domain.model.ContactTierDto
+import com.hollowvyn.kneatr.domain.model.CommunicationLog
+import com.hollowvyn.kneatr.domain.model.Contact
+import com.hollowvyn.kneatr.domain.model.ContactTag
+import com.hollowvyn.kneatr.domain.model.ContactTier
 import com.hollowvyn.kneatr.domain.repository.ContactsRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.coroutineScope
@@ -39,18 +39,20 @@ class ContactsRepositoryImpl
         private val contactFetcher: ContactFetcher,
     ) : ContactsRepository {
         // Contact operations
-        override suspend fun insertContact(contact: ContactDto) =
+        override suspend fun insertContact(contact: Contact) =
             contact.toEntity().let { contactEntity ->
                 contactDao.insertContact(contactEntity)
             }
 
-        override suspend fun insertContacts(contacts: List<ContactDto>) = contactDao.insertContacts(contacts.toListEntity())
+        override suspend fun insertContacts(contacts: List<Contact>) = contactDao.insertContacts(contacts.toListEntity())
 
-        override suspend fun updateContact(contact: ContactDto) = contact.toEntity().let { contactDao.updateContact(it) }
+        override suspend fun updateContact(contact: Contact) =
+        contact.toEntity().let { contactDao.updateContact(it) }
 
-        override fun getAllContacts(): Flow<List<ContactDto>> = contactDao.getAllContacts().map { contacts -> contacts.toListModel() }
+    override fun getAllContacts(): Flow<List<Contact>> =
+        contactDao.getAllContacts().map { contacts -> contacts.toListModel() }
 
-        override fun getContactsByTierId(tierId: Long): Flow<List<ContactDto>> =
+    override fun getContactsByTierId(tierId: Long): Flow<List<Contact>> =
             contactDao
                 .getContactsByTierId(
                     tierId,
@@ -58,10 +60,11 @@ class ContactsRepositoryImpl
                     it.toListModel()
                 }
 
-        override fun searchContactsByNamePhoneOrEmail(query: String): Flow<List<ContactDto>> =
+    override fun searchContactsByNamePhoneOrEmail(query: String): Flow<List<Contact>> =
             contactDao.searchContactsByNamePhoneOrEmail(query).map { it.toListModel() }
 
-        override fun getContactById(id: Long): Flow<ContactDto?> = contactDao.getContactById(id).map { it?.toModel() }
+    override fun getContactById(id: Long): Flow<Contact?> =
+        contactDao.getContactById(id).map { it?.toModel() }
 
         // Tag CrossRef operations
         override suspend fun addTagToContact(
@@ -80,13 +83,14 @@ class ContactsRepositoryImpl
             )
 
         // Tag operations
-        override fun getAllTags(): Flow<Set<ContactTagDto>> = contactTagDao.getAllTags().transform { it.toModelSet() }
+        override fun getAllTags(): Flow<Set<ContactTag>> =
+            contactTagDao.getAllTags().transform { it.toModelSet() }
 
-        override fun getTagsWithContacts(): Flow<List<Pair<ContactTagDto, List<ContactDto>>>> =
+    override fun getTagsWithContacts(): Flow<List<Pair<ContactTag, List<Contact>>>> =
             contactTagDao
                 .getAllTags()
                 .flatMapLatest { tags ->
-                    val flowsPerTag: List<Flow<Pair<ContactTagDto, List<ContactDto>>>> =
+                    val flowsPerTag: List<Flow<Pair<ContactTag, List<Contact>>>> =
                         tags.map { tag ->
                             contactDao
                                 .getContactsByTagId(tag.tagId)
@@ -97,30 +101,32 @@ class ContactsRepositoryImpl
                     combine(flowsPerTag) { pairsArray -> pairsArray.toList() }
                 }
 
-        override fun getTagWithContactsById(id: Long): Flow<List<ContactDto>?> =
+    override fun getTagWithContactsById(id: Long): Flow<List<Contact>?> =
             contactDao.getContactsByTagId(id).transform {
                 it.toListModel()
             }
 
-        override suspend fun insertTag(tag: ContactTagDto) = contactTagDao.insertTag(tag.toEntity())
+    override suspend fun insertTag(tag: ContactTag) = contactTagDao.insertTag(tag.toEntity())
 
-        override suspend fun updateTag(tag: ContactTagDto) = contactTagDao.updateTag(tag.toEntity())
+    override suspend fun updateTag(tag: ContactTag) = contactTagDao.updateTag(tag.toEntity())
 
-        override suspend fun deleteTag(tag: ContactTagDto) = contactTagDao.deleteTag(tag.toEntity())
+    override suspend fun deleteTag(tag: ContactTag) = contactTagDao.deleteTag(tag.toEntity())
 
         // Tier operations
-        override suspend fun insertTier(tier: ContactTierDto) = contactTierDao.insertTier(tier.toEntity())
+        override suspend fun insertTier(tier: ContactTier) =
+            contactTierDao.insertTier(tier.toEntity())
 
-        override suspend fun insertTiers(tiers: List<ContactTierDto>) = contactTierDao.insertTiers(tiers.map { it.toEntity() })
+    override suspend fun insertTiers(tiers: List<ContactTier>) =
+        contactTierDao.insertTiers(tiers.map { it.toEntity() })
 
-        override suspend fun updateTier(tier: ContactTierDto) = contactTierDao.updateTier(tier.toEntity())
+    override suspend fun updateTier(tier: ContactTier) = contactTierDao.updateTier(tier.toEntity())
 
-        override fun getAllTiers(): Flow<List<ContactTierDto>> =
+    override fun getAllTiers(): Flow<List<ContactTier>> =
             contactTierDao.getAllTiers().transform { tiers ->
                 tiers.map { it.toModel() }
             }
 
-        override fun getTierById(id: Long): Flow<ContactTierDto?> =
+    override fun getTierById(id: Long): Flow<ContactTier?> =
             contactTierDao.getTierById(id).transform {
                 it?.toModel()
             }
@@ -128,19 +134,20 @@ class ContactsRepositoryImpl
         override suspend fun deleteAllTiers() = contactTierDao.deleteAllTiers()
 
         // Communication Logs operations
-        override suspend fun insertCommunicationLog(log: CommunicationLogDto) = communicationLogDao.insertCommunicationLog(log.toEntity())
+        override suspend fun insertCommunicationLog(log: CommunicationLog) =
+            communicationLogDao.insertCommunicationLog(log.toEntity())
 
-        override fun getCommunicationLogsForContact(contactId: Long): Flow<List<CommunicationLogDto>> =
+    override fun getCommunicationLogsForContact(contactId: Long): Flow<List<CommunicationLog>> =
             communicationLogDao.getCommunicationLogsForContact(contactId).transform { logs ->
                 logs.map { it.toModel() }
             }
 
-        override suspend fun updateCommunicationLog(log: CommunicationLogDto) =
+    override suspend fun updateCommunicationLog(log: CommunicationLog) =
             communicationLogDao.updateCommunicationLog(
                 log.toEntity(),
             )
 
-        override suspend fun deleteCommunicationLog(log: CommunicationLogDto) =
+    override suspend fun deleteCommunicationLog(log: CommunicationLog) =
             communicationLogDao.deleteCommunicationLog(
                 log.toEntity(),
             )
@@ -150,12 +157,12 @@ class ContactsRepositoryImpl
 
         override suspend fun deleteAllCommunicationLogs() = communicationLogDao.deleteAllCommunicationLogs()
 
-        override fun getAllCommunicationLogs(): Flow<List<CommunicationLogDto>> =
+    override fun getAllCommunicationLogs(): Flow<List<CommunicationLog>> =
             communicationLogDao.getAllCommunicationLogs().transform { logs ->
                 logs.map { it.toModel() }
             }
 
-        override fun getCommunicationLogsByDate(date: LocalDate): Flow<List<CommunicationLogDto>> =
+    override fun getCommunicationLogsByDate(date: LocalDate): Flow<List<CommunicationLog>> =
             communicationLogDao.getCommunicationLogsByDate(date).map { logs ->
                 logs.map { it.toModel() }
             }

@@ -8,16 +8,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.hollowvyn.kneatr.domain.model.ContactDto
-import com.hollowvyn.kneatr.domain.model.ContactTierDto
+import com.hollowvyn.kneatr.domain.model.Contact
+import com.hollowvyn.kneatr.domain.model.ContactTier
 
 @Composable
 fun ContactsListSuccessContent(
-    contacts: List<ContactDto>,
-    searchedContacts: List<ContactDto>,
+    contacts: List<Contact>,
+    searchedContacts: List<Contact>,
     query: String,
     modifier: Modifier = Modifier,
-    onContactClick: (ContactDto) -> Unit = {},
+    onContactClick: (Contact) -> Unit = {},
     onQueryChange: (String) -> Unit = {},
 ) {
     Column(
@@ -46,18 +46,18 @@ fun ContactsListSuccessContent(
 private fun ContactsListSuccessContentPreview() {
     val contacts =
         listOf(
-            ContactDto(
+            Contact(
                 id = 1,
                 name = "John Doe",
                 phoneNumber = "123-456-7890",
-                tier = ContactTierDto(id = 1, name = "Tier 1", daysBetweenContact = 7),
+                tier = ContactTier(id = 1, name = "Tier 1", daysBetweenContact = 7),
                 email = "john.doe@example.com",
             ),
-            ContactDto(
+            Contact(
                 id = 2,
                 name = "Jane Smith",
                 phoneNumber = "987-654-3210",
-                tier = ContactTierDto(id = 2, name = "Tier 2", daysBetweenContact = 14),
+                tier = ContactTier(id = 2, name = "Tier 2", daysBetweenContact = 14),
                 email = "jane.smith@example.com",
             ),
         )

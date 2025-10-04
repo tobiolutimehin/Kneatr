@@ -3,7 +3,7 @@ package com.hollowvyn.kneatr.data.remote
 import android.content.ContentResolver
 import android.provider.ContactsContract
 import com.hollowvyn.kneatr.di.IoDispatcher
-import com.hollowvyn.kneatr.domain.model.ContactDto
+import com.hollowvyn.kneatr.domain.model.Contact
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -17,16 +17,16 @@ class ContactFetcherImpl
         @param:IoDispatcher private val dispatcher: CoroutineDispatcher,
     ) : ContactFetcher {
         private val cacheMutex = Mutex()
-        private var cache: Set<ContactDto>? = null
+        private var cache: Set<Contact>? = null
 
         // TODO: Update ContactDto and fetcher to support multiple phone numbers and emails per contact.
-        override suspend fun fetchContacts(): List<ContactDto> =
+        override suspend fun fetchContacts(): List<Contact> =
             cacheMutex.withLock {
                 cache?.let { return it.toList() }
 
             return withContext(dispatcher) {
-                val contacts = mutableListOf<ContactDto>()
-                val projection =
+                    val contacts = mutableListOf<Contact>()
+                    val projection =
                     arrayOf(ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME)
                 val cursor =
                     contentResolver.query(
@@ -47,8 +47,8 @@ class ContactFetcherImpl
                         val phone = fetchPhoneNumbers(id).firstOrNull() ?: ""
                         val email = fetchEmails(id).firstOrNull()
 
-                        contacts.add(ContactDto(id, name, phone, email))
-                    }
+                            contacts.add(Contact(id, name, phone, email))
+                        }
                 }
                 cache = contacts.toSet()
                 contacts

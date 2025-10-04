@@ -1,18 +1,18 @@
 package com.hollowvyn.kneatr.domain.mappers
 
 import com.hollowvyn.kneatr.data.local.entity.ContactTagEntity
-import com.hollowvyn.kneatr.domain.model.ContactTagDto
+import com.hollowvyn.kneatr.domain.model.ContactTag
 
-fun ContactTagDto.toEntity(): ContactTagEntity =
+fun ContactTag.toEntity(): ContactTagEntity =
     ContactTagEntity(
         tagId = id,
         name = name,
     )
 
-fun ContactTagEntity.toModel(): ContactTagDto =
-    ContactTagDto(
+fun ContactTagEntity.toModel(): ContactTag =
+    ContactTag(
         id = tagId,
         name = name,
     )
 
-fun List<ContactTagEntity>.toModelSet(): Set<ContactTagDto> = map { it.toModel() }.toSet()
+fun List<ContactTagEntity>.toModelSet(): Set<ContactTag> = map { it.toModel() }.toSet()

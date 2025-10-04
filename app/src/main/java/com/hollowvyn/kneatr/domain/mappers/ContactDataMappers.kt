@@ -2,19 +2,20 @@ package com.hollowvyn.kneatr.domain.mappers
 
 import com.hollowvyn.kneatr.data.local.entity.ContactEntity
 import com.hollowvyn.kneatr.data.local.entity.relation.ContactWithDetails
-import com.hollowvyn.kneatr.domain.model.ContactDto
+import com.hollowvyn.kneatr.domain.model.Contact
 
-fun ContactDto.toEntity(): ContactEntity =
+fun Contact.toEntity(): ContactEntity =
     ContactEntity(
         contactId = id,
         name = name,
         phoneNumber = phoneNumber,
         email = email,
+        tierId = tier?.id,
         customFrequencyDays = customFrequencyDays,
     )
 
-fun ContactWithDetails.toModel(): ContactDto =
-    ContactDto(
+fun ContactWithDetails.toModel(): Contact =
+    Contact(
         id = contact.contactId,
         name = contact.name,
         phoneNumber = contact.phoneNumber,
@@ -25,6 +26,6 @@ fun ContactWithDetails.toModel(): ContactDto =
         customFrequencyDays = contact.customFrequencyDays,
     )
 
-fun List<ContactDto>.toListEntity() = map { it.toEntity() }
+fun List<Contact>.toListEntity() = map { it.toEntity() }
 
 fun List<ContactWithDetails>.toListModel() = map { it.toModel() }

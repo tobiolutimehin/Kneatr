@@ -1,9 +1,9 @@
 package com.hollowvyn.kneatr.domain.mappers
 
 import com.hollowvyn.kneatr.data.local.entity.CommunicationLogEntity
-import com.hollowvyn.kneatr.domain.model.CommunicationLogDto
+import com.hollowvyn.kneatr.domain.model.CommunicationLog
 
-fun CommunicationLogDto.toEntity(): CommunicationLogEntity =
+fun CommunicationLog.toEntity(): CommunicationLogEntity =
     CommunicationLogEntity(
         communicationId = id,
         type = type,
@@ -12,8 +12,8 @@ fun CommunicationLogDto.toEntity(): CommunicationLogEntity =
         notes = notes,
     )
 
-fun CommunicationLogEntity.toModel(): CommunicationLogDto =
-    CommunicationLogDto(
+fun CommunicationLogEntity.toModel(): CommunicationLog =
+    CommunicationLog(
         id = communicationId,
         type = type,
         date = date,
@@ -21,4 +21,4 @@ fun CommunicationLogEntity.toModel(): CommunicationLogDto =
         contactId = contactId,
     )
 
-fun List<CommunicationLogEntity>.toModelList(): List<CommunicationLogDto> = map { it.toModel() }
+fun List<CommunicationLogEntity>.toModelList(): List<CommunicationLog> = map { it.toModel() }

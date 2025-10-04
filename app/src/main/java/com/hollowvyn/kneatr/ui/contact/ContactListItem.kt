@@ -14,13 +14,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.hollowvyn.kneatr.domain.model.ContactTierDto
+import com.hollowvyn.kneatr.domain.model.ContactTier
 
 @Composable
 fun ContactListItem(
     name: String,
     phoneNumber: String,
-    tier: ContactTierDto?,
+    tier: ContactTier?,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
 ) {
@@ -52,7 +52,7 @@ fun ContactListItem(
 private fun ContactListItemPreview() {
     val name = "John Doe"
     val phoneNumber = "123-456-7890"
-    val tier = ContactTierDto(id = 1, name = "Tier 1", daysBetweenContact = 7)
+    val tier = ContactTier(id = 1, name = "Tier 1", daysBetweenContact = 7)
     ContactListItem(
         name = name,
         phoneNumber = phoneNumber,

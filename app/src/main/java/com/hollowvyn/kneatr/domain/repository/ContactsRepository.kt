@@ -1,27 +1,27 @@
 package com.hollowvyn.kneatr.domain.repository
 
-import com.hollowvyn.kneatr.domain.model.CommunicationLogDto
-import com.hollowvyn.kneatr.domain.model.ContactDto
-import com.hollowvyn.kneatr.domain.model.ContactTagDto
-import com.hollowvyn.kneatr.domain.model.ContactTierDto
+import com.hollowvyn.kneatr.domain.model.CommunicationLog
+import com.hollowvyn.kneatr.domain.model.Contact
+import com.hollowvyn.kneatr.domain.model.ContactTag
+import com.hollowvyn.kneatr.domain.model.ContactTier
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.LocalDate
 
 interface ContactsRepository {
     // Contact CRUD
-    suspend fun insertContact(contact: ContactDto)
+    suspend fun insertContact(contact: Contact)
 
-    suspend fun insertContacts(contacts: List<ContactDto>)
+    suspend fun insertContacts(contacts: List<Contact>)
 
-    suspend fun updateContact(contact: ContactDto)
+    suspend fun updateContact(contact: Contact)
 
-    fun getAllContacts(): Flow<List<ContactDto>>
+    fun getAllContacts(): Flow<List<Contact>>
 
-    fun getContactsByTierId(tierId: Long): Flow<List<ContactDto>>
+    fun getContactsByTierId(tierId: Long): Flow<List<Contact>>
 
-    fun searchContactsByNamePhoneOrEmail(query: String): Flow<List<ContactDto>>
+    fun searchContactsByNamePhoneOrEmail(query: String): Flow<List<Contact>>
 
-    fun getContactById(id: Long): Flow<ContactDto?>
+    fun getContactById(id: Long): Flow<Contact?>
 
     // Contact Tag CrossRef operations
     suspend fun addTagToContact(
@@ -37,47 +37,47 @@ interface ContactsRepository {
     suspend fun removeAllTagsFromContact(contactId: Long)
 
     // Tags
-    fun getAllTags(): Flow<Set<ContactTagDto>>
+    fun getAllTags(): Flow<Set<ContactTag>>
 
-    fun getTagsWithContacts(): Flow<List<Pair<ContactTagDto, List<ContactDto>>>>
+    fun getTagsWithContacts(): Flow<List<Pair<ContactTag, List<Contact>>>>
 
-    fun getTagWithContactsById(id: Long): Flow<List<ContactDto>?>
+    fun getTagWithContactsById(id: Long): Flow<List<Contact>?>
 
-    suspend fun insertTag(tag: ContactTagDto)
+    suspend fun insertTag(tag: ContactTag)
 
-    suspend fun updateTag(tag: ContactTagDto)
+    suspend fun updateTag(tag: ContactTag)
 
-    suspend fun deleteTag(tag: ContactTagDto)
+    suspend fun deleteTag(tag: ContactTag)
 
     // Tiers
-    suspend fun insertTier(tier: ContactTierDto)
+    suspend fun insertTier(tier: ContactTier)
 
-    suspend fun insertTiers(tiers: List<ContactTierDto>)
+    suspend fun insertTiers(tiers: List<ContactTier>)
 
-    suspend fun updateTier(tier: ContactTierDto)
+    suspend fun updateTier(tier: ContactTier)
 
-    fun getAllTiers(): Flow<List<ContactTierDto>>
+    fun getAllTiers(): Flow<List<ContactTier>>
 
-    fun getTierById(id: Long): Flow<ContactTierDto?>
+    fun getTierById(id: Long): Flow<ContactTier?>
 
     suspend fun deleteAllTiers()
 
     // Communication Logs
-    suspend fun insertCommunicationLog(log: CommunicationLogDto)
+    suspend fun insertCommunicationLog(log: CommunicationLog)
 
-    fun getCommunicationLogsForContact(contactId: Long): Flow<List<CommunicationLogDto>>
+    fun getCommunicationLogsForContact(contactId: Long): Flow<List<CommunicationLog>>
 
-    suspend fun updateCommunicationLog(log: CommunicationLogDto)
+    suspend fun updateCommunicationLog(log: CommunicationLog)
 
-    suspend fun deleteCommunicationLog(log: CommunicationLogDto)
+    suspend fun deleteCommunicationLog(log: CommunicationLog)
 
     suspend fun deleteCommunicationLogsForContact(contactId: Long)
 
     suspend fun deleteAllCommunicationLogs()
 
-    fun getAllCommunicationLogs(): Flow<List<CommunicationLogDto>>
+    fun getAllCommunicationLogs(): Flow<List<CommunicationLog>>
 
-    fun getCommunicationLogsByDate(date: LocalDate): Flow<List<CommunicationLogDto>>
+    fun getCommunicationLogsByDate(date: LocalDate): Flow<List<CommunicationLog>>
 
     suspend fun syncContacts()
 }
