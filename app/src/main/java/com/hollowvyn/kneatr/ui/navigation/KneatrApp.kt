@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.scene.SceneStrategy
 import androidx.navigation3.ui.NavDisplay
@@ -29,8 +30,8 @@ import com.hollowvyn.kneatr.ui.contact.ContactsListScreen
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun KneatrApp(modifier: Modifier = Modifier) {
-    val listDetailStrategy: SceneStrategy<Any> = rememberListDetailSceneStrategy()
-    val topLevelBackStack = remember { TopLevelBackStack<Any>(ContactsList) }
+    val listDetailStrategy: SceneStrategy<NavKey> = rememberListDetailSceneStrategy()
+    val topLevelBackStack = remember { TopLevelBackStack<NavKey>(ContactsList) }
 
     Scaffold(
         modifier = modifier,

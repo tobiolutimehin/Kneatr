@@ -8,7 +8,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data object ContactsList :
-    NavKey,
     TopLevelRoute {
     override val icon: ImageVector
         get() = Icons.Default.Home
@@ -19,11 +18,12 @@ data class ContactDetail(
     val id: Long,
 ) : NavKey
 
-sealed interface TopLevelRoute {
+sealed interface TopLevelRoute : NavKey {
     val icon: ImageVector
 }
 
-val TOP_LEVEL_ROUTES: List<TopLevelRoute> =
-    TopLevelRoute::class
-        .sealedSubclasses
-        .mapNotNull { it.objectInstance }
+val TOP_LEVEL_ROUTES: List<TopLevelRoute>
+    get() =
+        TopLevelRoute::class
+            .sealedSubclasses
+            .mapNotNull { it.objectInstance }
