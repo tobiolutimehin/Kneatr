@@ -61,7 +61,7 @@ class ContactsRepositoryImpl
         override fun searchContactsByNamePhoneOrEmail(query: String): Flow<List<ContactDto>> =
             contactDao.searchContactsByNamePhoneOrEmail(query).map { it.toListModel() }
 
-        override fun getContactById(id: Long): Flow<ContactDto?> = contactDao.getContactById(id).transform { it?.toModel() }
+        override fun getContactById(id: Long): Flow<ContactDto?> = contactDao.getContactById(id).map { it?.toModel() }
 
         // Tag CrossRef operations
         override suspend fun addTagToContact(

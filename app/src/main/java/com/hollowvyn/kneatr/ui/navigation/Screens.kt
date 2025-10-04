@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data object ContactsList : NavKey
 
+@Serializable
 data class ContactDetail(
-    val id: String,
+    val id: Long,
 ) : NavKey
