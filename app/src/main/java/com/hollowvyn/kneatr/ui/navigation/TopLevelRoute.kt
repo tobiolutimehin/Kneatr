@@ -1,10 +1,18 @@
 package com.hollowvyn.kneatr.ui.navigation
 
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.navigation3.runtime.NavKey
 
 sealed interface TopLevelRoute : NavKey {
-    val icon: ImageVector
+    @get:DrawableRes
+    val icon: Int
+
+    @get:StringRes
+    val label: Int
+
+    @get:StringRes
+    val contentDescription: Int
 
     companion object {
         val entries: List<TopLevelRoute>

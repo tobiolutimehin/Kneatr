@@ -20,6 +20,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.scene.SceneStrategy
@@ -47,9 +49,12 @@ fun KneatrApp(modifier: Modifier = Modifier) {
                         },
                         icon = {
                             Icon(
-                                imageVector = topLevelRoute.icon,
-                                contentDescription = null,
+                                painter = painterResource(topLevelRoute.icon),
+                                contentDescription = stringResource(topLevelRoute.contentDescription),
                             )
+                        },
+                        label = {
+                            Text(stringResource(topLevelRoute.label))
                         },
                     )
                 }

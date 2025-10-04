@@ -1,16 +1,20 @@
 package com.hollowvyn.kneatr.ui.navigation
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation3.runtime.NavKey
+import com.hollowvyn.kneatr.R
 import kotlinx.serialization.Serializable
 
 @Serializable
 data object ContactsList :
     TopLevelRoute {
-    override val icon: ImageVector
-        get() = Icons.Default.Home
+    override val icon: Int
+        get() = R.drawable.contacts_24px
+
+    override val label: Int
+        get() = R.string.contacts
+
+    override val contentDescription: Int
+        get() = R.string.contacts_tab_content_description
 }
 
 @Serializable
