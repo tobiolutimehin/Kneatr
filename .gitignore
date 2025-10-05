@@ -14,7 +14,7 @@
 .cxx
 local.properties
 .gradle/
-.idea/
+/.idea/
 build/
 captures/
 .externalNativeBuild/
@@ -24,3 +24,5 @@ Thumbs.db
 *.apk
 *.ap_
 /generate_tasks_csv.py
+/.venv/
+/.kotlin/
