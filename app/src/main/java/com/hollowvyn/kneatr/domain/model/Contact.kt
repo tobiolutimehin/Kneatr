@@ -1,8 +1,10 @@
 package com.hollowvyn.kneatr.domain.model
 
+import androidx.compose.runtime.Immutable
 import com.hollowvyn.kneatr.data.local.entity.CommunicationType
 import kotlinx.datetime.LocalDate
 
+@Immutable
 data class Contact(
     val id: Long,
     val name: String,
@@ -18,11 +20,13 @@ data class Contact(
     val lastDate: LocalDate? = null,
 )
 
+@Immutable
 data class ContactTag(
     val id: Long,
     val name: String,
 )
 
+@Immutable
 data class CommunicationLog(
     val id: Long,
     val type: CommunicationType,
@@ -31,6 +35,7 @@ data class CommunicationLog(
     val notes: String? = null,
 )
 
+@Immutable
 data class ContactTier(
     val id: Long,
     val name: String,

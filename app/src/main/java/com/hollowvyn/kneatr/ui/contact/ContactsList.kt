@@ -26,7 +26,11 @@ fun ContactsList(
         contentPadding = PaddingValues(vertical = 12.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        itemsIndexed(contacts) { idx, contact ->
+        itemsIndexed(
+            items = contacts,
+            key = { _, contact -> contact.id },
+            contentType = { _, _ -> "ContactListItem" },
+        ) { idx, contact ->
             ContactListItem(
                 name = contact.name,
                 phoneNumber = contact.phoneNumber,

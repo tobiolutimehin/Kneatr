@@ -14,8 +14,8 @@ fun String.formatPhoneNumber(): String {
     return try {
         val numberProto = phoneUtil.parse(this, null)
         phoneUtil.format(numberProto, PhoneNumberUtil.PhoneNumberFormat.INTERNATIONAL)
-    } catch (e: NumberParseException) {
-        e.printStackTrace()
+    } catch (_: NumberParseException) {
+//        e.printStackTrace()
         this
     }
 }
