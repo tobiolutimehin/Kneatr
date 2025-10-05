@@ -46,6 +46,12 @@ android {
     }
 }
 
+kotlin {
+    compilerOptions {
+        freeCompilerArgs = listOf("-XXLanguage:+PropertyParamAnnotationDefaultTargetMode")
+    }
+}
+
 dependencies {
     // Core
     implementation(libs.androidx.core.ktx)
@@ -122,7 +128,7 @@ dependencies {
     // Datastore
     implementation(libs.androidx.datastore.preferences)
 
-    implementation(libs.kotlin.reflect) // Use your project's Kotlin version
+    implementation(libs.kotlin.reflect)
 
     implementation("com.googlecode.libphonenumber:libphonenumber:9.0.15")
 }
