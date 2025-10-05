@@ -43,24 +43,25 @@ class ContactsListViewModel
             ) { contacts, workInfoList, searchedContacts, queryString ->
                 val isWorkerRunning =
                     workInfoList.any {
-                        it.state == WorkInfo.State.RUNNING || it.state == WorkInfo.State.ENQUEUED
+                        it.state == WorkInfo.State.RUNNING
                     }
-
                 val didWorkerFail = workInfoList.any { it.state == WorkInfo.State.FAILED }
 
-                if (isWorkerRunning && contacts.isEmpty()) {
-                    ContactsListUiState.Loading
-                } else if (contacts.isNotEmpty() || searchedContacts.isNotEmpty()) {
-                    ContactsListUiState.Success(contacts, searchedContacts, queryString)
-                } else if (didWorkerFail) {
+                if (didWorkerFail) {
                     ContactsListUiState.Error
+                } else if (isWorkerRunning && contacts.isEmpty()) {
+                    ContactsListUiState.Loading
+                } else if (queryString.isNotEmpty() && searchedContacts.isNotEmpty()) {
+                    ContactsListUiState.Success(contacts, searchedContacts, queryString)
+                } else if (contacts.isNotEmpty()) {
+                    ContactsListUiState.Success(contacts, searchedContacts, queryString)
                 } else {
                     ContactsListUiState.Empty
                 }
             }.stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5000),
-                initialValue = ContactsListUiState.Loading,
+                initialValue = ContactsListUiState.Empty,
             )
 
         fun onQueryChange(newQuery: String) {

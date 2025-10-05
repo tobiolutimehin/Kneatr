@@ -22,6 +22,7 @@ class ContactFetcherImpl
         // TODO: Update ContactDto and fetcher to support multiple phone numbers and emails per contact.
         override suspend fun fetchContacts(): List<Contact> =
             cacheMutex.withLock {
+                // Only return from cache if it's not null. An empty cache is not a valid cached state.
                 cache?.let { return it.toList() }
 
                 return withContext(dispatcher) {
@@ -43,7 +44,6 @@ class ContactFetcherImpl
                         val idIndex = c.getColumnIndexOrThrow(ContactsContract.Contacts._ID)
                         val nameIndex =
                             c.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME)
-
                         while (c.moveToNext()) {
                             val id = c.getLong(idIndex)
                             val name = c.getString(nameIndex) ?: "Unknown"
@@ -54,7 +54,10 @@ class ContactFetcherImpl
                             contacts.add(Contact(id, name, phone, email))
                         }
                     }
-                    cache = contacts.toSet()
+
+                    if (contacts.isNotEmpty()) {
+                        cache = contacts.toSet()
+                    }
                     contacts
                 }
             }
@@ -74,30 +77,30 @@ class ContactFetcherImpl
                 while (it.moveToNext()) {
                     phones.add(it.getString(index))
                 }
-        }
-        return phones
-    }
-
-    private fun fetchEmails(contactId: Long): List<String> {
-        val emails = mutableListOf<String>()
-        val cursor =
-            contentResolver.query(
-                ContactsContract.CommonDataKinds.Email.CONTENT_URI,
-                arrayOf(ContactsContract.CommonDataKinds.Email.ADDRESS),
-                "${ContactsContract.CommonDataKinds.Email.CONTACT_ID} = ?",
-                arrayOf(contactId.toString()),
-                null,
-            )
-        cursor?.use {
-            val index = it.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Email.ADDRESS)
-            while (it.moveToNext()) {
-                emails.add(it.getString(index))
             }
+            return phones
         }
-        return emails
-    }
 
-    suspend fun clearCache() {
+        private fun fetchEmails(contactId: Long): List<String> {
+            val emails = mutableListOf<String>()
+            val cursor =
+                contentResolver.query(
+                    ContactsContract.CommonDataKinds.Email.CONTENT_URI,
+                    arrayOf(ContactsContract.CommonDataKinds.Email.ADDRESS),
+                    "${ContactsContract.CommonDataKinds.Email.CONTACT_ID} = ?",
+                    arrayOf(contactId.toString()),
+                    null,
+                )
+            cursor?.use {
+                val index = it.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Email.ADDRESS)
+                while (it.moveToNext()) {
+                    emails.add(it.getString(index))
+                }
+            }
+            return emails
+        }
+
+        suspend fun clearCache() {
         cacheMutex.withLock {
             cache = null
         }
