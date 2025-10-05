@@ -46,6 +46,9 @@ kotlinxDatetime = "0.7.1-0.6.x-compat"
 workRuntimeKtx = "2.10.5"
 material3 = "1.4.0"
 
+# Google
+libphonenumber = "9.0.15"
+
 [libraries]
 # AndroidX Core
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -112,6 +115,9 @@ kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime",
 androidx-work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workRuntimeKtx" }
 androidx-hilt-compiler = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "androidxHilt" }
 androidx-hilt-work = { group = "androidx.hilt", name = "hilt-work", version.ref = "androidxHilt" }
+
+# Google
+google-libphonenumber = { group = "com.googlecode.libphonenumber", name = "libphonenumber", version.ref = "libphonenumber" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -86,8 +86,12 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.navigation3)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
 
-    // Serialization
+    // Kotlin
     implementation(libs.kotlinx.serialization.core)
+    implementation(libs.kotlin.reflect)
+    implementation(libs.kotlinx.datetime)
+    testImplementation(libs.kotlinx.datetime)
+    testImplementation(kotlin("test"))
 
     // DI / Hilt
     implementation(libs.hilt.android)
@@ -114,11 +118,6 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.room.paging)
 
-    // Date/Time
-    implementation(libs.kotlinx.datetime)
-    testImplementation(libs.kotlinx.datetime)
-    testImplementation(kotlin("test"))
-
     // WorkManager
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.androidx.hilt.work)
@@ -128,7 +127,6 @@ dependencies {
     // Datastore
     implementation(libs.androidx.datastore.preferences)
 
-    implementation(libs.kotlin.reflect)
-
-    implementation("com.googlecode.libphonenumber:libphonenumber:9.0.15")
+    // Google
+    implementation(libs.google.libphonenumber)
 }
