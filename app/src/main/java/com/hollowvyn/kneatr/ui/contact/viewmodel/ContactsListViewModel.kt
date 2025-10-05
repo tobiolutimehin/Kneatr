@@ -61,7 +61,7 @@ class ContactsListViewModel
             }.stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5000),
-                initialValue = ContactsListUiState.Empty,
+                initialValue = ContactsListUiState.Loading,
             )
 
         fun onQueryChange(newQuery: String) {
