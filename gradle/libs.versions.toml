@@ -37,7 +37,7 @@ hilt = "2.57.2"
 ksp = "2.2.10-2.0.2"
 
 # Room
-room = "2.8.1"
+room = "2.8.2"
 
 # Date/Time
 kotlinxDatetime = "0.7.1-0.6.x-compat"
