@@ -47,7 +47,7 @@ workRuntimeKtx = "2.10.5"
 material3 = "1.4.0"
 
 # Google
-libphonenumber = "9.0.15"
+libphonenumber = "9.0.16"
 
 [libraries]
 # AndroidX Core
