@@ -1,12 +1,16 @@
 package com.hollowvyn.kneatr.ui.navigation
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
 import androidx.compose.material3.adaptive.navigation3.rememberListDetailSceneStrategy
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScope
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -37,7 +41,11 @@ fun KneatrApp(
             sceneStrategy = listDetailStrategy,
             entryProvider =
                 entryProvider {
-                    entry<ContactsList> {
+                    entry<ContactsList>(
+                        metadata = ListDetailSceneStrategy.listPane(
+                            detailPlaceholder = { DetailPlaceholder() },
+                        ),
+                    ) {
                         ContactsListScreen(
                             onContactClick = { contact ->
                                 topLevelBackStack.add(ContactDetail(id = contact.id))
@@ -45,7 +53,7 @@ fun KneatrApp(
                         )
                     }
 
-                    entry<ContactDetail> { contactDetail ->
+                    entry<ContactDetail>(metadata = ListDetailSceneStrategy.detailPane()) { contactDetail ->
                         ContactDetailScreen(
                             contactId = contactDetail.id,
                             onNavigateBack = {
@@ -102,5 +110,15 @@ private fun NavigationSuiteScope.kneatrNavigationItems(topLevelBackStack: TopLev
             label = { Text(stringResource(topLevelRoute.label)) },
             alwaysShowLabel = false,
         )
+    }
+}
+
+@Composable
+fun DetailPlaceholder() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text("Placeholder")
     }
 }

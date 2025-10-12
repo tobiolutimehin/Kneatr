@@ -72,7 +72,6 @@ dependencies {
     implementation(libs.androidx.compose.material3.windowSizeClass)
     implementation(libs.androidx.compose.material3.adaptive.layout)
     implementation(libs.androidx.compose.material3.adaptive.navigation)
-    implementation(libs.androidx.compose.adaptive.navigation3)
     implementation(libs.androidx.compose.adaptive.navigation3.android)
 
     // Navigation
@@ -81,6 +80,8 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.navigation.testing)
     implementation(libs.androidx.hilt.navigation.compose)
+
+    implementation(libs.androidx.material3.navigation3)
 
     // Lifecycle + ViewModel + Navigation
     implementation(libs.androidx.lifecycle.viewmodel.navigation3)
