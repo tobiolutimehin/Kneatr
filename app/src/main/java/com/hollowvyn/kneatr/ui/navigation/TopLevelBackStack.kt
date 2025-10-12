@@ -31,24 +31,17 @@ class TopLevelBackStack<T : Any>(
         }
 
     fun addTopLevel(key: T) {
-        // If the clicked key is already the current top level key...
         if (key == topLevelKey) {
-            // ...pop its stack back to the root.
-            topLevelStacks[key]?.let { stack ->
-                stack.clear()
-                stack.add(key)
-            }
-        } else {
-            // If the top level doesn't exist, add it
-            if (topLevelStacks[key] == null) {
-                topLevelStacks[key] = mutableStateListOf(key)
-            }
-            // Move the stack associated with the key to the end to make it current
-            topLevelStacks.remove(key)?.let {
-                topLevelStacks[key] = it
-            }
-            topLevelKey = key
+            return
         }
+        if (topLevelStacks[key] == null) {
+            topLevelStacks[key] = mutableStateListOf(key)
+        }
+        // Move the stack associated with the key to the end to make it current
+        topLevelStacks.remove(key)?.let {
+            topLevelStacks[key] = it
+        }
+        topLevelKey = key
 
         updateBackStack()
     }
