@@ -222,9 +222,5 @@ private fun ContactDetailContent(
                 Text(text = "Email: $email")
             }
         }
-
-        items(100) {
-            Text(text = "Log $it")
-        }
     }
 }
