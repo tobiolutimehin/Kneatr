@@ -20,7 +20,6 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
-import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -171,7 +170,7 @@ private fun DateSelector(
     val datePickerState =
         rememberDatePickerState(
             initialSelectedDateMillis = selectedDateMillis,
-            selectableDates = PastOrPresentSelectableDates,
+            selectableDates = DateTimeUtils.getSelectablePastAndPresentDates(),
         )
 
     Row(
@@ -284,10 +283,4 @@ private fun CommunicationLogSheetContentPreview() {
         onSave = { _, _, _ -> },
         onCancel = { },
     )
-}
-
-object PastOrPresentSelectableDates : SelectableDates {
-    override fun isSelectableDate(utcTimeMillis: Long): Boolean = utcTimeMillis <= System.currentTimeMillis()
-
-    override fun isSelectableYear(year: Int): Boolean = year <= DateTimeUtils.today().year
 }

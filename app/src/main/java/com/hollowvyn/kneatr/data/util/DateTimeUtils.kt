@@ -1,5 +1,6 @@
 package com.hollowvyn.kneatr.data.util
 
+import androidx.compose.material3.SelectableDates
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
@@ -46,4 +47,11 @@ object DateTimeUtils {
     fun formatDate(date: LocalDate): String = date.format(customFormat)
 
     fun formatDate(millis: Long): String = toLocalDate(millis).format(customFormat)
+
+    fun getSelectablePastAndPresentDates() =
+        object : SelectableDates {
+            override fun isSelectableDate(utcTimeMillis: Long): Boolean = utcTimeMillis <= System.currentTimeMillis()
+
+            override fun isSelectableYear(year: Int): Boolean = year <= today().year
+        }
 }
