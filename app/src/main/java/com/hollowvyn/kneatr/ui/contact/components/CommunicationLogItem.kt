@@ -42,13 +42,14 @@ fun CommunicationLogItem(
 ) {
     var isExpanded by remember { mutableStateOf(false) }
     var showMenu by remember { mutableStateOf(false) }
+    var isExpandable by remember { mutableStateOf(false) }
 
     Row(
         modifier =
             modifier
                 .fillMaxWidth()
-                .clickable { isExpanded = !isExpanded }
-                .padding(start = 16.dp, top = 8.dp, bottom = 8.dp, end = 4.dp)
+                .clickable(enabled = isExpandable) { isExpanded = !isExpanded }
+                .padding(vertical = 8.dp)
                 .animateContentSize(),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -73,7 +74,10 @@ fun CommunicationLogItem(
                     text = log.notes,
                     style = MaterialTheme.typography.labelSmall,
                     maxLines = if (isExpanded) Int.MAX_VALUE else 2,
-                    overflow = if (isExpanded) TextOverflow.Visible else TextOverflow.Ellipsis,
+                    overflow = TextOverflow.Ellipsis,
+                    onTextLayout = { textLayoutResult ->
+                        isExpandable = textLayoutResult.hasVisualOverflow || isExpanded
+                    },
                 )
             }
         }
