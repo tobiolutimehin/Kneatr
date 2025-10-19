@@ -89,7 +89,6 @@ fun CommunicationLogBottomSheet(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommunicationLogSheetContent(
     onSave: (LocalDate, CommunicationType, String) -> Unit,
@@ -98,87 +97,28 @@ fun CommunicationLogSheetContent(
 ) {
     var notes by remember { mutableStateOf("") }
     var selectedType by remember { mutableStateOf<CommunicationType?>(null) }
-
-    val initialDateMillis = System.currentTimeMillis()
-    val datePickerState = rememberDatePickerState(initialSelectedDateMillis = initialDateMillis)
-    var showDatePickerDialog by remember { mutableStateOf(false) }
-    var selectedDateMillis by remember { mutableLongStateOf(initialDateMillis) }
-
-    val formatter = remember { DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM) }
+    var selectedDateMillis by remember { mutableLongStateOf(System.currentTimeMillis()) }
 
     Column(
         modifier = modifier.padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
-        ) {
-            Text(
-                text = stringResource(R.string.add_communication_log),
-                style = MaterialTheme.typography.titleLarge,
-            )
-            IconButton(
-                onClick = onCancel,
-                modifier = Modifier,
-            ) {
-                Icon(Icons.Default.Close, contentDescription = stringResource(R.string.close))
-            }
-        }
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
-        ) {
-            Text(stringResource(R.string.date), style = MaterialTheme.typography.titleMedium)
-            InputChip(
-                selected = false,
-                onClick = { showDatePickerDialog = true },
-                label = {
-                    Text(
-                        text =
-                            Instant
-                                .ofEpochMilli(selectedDateMillis)
-                                .atZone(ZoneId.systemDefault())
-                                .toLocalDate()
-                                .format(formatter),
-                    )
-                },
-            )
-        }
+        SheetHeader(onCancel = onCancel)
 
-        Text(
-            text = stringResource(R.string.type_of_communication),
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.fillMaxWidth(),
+        DateSelector(
+            selectedDateMillis = selectedDateMillis,
+            onDateChange = { selectedDateMillis = it },
         )
+
         CommunicationTypeSelector(
-            modifier =
-                Modifier
-                    .fillMaxWidth(),
             selectOption = { selectedType = it },
             selectedOption = selectedType,
         )
-        Text(
-            text = stringResource(R.string.notes),
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.fillMaxWidth(),
-        )
-        OutlinedTextField(
-            value = notes,
-            onValueChange = { notes = it },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = false,
-            minLines = 2,
-            maxLines = 2,
-            placeholder = {
-                Text(
-                    stringResource(R.string.communication_log_sheet_notes_placeholder),
-                    style = MaterialTheme.typography.bodySmall,
-                )
-            },
+
+        NotesInput(
+            notes = notes,
+            onNotesChange = { notes = it },
         )
 
         Button(
@@ -197,6 +137,62 @@ fun CommunicationLogSheetContent(
             Text(stringResource(R.string.save))
         }
     }
+}
+
+@Composable
+private fun SheetHeader(
+    onCancel: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
+        Text(
+            text = stringResource(R.string.add_communication_log),
+            style = MaterialTheme.typography.titleLarge,
+        )
+        IconButton(
+            onClick = onCancel,
+        ) {
+            Icon(Icons.Default.Close, contentDescription = stringResource(R.string.close))
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun DateSelector(
+    selectedDateMillis: Long,
+    onDateChange: (Long) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    var showDatePickerDialog by remember { mutableStateOf(false) }
+    val datePickerState = rememberDatePickerState(initialSelectedDateMillis = selectedDateMillis)
+    val formatter = remember { DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM) }
+
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
+        Text(stringResource(R.string.date), style = MaterialTheme.typography.titleMedium)
+        InputChip(
+            selected = false,
+            onClick = { showDatePickerDialog = true },
+            label = {
+                Text(
+                    text =
+                        Instant
+                            .ofEpochMilli(selectedDateMillis)
+                            .atZone(ZoneId.systemDefault())
+                            .toLocalDate()
+                            .format(formatter),
+                )
+            },
+        )
+    }
 
     if (showDatePickerDialog) {
         DatePickerDialog(
@@ -205,7 +201,7 @@ fun CommunicationLogSheetContent(
                 TextButton(
                     onClick = {
                         showDatePickerDialog = false
-                        selectedDateMillis = datePickerState.selectedDateMillis ?: initialDateMillis
+                        datePickerState.selectedDateMillis?.let(onDateChange)
                     },
                 ) { Text(stringResource(R.string.ok)) }
             },
@@ -220,6 +216,70 @@ fun CommunicationLogSheetContent(
     }
 }
 
+@Composable
+private fun CommunicationTypeSelector(
+    modifier: Modifier = Modifier,
+    selectOption: (CommunicationType) -> Unit = { },
+    selectedOption: CommunicationType? = null,
+) {
+    val options = CommunicationType.entries
+    Column(modifier = modifier) {
+        Text(
+            text = stringResource(R.string.type_of_communication),
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.fillMaxWidth(),
+        )
+        SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
+            options.forEachIndexed { index, option ->
+                SegmentedButton(
+                    shape =
+                        SegmentedButtonDefaults.itemShape(
+                            index = index,
+                            count = options.size,
+                        ),
+                    onClick = { selectOption(option) },
+                    selected = option == selectedOption,
+                    label = {
+                        Icon(
+                            painter = painterResource(option.icon),
+                            contentDescription = stringResource(option.label),
+                        )
+                    },
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun NotesInput(
+    notes: String,
+    onNotesChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier = modifier) {
+        Text(
+            text = stringResource(R.string.notes),
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.fillMaxWidth(),
+        )
+        OutlinedTextField(
+            value = notes,
+            onValueChange = onNotesChange,
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = false,
+            minLines = 2,
+            maxLines = 2,
+            placeholder = {
+                Text(
+                    stringResource(R.string.communication_log_sheet_notes_placeholder),
+                    style = MaterialTheme.typography.bodySmall,
+                )
+            },
+        )
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 private fun CommunicationLogSheetContentPreview() {
@@ -227,32 +287,4 @@ private fun CommunicationLogSheetContentPreview() {
         onSave = { _, _, _ -> },
         onCancel = { },
     )
-}
-
-@Composable
-fun CommunicationTypeSelector(
-    modifier: Modifier = Modifier,
-    selectOption: (CommunicationType) -> Unit = { },
-    selectedOption: CommunicationType? = null,
-) {
-    val options = CommunicationType.entries
-    SingleChoiceSegmentedButtonRow(modifier = modifier) {
-        options.forEachIndexed { index, option ->
-            SegmentedButton(
-                shape =
-                    SegmentedButtonDefaults.itemShape(
-                        index = index,
-                        count = options.size,
-                    ),
-                onClick = { selectOption(option) },
-                selected = option == selectedOption,
-                label = {
-                    Icon(
-                        painter = painterResource(option.icon),
-                        contentDescription = stringResource(option.label),
-                    )
-                },
-            )
-        }
-    }
 }
