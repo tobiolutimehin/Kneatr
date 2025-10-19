@@ -166,7 +166,7 @@ private fun SheetHeader(
 private fun DateSelector(
     selectedDateMillis: Long,
     onDateChange: (Long) -> Unit,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     var showDatePickerDialog by remember { mutableStateOf(false) }
     val datePickerState = rememberDatePickerState(initialSelectedDateMillis = selectedDateMillis)
@@ -183,12 +183,10 @@ private fun DateSelector(
             onClick = { showDatePickerDialog = true },
             label = {
                 Text(
-                    text =
-                        Instant
-                            .ofEpochMilli(selectedDateMillis)
-                            .atZone(ZoneId.systemDefault())
-                            .toLocalDate()
-                            .format(formatter),
+                    text = Instant.ofEpochMilli(selectedDateMillis)
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalDate()
+                        .format(formatter),
                 )
             },
         )
@@ -217,7 +215,7 @@ private fun DateSelector(
 }
 
 @Composable
-private fun CommunicationTypeSelector(
+fun CommunicationTypeSelector(
     modifier: Modifier = Modifier,
     selectOption: (CommunicationType) -> Unit = { },
     selectedOption: CommunicationType? = null,
@@ -232,11 +230,10 @@ private fun CommunicationTypeSelector(
         SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
             options.forEachIndexed { index, option ->
                 SegmentedButton(
-                    shape =
-                        SegmentedButtonDefaults.itemShape(
-                            index = index,
-                            count = options.size,
-                        ),
+                    shape = SegmentedButtonDefaults.itemShape(
+                        index = index,
+                        count = options.size,
+                    ),
                     onClick = { selectOption(option) },
                     selected = option == selectedOption,
                     label = {
@@ -252,10 +249,10 @@ private fun CommunicationTypeSelector(
 }
 
 @Composable
-private fun NotesInput(
+fun NotesInput(
     notes: String,
     onNotesChange: (String) -> Unit,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
         Text(
