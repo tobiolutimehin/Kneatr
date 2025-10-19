@@ -10,4 +10,18 @@
     <string name="error_could_not_open_dialer">Could not open dialer</string>
     <string name="error_could_not_open_messaging">Could not open messaging</string>
     <string name="error_could_not_open_email">Could not open email</string>
+    <string name="phone_call">Phone call</string>
+    <string name="message">Message</string>
+    <string name="video_call">Video call</string>
+    <string name="email">Email</string>
+    <string name="other">Other form of communication</string>
+    <string name="add_communication_log">Add Communication Log</string>
+    <string name="close">Close</string>
+    <string name="type_of_communication">Type of Communication</string>
+    <string name="communication_log_sheet_notes_placeholder">Enter notes here. Anything special happen?</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="date">Date</string>
+    <string name="notes">Notes</string>
+    <string name="save">Save</string>
 </resources>
