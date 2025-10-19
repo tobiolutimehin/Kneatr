@@ -1,7 +1,5 @@
 package com.hollowvyn.kneatr.ui.contact
 
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,6 +16,7 @@ import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.InputChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
@@ -116,7 +115,10 @@ fun CommunicationLogSheetContent(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            Text(text = "Add Communication Log")
+            Text(
+                text = "Add Communication Log",
+                style = MaterialTheme.typography.titleLarge,
+            )
             IconButton(
                 onClick = onCancel,
                 modifier = Modifier,
@@ -125,32 +127,32 @@ fun CommunicationLogSheetContent(
             }
         }
         Row(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .clickable { showDatePickerDialog = true }
-                    .padding(vertical = 8.dp),
+            modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            Text("Date:")
-            Text(
-                text =
-                    Instant
-                        .ofEpochMilli(selectedDateMillis)
-                        .atZone(ZoneId.systemDefault())
-                        .toLocalDate()
-                        .format(formatter),
-                modifier =
-                    Modifier
-                        .border(
-                            width = 1.dp,
-                            color = MaterialTheme.colorScheme.primary,
-                            shape = MaterialTheme.shapes.small,
-                        ).padding(6.dp),
+            Text("Date", style = MaterialTheme.typography.titleMedium)
+            InputChip(
+                selected = false,
+                onClick = { showDatePickerDialog = true },
+                label = {
+                    Text(
+                        text =
+                            Instant
+                                .ofEpochMilli(selectedDateMillis)
+                                .atZone(ZoneId.systemDefault())
+                                .toLocalDate()
+                                .format(formatter),
                     )
+                },
+            )
         }
 
+        Text(
+            text = "Type of Communication",
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.fillMaxWidth(),
+        )
         CommunicationTypeSelector(
             modifier =
                 Modifier
