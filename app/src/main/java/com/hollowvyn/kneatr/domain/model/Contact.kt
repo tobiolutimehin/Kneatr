@@ -28,10 +28,10 @@ data class ContactTag(
 
 @Immutable
 data class CommunicationLog(
-    val id: Long,
     val type: CommunicationType,
     val date: LocalDate,
     val contactId: Long,
+    val id: Long? = null,
     val notes: String? = null,
 )
 

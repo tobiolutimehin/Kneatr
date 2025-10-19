@@ -31,7 +31,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -70,6 +72,8 @@ fun ContactDetailScreen(
     val listState = rememberLazyListState()
     val isScrolled = remember { derivedStateOf { listState.firstVisibleItemIndex > 0 } }
 
+    var showBottomSheet by remember { mutableStateOf(false) }
+
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -97,7 +101,9 @@ fun ContactDetailScreen(
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 text = { Text("Add log") },
-                onClick = { /*TODO*/ },
+                onClick = {
+                    showBottomSheet = true
+                },
                 icon = {
                     Icon(
                         imageVector = Icons.Filled.Add,
@@ -130,6 +136,15 @@ fun ContactDetailScreen(
                     modifier = Modifier.padding(innerPadding),
                 )
         }
+
+        if (showBottomSheet) {
+            CommunicationLogBottomSheet(
+                addCommunicationLog = { date, type, notes ->
+                    viewModel.addCommunicationLog(date, type, notes)
+                },
+                dismissBottomSheet = { showBottomSheet = false },
+            )
+        }
     }
 }
 
@@ -154,6 +169,12 @@ private fun ContactDetailContent(
                 style = MaterialTheme.typography.headlineLarge,
                 modifier = Modifier.padding(vertical = 16.dp),
             )
+        }
+        item {
+            Text(text = "Communication Log")
+            contact.communicationLogs.forEach { log ->
+                Text(text = "${log.date} - ${log.type} - ${log.notes}")
+            }
         }
         item {
             if (contact.tags.isNotEmpty()) {
@@ -200,10 +221,6 @@ private fun ContactDetailContent(
             contact.email?.let { email ->
                 Text(text = "Email: $email")
             }
-        }
-
-        items(100) {
-            Text(text = "Log $it")
         }
     }
 }

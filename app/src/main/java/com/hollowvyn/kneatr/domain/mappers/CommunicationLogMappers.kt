@@ -5,7 +5,7 @@ import com.hollowvyn.kneatr.domain.model.CommunicationLog
 
 fun CommunicationLog.toEntity(): CommunicationLogEntity =
     CommunicationLogEntity(
-        communicationId = id,
+        communicationId = id ?: 0,
         type = type,
         date = date,
         contactId = contactId,
