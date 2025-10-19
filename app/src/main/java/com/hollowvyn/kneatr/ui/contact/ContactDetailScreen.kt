@@ -127,9 +127,12 @@ fun ContactDetailScreen(
                         contact = it,
                         modifier = Modifier.padding(innerPadding),
                         listState = listState,
-                        onLogClick = {
-                            selectedLog = it
+                        onEditLog = { log ->
+                            selectedLog = log
                             showBottomSheet = true
+                        },
+                        onDeleteLog = { log ->
+                            viewModel.deleteCommunicationLog(log)
                         },
                     )
                 } ?: Text("Contact not found", modifier = Modifier.padding(innerPadding))
@@ -168,7 +171,8 @@ fun ContactDetailScreen(
 private fun ContactDetailContent(
     contact: Contact,
     listState: LazyListState,
-    onLogClick: (CommunicationLog) -> Unit,
+    onEditLog: (CommunicationLog) -> Unit,
+    onDeleteLog: (CommunicationLog) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -242,7 +246,11 @@ private fun ContactDetailContent(
         }
 
         items(contact.communicationLogs.take(10)) {
-            CommunicationLogItem(log = it, onClick = { onLogClick(it) })
+            CommunicationLogItem(
+                log = it,
+                onEdit = { onEditLog(it) },
+                onDelete = { onDeleteLog(it) },
+            )
         }
     }
 }

@@ -1,16 +1,25 @@
 package com.hollowvyn.kneatr.ui.contact.components
 
-import androidx.compose.foundation.combinedClickable
+import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -18,27 +27,29 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.hollowvyn.kneatr.R
 import com.hollowvyn.kneatr.data.local.entity.CommunicationType
 import com.hollowvyn.kneatr.data.util.DateTimeUtils
 import com.hollowvyn.kneatr.domain.model.CommunicationLog
 import kotlinx.datetime.LocalDate
-import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
 @Composable
 fun CommunicationLogItem(
     log: CommunicationLog,
-    onClick: () -> Unit,
+    onEdit: () -> Unit,
+    onDelete: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    var isExpanded by remember { mutableStateOf(false) }
+    var showMenu by remember { mutableStateOf(false) }
+
     Row(
         modifier =
             modifier
                 .fillMaxWidth()
-                .combinedClickable(
-                    onLongClick = onClick,
-                    onClick = {},
-                ).padding(vertical = 8.dp),
+                .clickable { isExpanded = !isExpanded }
+                .padding(start = 16.dp, top = 8.dp, bottom = 8.dp, end = 4.dp)
+                .animateContentSize(),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
@@ -57,19 +68,46 @@ fun CommunicationLogItem(
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            if (log.notes?.isNotBlank() == true) {
+            if (!log.notes.isNullOrBlank()) {
                 Text(
                     text = log.notes,
                     style = MaterialTheme.typography.labelSmall,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
+                    maxLines = if (isExpanded) Int.MAX_VALUE else 2,
+                    overflow = if (isExpanded) TextOverflow.Visible else TextOverflow.Ellipsis,
+                )
+            }
+        }
+        Box {
+            IconButton(onClick = { showMenu = true }) {
+                Icon(
+                    painter = painterResource(R.drawable.more_horiz_24px),
+                    contentDescription = stringResource(R.string.more_options),
+                )
+            }
+            DropdownMenu(
+                expanded = showMenu,
+                onDismissRequest = { showMenu = false },
+            ) {
+                DropdownMenuItem(
+                    text = { Text(stringResource(R.string.edit)) },
+                    onClick = {
+                        onEdit()
+                        showMenu = false
+                    },
+                )
+                DropdownMenuItem(
+                    text = { Text(stringResource(R.string.delete)) },
+                    onClick = {
+                        onDelete()
+                        showMenu = false
+                    },
                 )
             }
         }
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 private fun CommunicationLogItemPreview() {
     val log =
@@ -78,7 +116,7 @@ private fun CommunicationLogItemPreview() {
             date = LocalDate(2023, 1, 15),
             contactId = 1L,
             id = 1L,
-            notes = "This is a note for the communication log. It can be a bit long to see how it overflows.",
+            notes = "This is a note for the communication log. It can be a bit long to see how it overflows. Clicking it will expand it.",
         )
-    CommunicationLogItem(log = log, onClick = {})
+    CommunicationLogItem(log = log, onEdit = {}, onDelete = {})
 }

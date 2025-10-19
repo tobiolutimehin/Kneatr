@@ -67,6 +67,14 @@ class ContactDetailViewModel
             }
         }
 
+        fun deleteCommunicationLog(log: CommunicationLog) {
+            viewModelScope.launch {
+                contactIdFlow.value?.let { contactId ->
+                    contactRepository.deleteCommunicationLog(log)
+                }
+            }
+    }
+
         fun updateCommunicationLog(
             date: LocalDate,
             type: CommunicationType,
@@ -84,8 +92,8 @@ class ContactDetailViewModel
                                 type = type,
                                 notes = notes,
                             ),
-                )
+                    )
+                }
             }
         }
-    }
     }
