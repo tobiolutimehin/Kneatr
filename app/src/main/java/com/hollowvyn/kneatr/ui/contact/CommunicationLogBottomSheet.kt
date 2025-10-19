@@ -1,5 +1,6 @@
 package com.hollowvyn.kneatr.ui.contact
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -140,7 +141,14 @@ fun CommunicationLogSheetContent(
                         .atZone(ZoneId.systemDefault())
                         .toLocalDate()
                         .format(formatter),
-            )
+                modifier =
+                    Modifier
+                        .border(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.primary,
+                            shape = MaterialTheme.shapes.small,
+                        ).padding(6.dp),
+                    )
         }
 
         CommunicationTypeSelector(
