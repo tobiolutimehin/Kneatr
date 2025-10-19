@@ -1,12 +1,10 @@
 package com.hollowvyn.kneatr.ui.contact
 
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.BottomSheetDefaults
@@ -36,8 +34,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.hollowvyn.kneatr.R
 import com.hollowvyn.kneatr.data.local.entity.CommunicationType
 import com.hollowvyn.kneatr.data.local.typeconverter.LocalDateConverters
 import kotlinx.coroutines.launch
@@ -116,14 +117,14 @@ fun CommunicationLogSheetContent(
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Text(
-                text = "Add Communication Log",
+                text = stringResource(R.string.add_communication_log),
                 style = MaterialTheme.typography.titleLarge,
             )
             IconButton(
                 onClick = onCancel,
                 modifier = Modifier,
             ) {
-                Icon(Icons.Default.Close, contentDescription = "Close")
+                Icon(Icons.Default.Close, contentDescription = stringResource(R.string.close))
             }
         }
         Row(
@@ -131,7 +132,7 @@ fun CommunicationLogSheetContent(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            Text("Date", style = MaterialTheme.typography.titleMedium)
+            Text(stringResource(R.string.date), style = MaterialTheme.typography.titleMedium)
             InputChip(
                 selected = false,
                 onClick = { showDatePickerDialog = true },
@@ -149,26 +150,35 @@ fun CommunicationLogSheetContent(
         }
 
         Text(
-            text = "Type of Communication",
+            text = stringResource(R.string.type_of_communication),
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.fillMaxWidth(),
         )
         CommunicationTypeSelector(
             modifier =
                 Modifier
-                    .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState()),
+                    .fillMaxWidth(),
             selectOption = { selectedType = it },
             selectedOption = selectedType,
+        )
+        Text(
+            text = stringResource(R.string.notes),
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.fillMaxWidth(),
         )
         OutlinedTextField(
             value = notes,
             onValueChange = { notes = it },
-            label = { Text("Notes") },
             modifier = Modifier.fillMaxWidth(),
             singleLine = false,
             minLines = 2,
             maxLines = 2,
+            placeholder = {
+                Text(
+                    stringResource(R.string.communication_log_sheet_notes_placeholder),
+                    style = MaterialTheme.typography.bodySmall,
+                )
+            },
         )
 
         Button(
@@ -184,7 +194,7 @@ fun CommunicationLogSheetContent(
             enabled = selectedType != null,
             modifier = Modifier.fillMaxWidth(),
         ) {
-            Text("Save")
+            Text(stringResource(R.string.save))
         }
     }
 
@@ -197,12 +207,12 @@ fun CommunicationLogSheetContent(
                         showDatePickerDialog = false
                         selectedDateMillis = datePickerState.selectedDateMillis ?: initialDateMillis
                     },
-                ) { Text("OK") }
+                ) { Text(stringResource(R.string.ok)) }
             },
             dismissButton = {
                 TextButton(
                     onClick = { showDatePickerDialog = false },
-                ) { Text("Cancel") }
+                ) { Text(stringResource(R.string.cancel)) }
             },
         ) {
             DatePicker(state = datePickerState)
@@ -226,9 +236,7 @@ fun CommunicationTypeSelector(
     selectedOption: CommunicationType? = null,
 ) {
     val options = CommunicationType.entries
-    SingleChoiceSegmentedButtonRow(
-        modifier = modifier,
-    ) {
+    SingleChoiceSegmentedButtonRow(modifier = modifier) {
         options.forEachIndexed { index, option ->
             SegmentedButton(
                 shape =
@@ -238,7 +246,12 @@ fun CommunicationTypeSelector(
                     ),
                 onClick = { selectOption(option) },
                 selected = option == selectedOption,
-                label = { Text(text = option.name, style = MaterialTheme.typography.labelSmall) },
+                label = {
+                    Icon(
+                        painter = painterResource(option.icon),
+                        contentDescription = stringResource(option.label),
+                    )
+                },
             )
         }
     }
