@@ -1,6 +1,5 @@
 package com.hollowvyn.kneatr.domain
 
-import com.hollowvyn.kneatr.data.util.DateTimeHelper
 import kotlinx.datetime.TimeZone
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
@@ -20,5 +19,4 @@ object DateFakes {
     val fixedClock: Clock = Clock.Companion.fixed(Instant.Companion.parse("2024-01-01T00:00:00Z"))
 
     val timeZone = TimeZone.Companion.UTC
-    val dateTimeHelper = DateTimeHelper(fixedClock, timeZone)
 }
