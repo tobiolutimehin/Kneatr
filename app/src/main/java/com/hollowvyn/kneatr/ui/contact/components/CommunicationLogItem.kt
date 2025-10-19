@@ -39,7 +39,6 @@ fun CommunicationLogItem(
     modifier: Modifier = Modifier,
 ) {
     var isExpanded by remember { mutableStateOf(false) }
-    var showMenu by remember { mutableStateOf(false) }
     var isExpandable by remember { mutableStateOf(false) }
 
     Row(
@@ -56,9 +55,12 @@ fun CommunicationLogItem(
             contentDescription = stringResource(id = log.type.label),
             tint = MaterialTheme.colorScheme.primary,
         )
-        Column(modifier = Modifier
-            .weight(1f)
-            .padding(start = 16.dp, end = 4.dp)) {
+        Column(
+            modifier =
+                Modifier
+                    .weight(1f)
+                    .padding(start = 16.dp, end = 4.dp),
+        ) {
             Text(
                 text = stringResource(id = log.type.label),
                 style = MaterialTheme.typography.titleSmall,
