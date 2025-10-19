@@ -41,19 +41,21 @@ import androidx.compose.ui.unit.dp
 import com.hollowvyn.kneatr.R
 import com.hollowvyn.kneatr.data.local.entity.CommunicationType
 import com.hollowvyn.kneatr.data.util.DateTimeUtils
+import com.hollowvyn.kneatr.domain.model.CommunicationLog
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
-import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommunicationLogBottomSheet(
-    addCommunicationLog: (LocalDate, CommunicationType, String) -> Unit,
+    onSave: (id: Long?, date: LocalDate, type: CommunicationType, notes: String) -> Unit,
     dismissBottomSheet: () -> Unit,
     modifier: Modifier = Modifier,
+    logToEdit: CommunicationLog? = null,
 ) {
     val scope = rememberCoroutineScope()
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
     ModalBottomSheet(
         onDismissRequest = dismissBottomSheet,
         sheetState = bottomSheetState,
@@ -61,8 +63,9 @@ fun CommunicationLogBottomSheet(
         modifier = modifier,
     ) {
         CommunicationLogSheetContent(
-            onSave = { date, type, notes ->
-                addCommunicationLog(date, type, notes)
+            logToEdit = logToEdit,
+            onSave = { id, date, type, notes ->
+                onSave(id, date, type, notes)
                 scope
                     .launch {
                         bottomSheetState.hide()
@@ -86,23 +89,28 @@ fun CommunicationLogBottomSheet(
     }
 }
 
-@OptIn(ExperimentalTime::class)
 @Composable
 fun CommunicationLogSheetContent(
-    onSave: (LocalDate, CommunicationType, String) -> Unit,
+    onSave: (id: Long?, date: LocalDate, type: CommunicationType, notes: String) -> Unit,
     onCancel: () -> Unit,
     modifier: Modifier = Modifier,
+    logToEdit: CommunicationLog? = null,
 ) {
-    var notes by remember { mutableStateOf("") }
-    var selectedType by remember { mutableStateOf<CommunicationType?>(null) }
-    var selectedDateMillis by remember { mutableLongStateOf(System.currentTimeMillis()) }
+    var notes by remember(logToEdit) { mutableStateOf(logToEdit?.notes ?: "") }
+    var selectedType by remember(logToEdit) { mutableStateOf(logToEdit?.type) }
+    val initialDate =
+        logToEdit?.let { DateTimeUtils.toEpochMillis(it.date) } ?: System.currentTimeMillis()
+    var selectedDateMillis by remember(logToEdit) { mutableLongStateOf(initialDate) }
+
+    val title =
+        if (logToEdit == null) stringResource(R.string.add_communication_log) else stringResource(R.string.edit_communication_log)
 
     Column(
         modifier = modifier.padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        SheetHeader(onCancel = onCancel)
+        SheetHeader(title = title, onCancel = onCancel)
 
         DateSelector(
             selectedDateMillis = selectedDateMillis,
@@ -123,6 +131,7 @@ fun CommunicationLogSheetContent(
             onClick = {
                 selectedType?.let { type ->
                     onSave(
+                        logToEdit?.id,
                         DateTimeUtils.toLocalDate(selectedDateMillis),
                         type,
                         notes,
@@ -139,6 +148,7 @@ fun CommunicationLogSheetContent(
 
 @Composable
 private fun SheetHeader(
+    title: String,
     onCancel: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -148,7 +158,7 @@ private fun SheetHeader(
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         Text(
-            text = stringResource(R.string.add_communication_log),
+            text = title,
             style = MaterialTheme.typography.titleLarge,
         )
         IconButton(
@@ -159,7 +169,7 @@ private fun SheetHeader(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalTime::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DateSelector(
     selectedDateMillis: Long,
@@ -280,7 +290,8 @@ fun NotesInput(
 @Composable
 private fun CommunicationLogSheetContentPreview() {
     CommunicationLogSheetContent(
-        onSave = { _, _, _ -> },
+        logToEdit = null,
+        onSave = { _, _, _, _ -> },
         onCancel = { },
     )
 }

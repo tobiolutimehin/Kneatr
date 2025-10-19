@@ -1,6 +1,6 @@
 package com.hollowvyn.kneatr.ui.contact.components
 
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -35,8 +35,10 @@ fun CommunicationLogItem(
         modifier =
             modifier
                 .fillMaxWidth()
-                .clickable(onClick = onClick)
-                .padding(vertical = 8.dp),
+                .combinedClickable(
+                    onLongClick = onClick,
+                    onClick = {},
+                ).padding(vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(

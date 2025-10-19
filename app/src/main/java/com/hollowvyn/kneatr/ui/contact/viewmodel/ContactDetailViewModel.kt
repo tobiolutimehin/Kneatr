@@ -62,6 +62,28 @@ class ContactDetailViewModel
                                 type = type,
                                 notes = notes,
                             ),
+                    )
+                }
+            }
+        }
+
+        fun updateCommunicationLog(
+            date: LocalDate,
+            type: CommunicationType,
+            notes: String,
+            logId: Long,
+        ) {
+            viewModelScope.launch {
+                contactIdFlow.value?.let { contactId ->
+                    contactRepository.updateCommunicationLog(
+                        log =
+                            CommunicationLog(
+                                id = logId,
+                                contactId = contactId,
+                                date = date,
+                                type = type,
+                                notes = notes,
+                            ),
                 )
             }
         }

@@ -24,4 +24,6 @@
     <string name="date">Date</string>
     <string name="notes">Notes</string>
     <string name="save">Save</string>
+    <string name="edit_communication_log">Edit communication log</string>
+    <string name="communication_log">Communication log</string>
 </resources>
