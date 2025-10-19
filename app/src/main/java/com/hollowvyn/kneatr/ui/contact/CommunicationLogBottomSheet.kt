@@ -265,7 +265,7 @@ fun NotesInput(
 ) {
     Column(modifier = modifier) {
         Text(
-            text = stringResource(R.string.notes),
+            text = stringResource(R.string.notes_optional),
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.fillMaxWidth(),
         )
