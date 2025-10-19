@@ -2,9 +2,11 @@ package com.hollowvyn.kneatr.domain.mappers
 
 import com.hollowvyn.kneatr.data.local.entity.ContactEntity
 import com.hollowvyn.kneatr.data.local.entity.relation.ContactWithDetails
-import com.hollowvyn.kneatr.data.util.DateTimeHelper
+import com.hollowvyn.kneatr.data.util.DateTimeUtils
 import com.hollowvyn.kneatr.domain.model.Contact
 import kotlinx.datetime.LocalDate
+
+private val dateTimeUtils = DateTimeUtils
 
 fun Contact.toEntity(): ContactEntity =
     ContactEntity(
@@ -18,7 +20,7 @@ fun Contact.toEntity(): ContactEntity =
 
 fun List<Contact>.toListEntity() = map { it.toEntity() }
 
-fun ContactWithDetails.toModel(dateTimeHelper: DateTimeHelper): Contact {
+fun ContactWithDetails.toModel(): Contact {
     val model =
         Contact(
             id = contact.contactId,
@@ -35,14 +37,14 @@ fun ContactWithDetails.toModel(dateTimeHelper: DateTimeHelper): Contact {
     val nextDate: LocalDate? =
         lastDate?.let {
             model.customFrequencyDays?.let { customDays ->
-                dateTimeHelper.calculateDaysAfter(it, customDays)
+                dateTimeUtils.calculateDaysAfter(it, customDays)
             } ?: model.tier?.daysBetweenContact?.let { tierDays ->
-                dateTimeHelper.calculateDaysAfter(it, tierDays)
+                dateTimeUtils.calculateDaysAfter(it, tierDays)
             }
         }
 
-    val isOverdue = nextDate?.let { it < dateTimeHelper.today() } ?: false
-    val isDueToday = nextDate?.let { it == dateTimeHelper.today() } ?: false
+    val isOverdue = nextDate?.let { it < dateTimeUtils.today() } ?: false
+    val isDueToday = nextDate?.let { it == dateTimeUtils.today() } ?: false
 
     return model.copy(
         nextContactDate = nextDate,
@@ -52,4 +54,4 @@ fun ContactWithDetails.toModel(dateTimeHelper: DateTimeHelper): Contact {
     )
 }
 
-fun List<ContactWithDetails>.toListModel(dateTimeHelper: DateTimeHelper): List<Contact> = map { it.toModel(dateTimeHelper) }
+fun List<ContactWithDetails>.toListModel(): List<Contact> = map { it.toModel() }

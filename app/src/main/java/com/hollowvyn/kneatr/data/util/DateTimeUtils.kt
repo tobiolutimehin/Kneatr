@@ -12,19 +12,21 @@ import kotlinx.datetime.toLocalDateTime
 import kotlinx.datetime.todayIn
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
-class DateTimeHelper constructor(
-    private val clock: Clock = Clock.System,
-    private val timeZone: TimeZone = TimeZone.currentSystemDefault(),
-) {
+object DateTimeUtils {
+    private val clock: Clock = Clock.System
+    private val timeZone: TimeZone = TimeZone.currentSystemDefault()
+
     val customFormat =
         LocalDate.Format {
             monthName(MonthNames.ENGLISH_ABBREVIATED)
             char(' ')
             day()
-        chars(", "); year()
-    }
+            chars(", ")
+            year()
+        }
 
     fun calculateDaysAfter(
         date: LocalDate,
@@ -34,9 +36,9 @@ class DateTimeHelper constructor(
     fun today(): LocalDate = clock.todayIn(timeZone)
 
     fun toLocalDate(millis: Long): LocalDate =
-        kotlin.time.Instant
+        Instant
             .fromEpochMilliseconds(millis)
-            .toLocalDateTime(timeZone)
+            .toLocalDateTime(TimeZone.UTC)
             .date
 
     fun toEpochMillis(date: LocalDate): Long = date.atStartOfDayIn(timeZone).toEpochMilliseconds()

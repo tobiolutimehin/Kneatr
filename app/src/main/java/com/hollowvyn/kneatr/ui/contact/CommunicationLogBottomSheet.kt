@@ -20,6 +20,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -40,13 +41,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.hollowvyn.kneatr.R
 import com.hollowvyn.kneatr.data.local.entity.CommunicationType
-import com.hollowvyn.kneatr.data.local.typeconverter.LocalDateConverters
+import com.hollowvyn.kneatr.data.util.DateTimeUtils
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
-import java.time.Instant
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
+import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -89,6 +87,7 @@ fun CommunicationLogBottomSheet(
     }
 }
 
+@OptIn(ExperimentalTime::class)
 @Composable
 fun CommunicationLogSheetContent(
     onSave: (LocalDate, CommunicationType, String) -> Unit,
@@ -125,7 +124,7 @@ fun CommunicationLogSheetContent(
             onClick = {
                 selectedType?.let { type ->
                     onSave(
-                        LocalDateConverters.fromEpochDays(selectedDateMillis.toInt())!!,
+                        DateTimeUtils.toLocalDate(selectedDateMillis),
                         type,
                         notes,
                     )
@@ -161,16 +160,19 @@ private fun SheetHeader(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalTime::class)
 @Composable
 private fun DateSelector(
     selectedDateMillis: Long,
     onDateChange: (Long) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     var showDatePickerDialog by remember { mutableStateOf(false) }
-    val datePickerState = rememberDatePickerState(initialSelectedDateMillis = selectedDateMillis)
-    val formatter = remember { DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM) }
+    val datePickerState =
+        rememberDatePickerState(
+            initialSelectedDateMillis = selectedDateMillis,
+            selectableDates = PastOrPresentSelectableDates,
+        )
 
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -183,10 +185,7 @@ private fun DateSelector(
             onClick = { showDatePickerDialog = true },
             label = {
                 Text(
-                    text = Instant.ofEpochMilli(selectedDateMillis)
-                        .atZone(ZoneId.systemDefault())
-                        .toLocalDate()
-                        .format(formatter),
+                    text = DateTimeUtils.formatDate(selectedDateMillis),
                 )
             },
         )
@@ -230,10 +229,11 @@ fun CommunicationTypeSelector(
         SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
             options.forEachIndexed { index, option ->
                 SegmentedButton(
-                    shape = SegmentedButtonDefaults.itemShape(
-                        index = index,
-                        count = options.size,
-                    ),
+                    shape =
+                        SegmentedButtonDefaults.itemShape(
+                            index = index,
+                            count = options.size,
+                        ),
                     onClick = { selectOption(option) },
                     selected = option == selectedOption,
                     label = {
@@ -252,7 +252,7 @@ fun CommunicationTypeSelector(
 fun NotesInput(
     notes: String,
     onNotesChange: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
         Text(
@@ -284,4 +284,10 @@ private fun CommunicationLogSheetContentPreview() {
         onSave = { _, _, _ -> },
         onCancel = { },
     )
+}
+
+object PastOrPresentSelectableDates : SelectableDates {
+    override fun isSelectableDate(utcTimeMillis: Long): Boolean = utcTimeMillis <= System.currentTimeMillis()
+
+    override fun isSelectableYear(year: Int): Boolean = year <= DateTimeUtils.today().year
 }

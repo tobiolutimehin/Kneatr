@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -36,14 +37,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.hollowvyn.kneatr.domain.model.Contact
 import com.hollowvyn.kneatr.domain.util.formatPhoneNumber
+import com.hollowvyn.kneatr.ui.contact.components.CommunicationLogItem
 import com.hollowvyn.kneatr.ui.contact.viewmodel.ContactDetailViewModel
 import com.hollowvyn.kneatr.ui.util.startEmail
 import com.hollowvyn.kneatr.ui.util.startPhoneCall
 import com.hollowvyn.kneatr.ui.util.startTextMessage
+import kotlinx.datetime.LocalDate
 
 sealed class ContactDetailUiState {
     data class Success(
@@ -171,12 +175,6 @@ private fun ContactDetailContent(
             )
         }
         item {
-            Text(text = "Communication Log")
-            contact.communicationLogs.forEach { log ->
-                Text(text = "${log.date} - ${log.type} - ${log.notes}")
-            }
-        }
-        item {
             if (contact.tags.isNotEmpty()) {
                 Text(text = "Tags: ${contact.tags.joinToString(", ") { it.name }}")
             }
@@ -210,6 +208,13 @@ private fun ContactDetailContent(
                 }
             }
         }
+
+        item {
+            Text(text = "Communication Log")
+        }
+        items(contact.communicationLogs) {
+            CommunicationLogItem(it, onClick = {})
+        }
         item {
             contact.tier?.let { Text(text = "Tier: ${contact.tier.name}") }
         }
@@ -223,4 +228,22 @@ private fun ContactDetailContent(
             }
         }
     }
+}
+
+@Preview
+@Composable
+private fun ContactDetailContentPreview() {
+    val contact =
+        Contact(
+            id = 1,
+            name = "John Doe",
+            phoneNumber = "1234567890",
+            email = "john.doe@example.com",
+            lastDate = LocalDate(2023, 1, 1),
+            nextContactDate = LocalDate(2023, 4, 1),
+        )
+    ContactDetailContent(
+        contact = contact,
+        listState = rememberLazyListState(),
+    )
 }
