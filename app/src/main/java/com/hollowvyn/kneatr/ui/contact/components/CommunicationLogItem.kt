@@ -5,10 +5,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -58,8 +56,9 @@ fun CommunicationLogItem(
             contentDescription = stringResource(id = log.type.label),
             tint = MaterialTheme.colorScheme.primary,
         )
-        Spacer(modifier = Modifier.width(16.dp))
-        Column(modifier = Modifier.weight(1f)) {
+        Column(modifier = Modifier
+            .weight(1f)
+            .padding(start = 16.dp, end = 4.dp)) {
             Text(
                 text = stringResource(id = log.type.label),
                 style = MaterialTheme.typography.titleSmall,
@@ -81,32 +80,43 @@ fun CommunicationLogItem(
                 )
             }
         }
-        Box {
-            IconButton(onClick = { showMenu = true }) {
-                Icon(
-                    painter = painterResource(R.drawable.more_horiz_24px),
-                    contentDescription = stringResource(R.string.more_options),
-                )
-            }
-            DropdownMenu(
-                expanded = showMenu,
-                onDismissRequest = { showMenu = false },
-            ) {
-                DropdownMenuItem(
-                    text = { Text(stringResource(R.string.edit)) },
-                    onClick = {
-                        onEdit()
-                        showMenu = false
-                    },
-                )
-                DropdownMenuItem(
-                    text = { Text(stringResource(R.string.delete)) },
-                    onClick = {
-                        onDelete()
-                        showMenu = false
-                    },
-                )
-            }
+        CommunicationLogItemDropdownMenu(onEdit = onEdit, onDelete = onDelete)
+    }
+}
+
+@Composable
+private fun CommunicationLogItemDropdownMenu(
+    onEdit: () -> Unit,
+    onDelete: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    var showMenu by remember { mutableStateOf(false) }
+
+    Box(modifier) {
+        IconButton(onClick = { showMenu = true }) {
+            Icon(
+                painter = painterResource(R.drawable.more_horiz_24px),
+                contentDescription = stringResource(R.string.more_options),
+            )
+        }
+        DropdownMenu(
+            expanded = showMenu,
+            onDismissRequest = { showMenu = false },
+        ) {
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.edit)) },
+                onClick = {
+                    onEdit()
+                    showMenu = false
+                },
+            )
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.delete)) },
+                onClick = {
+                    onDelete()
+                    showMenu = false
+                },
+            )
         }
     }
 }
