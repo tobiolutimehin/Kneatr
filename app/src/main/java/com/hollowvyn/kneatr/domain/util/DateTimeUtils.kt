@@ -29,7 +29,7 @@ object DateTimeUtils {
     @VisibleForTesting
     internal var currentSystemTime = System.currentTimeMillis()
 
-    val customFormat =
+    private val customFormat =
         LocalDate.Companion.Format {
             monthName(MonthNames.Companion.ENGLISH_ABBREVIATED)
             char(' ')
@@ -40,11 +40,10 @@ object DateTimeUtils {
         }
 
     fun formatPastDate(date: LocalDate): RelativeDate {
-        val today = clock.todayIn(timeZone)
-        val daysDifference = (today.toEpochDays() - date.toEpochDays()).toInt()
+        val daysDifference = (today().toEpochDays() - date.toEpochDays()).toInt()
 
         return when {
-            daysDifference < 0 -> RelativeDate.Absolute(date) // A future date was passed, show it absolutely
+            daysDifference < 0 -> RelativeDate.Absolute(date)
             daysDifference == 0 -> RelativeDate.Today
             daysDifference == 1 -> RelativeDate.Yesterday
             daysDifference in 2..6 -> RelativeDate.LastWeekday(date.dayOfWeek)
@@ -56,9 +55,7 @@ object DateTimeUtils {
     }
 
     fun formatFutureDate(date: LocalDate): RelativeDate {
-        val today = clock.todayIn(timeZone)
-        // Note: Flipped the calculation for positive numbers and easier logic
-        val daysDifference = (date.toEpochDays() - today.toEpochDays()).toInt()
+        val daysDifference = (date.toEpochDays() - today().toEpochDays()).toInt()
 
         return when {
             daysDifference < 0 -> RelativeDate.Overdue
@@ -94,7 +91,7 @@ object DateTimeUtils {
         days: Int,
     ): LocalDate = date.plus(days, DateTimeUnit.Companion.DAY)
 
-    fun today(timeZone: TimeZone = this.timeZone): LocalDate = clock.todayIn(timeZone)
+    fun today(): LocalDate = clock.todayIn(timeZone)
 
     fun toEpochMillis(date: LocalDate): Long = date.atStartOfDayIn(timeZone).toEpochMilliseconds()
 }
