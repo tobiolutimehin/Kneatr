@@ -1,5 +1,6 @@
 package com.hollowvyn.kneatr.domain.util
 
+import androidx.annotation.VisibleForTesting
 import androidx.compose.material3.SelectableDates
 import com.hollowvyn.kneatr.domain.model.RelativeDate
 import kotlinx.datetime.DateTimeUnit
@@ -19,8 +20,14 @@ import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
 object DateTimeUtils {
-    private val clock: Clock = Clock.System
-    private val timeZone: TimeZone = TimeZone.Companion.currentSystemDefault()
+    @VisibleForTesting
+    internal var clock: Clock = Clock.System
+
+    @VisibleForTesting
+    internal var timeZone: TimeZone = TimeZone.UTC
+
+    @VisibleForTesting
+    internal var currentSystemTime = System.currentTimeMillis()
 
     val customFormat =
         LocalDate.Companion.Format {
@@ -48,16 +55,13 @@ object DateTimeUtils {
         }
     }
 
-    /**
-     * Formats a date in the future relative to today.
-     */
     fun formatFutureDate(date: LocalDate): RelativeDate {
         val today = clock.todayIn(timeZone)
         // Note: Flipped the calculation for positive numbers and easier logic
         val daysDifference = (date.toEpochDays() - today.toEpochDays()).toInt()
 
         return when {
-            daysDifference < 0 -> RelativeDate.Overdue // A past date was passed, it's overdue
+            daysDifference < 0 -> RelativeDate.Overdue
             daysDifference == 0 -> RelativeDate.Today
             daysDifference == 1 -> RelativeDate.Tomorrow
             daysDifference in 2..6 -> RelativeDate.NextWeekday(date.dayOfWeek)
@@ -80,7 +84,7 @@ object DateTimeUtils {
 
     fun getSelectablePastAndPresentDates() =
         object : SelectableDates {
-            override fun isSelectableDate(utcTimeMillis: Long): Boolean = utcTimeMillis <= System.currentTimeMillis()
+            override fun isSelectableDate(utcTimeMillis: Long): Boolean = utcTimeMillis <= currentSystemTime
 
             override fun isSelectableYear(year: Int): Boolean = year <= today().year
         }
@@ -90,7 +94,7 @@ object DateTimeUtils {
         days: Int,
     ): LocalDate = date.plus(days, DateTimeUnit.Companion.DAY)
 
-    fun today(): LocalDate = clock.todayIn(timeZone)
+    fun today(timeZone: TimeZone = this.timeZone): LocalDate = clock.todayIn(timeZone)
 
     fun toEpochMillis(date: LocalDate): Long = date.atStartOfDayIn(timeZone).toEpochMilliseconds()
 }
