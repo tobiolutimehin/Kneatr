@@ -1,4 +1,4 @@
-package com.hollowvyn.kneatr.ui.contact
+package com.hollowvyn.kneatr.ui.contact.detail
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
@@ -6,16 +6,13 @@ import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -38,21 +35,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.pluralStringResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.hollowvyn.kneatr.R
 import com.hollowvyn.kneatr.domain.model.CommunicationLog
 import com.hollowvyn.kneatr.domain.model.Contact
-import com.hollowvyn.kneatr.domain.model.RelativeDate
-import com.hollowvyn.kneatr.domain.util.DateTimeUtils
 import com.hollowvyn.kneatr.domain.util.formatPhoneNumber
-import com.hollowvyn.kneatr.ui.contact.components.CommunicationLogItem
 import com.hollowvyn.kneatr.ui.contact.viewmodel.ContactDetailViewModel
 import com.hollowvyn.kneatr.ui.util.startEmail
 import com.hollowvyn.kneatr.ui.util.startPhoneCall
@@ -245,119 +233,6 @@ private fun ContactDetailContent(
             communicationLog = contact.communicationLogs,
             onEditLog = { onEditLog(it) },
             onDeleteLog = { onDeleteLog(it) },
-        )
-    }
-}
-
-private fun LazyListScope.communicationLogItems(
-    communicationLog: List<CommunicationLog>,
-    onEditLog: (CommunicationLog) -> Unit,
-    onDeleteLog: (CommunicationLog) -> Unit,
-) {
-    item {
-        Text(
-            stringResource(R.string.communication_log),
-            style = MaterialTheme.typography.titleLarge,
-        )
-    }
-
-    items(communicationLog.take(10)) {
-        CommunicationLogItem(
-            log = it,
-            onEdit = { onEditLog(it) },
-            onDelete = { onDeleteLog(it) },
-        )
-    }
-}
-
-@Composable
-fun RelativeDate.getRelativeDateString(): String =
-    when (this) {
-        RelativeDate.Today -> stringResource(R.string.today)
-        RelativeDate.Yesterday -> stringResource(R.string.yesterday)
-        is RelativeDate.LastWeekday -> {
-            val weekday = dayOfWeek.name.lowercase().replaceFirstChar { it.titlecase() }
-            stringResource(R.string.last_x_week, weekday)
-        }
-
-        is RelativeDate.WeeksAgo -> {
-            pluralStringResource(R.plurals.x_weeks_ago, count, count)
-        }
-
-        is RelativeDate.NextWeekday -> {
-            val weekday = dayOfWeek.name.lowercase().replaceFirstChar { it.titlecase() }
-            stringResource(R.string.next_x_week, weekday)
-        }
-
-        RelativeDate.Tomorrow -> {
-            stringResource(R.string.tomorrow)
-        }
-
-        is RelativeDate.Weeks -> {
-            pluralStringResource(R.plurals.x_weeks, count, count)
-        }
-
-        is RelativeDate.Absolute -> {
-            DateTimeUtils.formatDate(date)
-        }
-
-        is RelativeDate.Overdue -> {
-            stringResource(R.string.overdue)
-        }
-    }
-
-@Composable
-fun ContactDateInfo(
-    contact: Contact,
-    modifier: Modifier = Modifier,
-) {
-    Column(modifier = modifier.fillMaxWidth()) {
-        with(contact) {
-            lastContactedRelatedDate?.let {
-                val relativeLastDate = it.getRelativeDateString()
-                Text(
-                    text = stringResource(R.string.last_time_contacted, relativeLastDate),
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Bold,
-                )
-            }
-
-            nextContactDateRelated?.let {
-                val relativeNextDateString = it.getRelativeDateString()
-
-                val textColor =
-                    if (contact.isOverdue) {
-                        MaterialTheme.colorScheme.error
-                    } else {
-                        Color.Unspecified
-                    }
-
-                Text(
-                    text = stringResource(R.string.next_contact_in, relativeNextDateString),
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = textColor,
-                )
-            }
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun ContactDateInfoPreview() {
-    val contact =
-        Contact(
-            id = 1,
-            name = "John Doe",
-            phoneNumber = "1234567890",
-            email = "john.doe@example.com",
-            lastDate = kotlinx.datetime.LocalDate.parse("2023-10-26"),
-            nextContactDate = kotlinx.datetime.LocalDate.parse("2023-11-10"),
-        )
-    MaterialTheme {
-        ContactDateInfo(
-            contact = contact,
         )
     }
 }

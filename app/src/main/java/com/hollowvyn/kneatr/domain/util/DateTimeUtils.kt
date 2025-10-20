@@ -32,49 +32,39 @@ object DateTimeUtils {
             year()
         }
 
-    fun formatDateRelatively(date: LocalDate): RelativeDate {
+    fun formatPastDate(date: LocalDate): RelativeDate {
         val today = clock.todayIn(timeZone)
         val daysDifference = (today.toEpochDays() - date.toEpochDays()).toInt()
 
-        return when (daysDifference) {
-            in -26..-21 -> {
-                RelativeDate.Weeks(3)
-            }
+        return when {
+            daysDifference < 0 -> RelativeDate.Absolute(date) // A future date was passed, show it absolutely
+            daysDifference == 0 -> RelativeDate.Today
+            daysDifference == 1 -> RelativeDate.Yesterday
+            daysDifference in 2..6 -> RelativeDate.LastWeekday(date.dayOfWeek)
+            daysDifference in 7..13 -> RelativeDate.WeeksAgo(1)
+            daysDifference in 14..20 -> RelativeDate.WeeksAgo(2)
+            daysDifference in 21..27 -> RelativeDate.WeeksAgo(3)
+            else -> RelativeDate.Absolute(date)
+        }
+    }
 
-            in -20..-14 -> {
-                RelativeDate.Weeks(3)
-            }
+    /**
+     * Formats a date in the future relative to today.
+     */
+    fun formatFutureDate(date: LocalDate): RelativeDate {
+        val today = clock.todayIn(timeZone)
+        // Note: Flipped the calculation for positive numbers and easier logic
+        val daysDifference = (date.toEpochDays() - today.toEpochDays()).toInt()
 
-            in -13..-7 -> {
-                RelativeDate.Weeks(2)
-            }
-
-            in -6..-2 -> {
-                RelativeDate.NextWeekday(date.dayOfWeek)
-            }
-
-            -1 -> RelativeDate.Tomorrow
-            0 -> RelativeDate.Today
-            1 -> RelativeDate.Yesterday
-            in 2..6 -> {
-                RelativeDate.LastWeekday(date.dayOfWeek)
-            }
-
-            in 7..13 -> {
-                RelativeDate.WeeksAgo(1)
-            }
-
-            in 14..20 -> {
-                RelativeDate.WeeksAgo(2)
-            }
-
-            in 21..26 -> {
-                RelativeDate.WeeksAgo(3)
-            }
-
-            else -> {
-                RelativeDate.Absolute(date)
-            }
+        return when {
+            daysDifference < 0 -> RelativeDate.Overdue // A past date was passed, it's overdue
+            daysDifference == 0 -> RelativeDate.Today
+            daysDifference == 1 -> RelativeDate.Tomorrow
+            daysDifference in 2..6 -> RelativeDate.NextWeekday(date.dayOfWeek)
+            daysDifference in 7..13 -> RelativeDate.Weeks(1)
+            daysDifference in 14..20 -> RelativeDate.Weeks(2)
+            daysDifference in 21..27 -> RelativeDate.Weeks(3)
+            else -> RelativeDate.Absolute(date)
         }
     }
 

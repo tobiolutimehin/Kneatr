@@ -21,7 +21,7 @@ data class Contact(
     val lastDate: LocalDate? = null,
 ) {
     val lastContactedRelatedDate: RelativeDate?
-        get() = lastDate?.let { DateTimeUtils.formatDateRelatively(it) }
+        get() = lastDate?.let { DateTimeUtils.formatPastDate(it) }
 
     val nextContactDateRelated: RelativeDate?
         get() =
@@ -30,7 +30,7 @@ data class Contact(
             } else if (isOverdue) {
                 RelativeDate.Overdue
             } else {
-                nextContactDate?.let { DateTimeUtils.formatDateRelatively(it) }
+                nextContactDate?.let { DateTimeUtils.formatFutureDate(it) }
             }
 }
 

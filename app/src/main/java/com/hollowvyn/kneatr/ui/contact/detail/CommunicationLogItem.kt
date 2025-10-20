@@ -1,4 +1,4 @@
-package com.hollowvyn.kneatr.ui.contact.components
+package com.hollowvyn.kneatr.ui.contact.detail
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -120,6 +122,27 @@ private fun CommunicationLogItemDropdownMenu(
                 },
             )
         }
+    }
+}
+
+internal fun LazyListScope.communicationLogItems(
+    communicationLog: List<CommunicationLog>,
+    onEditLog: (CommunicationLog) -> Unit,
+    onDeleteLog: (CommunicationLog) -> Unit,
+) {
+    item {
+        Text(
+            stringResource(R.string.communication_log),
+            style = MaterialTheme.typography.titleLarge,
+        )
+    }
+
+    items(communicationLog.take(10)) {
+        CommunicationLogItem(
+            log = it,
+            onEdit = { onEditLog(it) },
+            onDelete = { onDeleteLog(it) },
+        )
     }
 }
 
