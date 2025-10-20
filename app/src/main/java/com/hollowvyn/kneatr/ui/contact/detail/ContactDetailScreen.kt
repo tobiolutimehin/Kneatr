@@ -41,6 +41,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.hollowvyn.kneatr.domain.model.CommunicationLog
 import com.hollowvyn.kneatr.domain.model.Contact
 import com.hollowvyn.kneatr.domain.util.formatPhoneNumber
+import com.hollowvyn.kneatr.ui.contact.DeepInteractionConfirmationDialog
 import com.hollowvyn.kneatr.ui.contact.viewmodel.ContactDetailViewModel
 import com.hollowvyn.kneatr.ui.util.startEmail
 import com.hollowvyn.kneatr.ui.util.startPhoneCall
@@ -75,6 +76,11 @@ fun ContactDetailScreen(
 
     var showBottomSheet by remember { mutableStateOf(false) }
     var selectedLog by remember { mutableStateOf<CommunicationLog?>(null) }
+
+    var showConfirmationDialog by remember { mutableStateOf(false) }
+    var confirmationAction by remember { mutableStateOf<() -> Unit>({}) }
+    var confirmationTitle by remember { mutableStateOf("") }
+    var confirmationText by remember { mutableStateOf("") }
 
     Scaffold(
         modifier = modifier,
@@ -130,6 +136,12 @@ fun ContactDetailScreen(
                         onDeleteLog = { log ->
                             viewModel.deleteCommunicationLog(log)
                         },
+                        onShowConfirmation = { title, text, action ->
+                            confirmationTitle = title
+                            confirmationText = text
+                            confirmationAction = action
+                            showConfirmationDialog = true
+                        }
                     )
                 } ?: Text("Contact not found", modifier = Modifier.padding(innerPadding))
             }
@@ -160,6 +172,15 @@ fun ContactDetailScreen(
                 dismissBottomSheet = { showBottomSheet = false },
             )
         }
+
+        if (showConfirmationDialog) {
+            DeepInteractionConfirmationDialog(
+                onConfirm = confirmationAction,
+                onDismiss = { showConfirmationDialog = false },
+                title = confirmationTitle,
+                text = confirmationText
+            )
+        }
     }
 }
 
@@ -169,6 +190,7 @@ private fun ContactDetailContent(
     listState: LazyListState,
     onEditLog: (CommunicationLog) -> Unit,
     onDeleteLog: (CommunicationLog) -> Unit,
+    onShowConfirmation: (String, String, () -> Unit) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -200,17 +222,38 @@ private fun ContactDetailContent(
                 horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
                 if (contact.phoneNumber.isNotBlank()) {
-                    Button(onClick = { context.startPhoneCall(contact.phoneNumber) }) {
+                    Button(
+                        onClick = {
+                            onShowConfirmation(
+                                "Call Contact",
+                                "Are you sure you want to call ${contact.name}?"
+                            ) { context.startPhoneCall(contact.phoneNumber) }
+                        }
+                    ) {
                         Text("Call")
                     }
 
-                    Button(onClick = { context.startTextMessage(contact.phoneNumber) }) {
+                    Button(
+                        onClick = {
+                            onShowConfirmation(
+                                "Message Contact",
+                                "Are you sure you want to message ${contact.name}?"
+                            ) { context.startTextMessage(contact.phoneNumber) }
+                        }
+                    ) {
                         Text("Message")
                     }
                 }
 
                 contact.email?.let { email ->
-                    Button(onClick = { context.startEmail(email) }) {
+                    Button(
+                        onClick = {
+                            onShowConfirmation(
+                                "Email Contact",
+                                "Are you sure you want to email ${contact.name}?"
+                            ) { context.startEmail(email) }
+                        }
+                    ) {
                         Text("Email")
                     }
                 }
