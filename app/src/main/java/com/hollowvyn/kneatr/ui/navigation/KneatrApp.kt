@@ -19,8 +19,8 @@ import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.scene.SceneStrategy
 import androidx.navigation3.ui.NavDisplay
-import com.hollowvyn.kneatr.ui.contact.ContactDetailScreen
-import com.hollowvyn.kneatr.ui.contact.ContactsListScreen
+import com.hollowvyn.kneatr.ui.contact.detail.ContactDetailScreen
+import com.hollowvyn.kneatr.ui.contact.list.ContactsListScreen
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable

@@ -2,6 +2,7 @@ package com.hollowvyn.kneatr.domain.model
 
 import androidx.compose.runtime.Immutable
 import com.hollowvyn.kneatr.data.local.entity.CommunicationType
+import com.hollowvyn.kneatr.domain.util.DateTimeUtils
 import kotlinx.datetime.LocalDate
 
 @Immutable
@@ -18,7 +19,20 @@ data class Contact(
     val isDueToday: Boolean = false,
     val nextContactDate: LocalDate? = null,
     val lastDate: LocalDate? = null,
-)
+) {
+    val lastContactedRelatedDate: RelativeDate?
+        get() = lastDate?.let { DateTimeUtils.formatPastDate(it) }
+
+    val nextContactDateRelated: RelativeDate?
+        get() =
+            if (isDueToday) {
+                RelativeDate.Today
+            } else if (isOverdue) {
+                RelativeDate.Overdue
+            } else {
+                nextContactDate?.let { DateTimeUtils.formatFutureDate(it) }
+            }
+}
 
 @Immutable
 data class ContactTag(

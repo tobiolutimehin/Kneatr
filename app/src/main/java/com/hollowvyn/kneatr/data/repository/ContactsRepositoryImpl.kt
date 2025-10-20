@@ -7,7 +7,6 @@ import com.hollowvyn.kneatr.data.local.dao.ContactTagDao
 import com.hollowvyn.kneatr.data.local.dao.ContactTierDao
 import com.hollowvyn.kneatr.data.local.entity.crossRef.ContactTagCrossRef
 import com.hollowvyn.kneatr.data.remote.ContactFetcher
-import com.hollowvyn.kneatr.data.util.DateTimeHelper
 import com.hollowvyn.kneatr.domain.mappers.toEntity
 import com.hollowvyn.kneatr.domain.mappers.toListEntity
 import com.hollowvyn.kneatr.domain.mappers.toListModel
@@ -38,7 +37,6 @@ class ContactsRepositoryImpl
         private val contactTierDao: ContactTierDao,
         private val communicationLogDao: CommunicationLogDao,
         private val contactFetcher: ContactFetcher,
-        private val dateTimeHelper: DateTimeHelper,
     ) : ContactsRepository {
         // Contact operations
         override suspend fun insertContact(contact: Contact) =
@@ -50,21 +48,20 @@ class ContactsRepositoryImpl
 
         override suspend fun updateContact(contact: Contact) = contact.toEntity().let { contactDao.updateContact(it) }
 
-        override fun getAllContacts(): Flow<List<Contact>> =
-            contactDao.getAllContacts().map { contacts -> contacts.toListModel(dateTimeHelper) }
+        override fun getAllContacts(): Flow<List<Contact>> = contactDao.getAllContacts().map { contacts -> contacts.toListModel() }
 
         override fun getContactsByTierId(tierId: Long): Flow<List<Contact>> =
             contactDao
                 .getContactsByTierId(
                     tierId,
                 ).transform {
-                    it.toListModel(dateTimeHelper)
+                    it.toListModel()
                 }
 
         override fun searchContactsByNamePhoneOrEmail(query: String): Flow<List<Contact>> =
-            contactDao.searchContactsByNamePhoneOrEmail(query).map { it.toListModel(dateTimeHelper) }
+            contactDao.searchContactsByNamePhoneOrEmail(query).map { it.toListModel() }
 
-        override fun getContactById(id: Long): Flow<Contact?> = contactDao.getContactById(id).map { it?.toModel(dateTimeHelper) }
+        override fun getContactById(id: Long): Flow<Contact?> = contactDao.getContactById(id).map { it?.toModel() }
 
         // Tag CrossRef operations
         override suspend fun addTagToContact(
@@ -94,7 +91,7 @@ class ContactsRepositoryImpl
                             contactDao
                                 .getContactsByTagId(tag.tagId)
                                 .map { contacts ->
-                                    tag.toModel() to contacts.map { it.toModel(dateTimeHelper) }
+                                    tag.toModel() to contacts.map { it.toModel() }
                                 }
                         }
                     combine(flowsPerTag) { pairsArray -> pairsArray.toList() }
@@ -102,7 +99,7 @@ class ContactsRepositoryImpl
 
         override fun getTagWithContactsById(id: Long): Flow<List<Contact>?> =
             contactDao.getContactsByTagId(id).transform {
-                it.toListModel(dateTimeHelper)
+                it.toListModel()
             }
 
         override suspend fun insertTag(tag: ContactTag) = contactTagDao.insertTag(tag.toEntity())
@@ -201,7 +198,7 @@ class ContactsRepositoryImpl
                 toDeleteIds.forEach { id -> contactDao.deleteContactById(id) }
 
                 // Return fresh contacts including tiers/tags/etc
-                contactDao.getAllContactsAtOnce().map { it.toModel(dateTimeHelper) }
+                contactDao.getAllContactsAtOnce().map { it.toModel() }
             }
         }
     }

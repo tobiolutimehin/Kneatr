@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.hollowvyn.kneatr.data.local.entity.CommunicationType
 import com.hollowvyn.kneatr.domain.model.CommunicationLog
 import com.hollowvyn.kneatr.domain.repository.ContactsRepository
-import com.hollowvyn.kneatr.ui.contact.ContactDetailUiState
+import com.hollowvyn.kneatr.ui.contact.detail.ContactDetailUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -62,8 +62,38 @@ class ContactDetailViewModel
                                 type = type,
                                 notes = notes,
                             ),
-                )
+                    )
+                }
             }
         }
+
+        fun deleteCommunicationLog(log: CommunicationLog) {
+            viewModelScope.launch {
+                contactIdFlow.value?.let { contactId ->
+                    contactRepository.deleteCommunicationLog(log)
+                }
+            }
     }
+
+        fun updateCommunicationLog(
+            date: LocalDate,
+            type: CommunicationType,
+            notes: String,
+            logId: Long,
+        ) {
+            viewModelScope.launch {
+                contactIdFlow.value?.let { contactId ->
+                    contactRepository.updateCommunicationLog(
+                        log =
+                            CommunicationLog(
+                                id = logId,
+                                contactId = contactId,
+                                date = date,
+                                type = type,
+                                notes = notes,
+                            ),
+                    )
+                }
+            }
+        }
     }

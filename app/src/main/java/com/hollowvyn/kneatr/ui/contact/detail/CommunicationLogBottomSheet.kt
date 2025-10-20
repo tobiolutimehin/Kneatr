@@ -1,4 +1,4 @@
-package com.hollowvyn.kneatr.ui.contact
+package com.hollowvyn.kneatr.ui.contact.detail
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -40,23 +40,22 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.hollowvyn.kneatr.R
 import com.hollowvyn.kneatr.data.local.entity.CommunicationType
-import com.hollowvyn.kneatr.data.local.typeconverter.LocalDateConverters
+import com.hollowvyn.kneatr.domain.model.CommunicationLog
+import com.hollowvyn.kneatr.domain.util.DateTimeUtils
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
-import java.time.Instant
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommunicationLogBottomSheet(
-    addCommunicationLog: (LocalDate, CommunicationType, String) -> Unit,
+    onSave: (id: Long?, date: LocalDate, type: CommunicationType, notes: String) -> Unit,
     dismissBottomSheet: () -> Unit,
     modifier: Modifier = Modifier,
+    logToEdit: CommunicationLog? = null,
 ) {
     val scope = rememberCoroutineScope()
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
     ModalBottomSheet(
         onDismissRequest = dismissBottomSheet,
         sheetState = bottomSheetState,
@@ -64,8 +63,9 @@ fun CommunicationLogBottomSheet(
         modifier = modifier,
     ) {
         CommunicationLogSheetContent(
-            onSave = { date, type, notes ->
-                addCommunicationLog(date, type, notes)
+            logToEdit = logToEdit,
+            onSave = { id, date, type, notes ->
+                onSave(id, date, type, notes)
                 scope
                     .launch {
                         bottomSheetState.hide()
@@ -91,20 +91,26 @@ fun CommunicationLogBottomSheet(
 
 @Composable
 fun CommunicationLogSheetContent(
-    onSave: (LocalDate, CommunicationType, String) -> Unit,
+    onSave: (id: Long?, date: LocalDate, type: CommunicationType, notes: String) -> Unit,
     onCancel: () -> Unit,
     modifier: Modifier = Modifier,
+    logToEdit: CommunicationLog? = null,
 ) {
-    var notes by remember { mutableStateOf("") }
-    var selectedType by remember { mutableStateOf<CommunicationType?>(null) }
-    var selectedDateMillis by remember { mutableLongStateOf(System.currentTimeMillis()) }
+    var notes by remember(logToEdit) { mutableStateOf(logToEdit?.notes ?: "") }
+    var selectedType by remember(logToEdit) { mutableStateOf(logToEdit?.type) }
+    val initialDate =
+        logToEdit?.let { DateTimeUtils.toEpochMillis(it.date) } ?: System.currentTimeMillis()
+    var selectedDateMillis by remember(logToEdit) { mutableLongStateOf(initialDate) }
+
+    val title =
+        if (logToEdit == null) stringResource(R.string.add_communication_log) else stringResource(R.string.edit_communication_log)
 
     Column(
         modifier = modifier.padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        SheetHeader(onCancel = onCancel)
+        SheetHeader(title = title, onCancel = onCancel)
 
         DateSelector(
             selectedDateMillis = selectedDateMillis,
@@ -125,7 +131,8 @@ fun CommunicationLogSheetContent(
             onClick = {
                 selectedType?.let { type ->
                     onSave(
-                        LocalDateConverters.fromEpochDays(selectedDateMillis.toInt())!!,
+                        logToEdit?.id,
+                        DateTimeUtils.toLocalDate(selectedDateMillis),
                         type,
                         notes,
                     )
@@ -141,6 +148,7 @@ fun CommunicationLogSheetContent(
 
 @Composable
 private fun SheetHeader(
+    title: String,
     onCancel: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -150,7 +158,7 @@ private fun SheetHeader(
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         Text(
-            text = stringResource(R.string.add_communication_log),
+            text = title,
             style = MaterialTheme.typography.titleLarge,
         )
         IconButton(
@@ -166,11 +174,14 @@ private fun SheetHeader(
 private fun DateSelector(
     selectedDateMillis: Long,
     onDateChange: (Long) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     var showDatePickerDialog by remember { mutableStateOf(false) }
-    val datePickerState = rememberDatePickerState(initialSelectedDateMillis = selectedDateMillis)
-    val formatter = remember { DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM) }
+    val datePickerState =
+        rememberDatePickerState(
+            initialSelectedDateMillis = selectedDateMillis,
+            selectableDates = DateTimeUtils.getSelectablePastAndPresentDates(),
+        )
 
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -183,10 +194,7 @@ private fun DateSelector(
             onClick = { showDatePickerDialog = true },
             label = {
                 Text(
-                    text = Instant.ofEpochMilli(selectedDateMillis)
-                        .atZone(ZoneId.systemDefault())
-                        .toLocalDate()
-                        .format(formatter),
+                    text = DateTimeUtils.formatDate(selectedDateMillis),
                 )
             },
         )
@@ -230,10 +238,11 @@ fun CommunicationTypeSelector(
         SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
             options.forEachIndexed { index, option ->
                 SegmentedButton(
-                    shape = SegmentedButtonDefaults.itemShape(
-                        index = index,
-                        count = options.size,
-                    ),
+                    shape =
+                        SegmentedButtonDefaults.itemShape(
+                            index = index,
+                            count = options.size,
+                        ),
                     onClick = { selectOption(option) },
                     selected = option == selectedOption,
                     label = {
@@ -252,11 +261,11 @@ fun CommunicationTypeSelector(
 fun NotesInput(
     notes: String,
     onNotesChange: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
         Text(
-            text = stringResource(R.string.notes),
+            text = stringResource(R.string.notes_optional),
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.fillMaxWidth(),
         )
@@ -281,7 +290,8 @@ fun NotesInput(
 @Composable
 private fun CommunicationLogSheetContentPreview() {
     CommunicationLogSheetContent(
-        onSave = { _, _, _ -> },
+        logToEdit = null,
+        onSave = { _, _, _, _ -> },
         onCancel = { },
     )
 }

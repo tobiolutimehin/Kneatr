@@ -1,4 +1,4 @@
-package com.hollowvyn.kneatr.ui.contact
+package com.hollowvyn.kneatr.ui.contact.detail
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
@@ -38,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.hollowvyn.kneatr.domain.model.CommunicationLog
 import com.hollowvyn.kneatr.domain.model.Contact
 import com.hollowvyn.kneatr.domain.util.formatPhoneNumber
 import com.hollowvyn.kneatr.ui.contact.viewmodel.ContactDetailViewModel
@@ -73,6 +74,7 @@ fun ContactDetailScreen(
     val isScrolled = remember { derivedStateOf { listState.firstVisibleItemIndex > 0 } }
 
     var showBottomSheet by remember { mutableStateOf(false) }
+    var selectedLog by remember { mutableStateOf<CommunicationLog?>(null) }
 
     Scaffold(
         modifier = modifier,
@@ -102,6 +104,7 @@ fun ContactDetailScreen(
             ExtendedFloatingActionButton(
                 text = { Text("Add log") },
                 onClick = {
+                    selectedLog = null // Ensure we're adding a new log
                     showBottomSheet = true
                 },
                 icon = {
@@ -120,6 +123,13 @@ fun ContactDetailScreen(
                         contact = it,
                         modifier = Modifier.padding(innerPadding),
                         listState = listState,
+                        onEditLog = { log ->
+                            selectedLog = log
+                            showBottomSheet = true
+                        },
+                        onDeleteLog = { log ->
+                            viewModel.deleteCommunicationLog(log)
+                        },
                     )
                 } ?: Text("Contact not found", modifier = Modifier.padding(innerPadding))
             }
@@ -139,8 +149,13 @@ fun ContactDetailScreen(
 
         if (showBottomSheet) {
             CommunicationLogBottomSheet(
-                addCommunicationLog = { date, type, notes ->
-                    viewModel.addCommunicationLog(date, type, notes)
+                logToEdit = selectedLog,
+                onSave = { id, date, type, notes ->
+                    if (id == null) {
+                        viewModel.addCommunicationLog(date, type, notes)
+                    } else {
+                        viewModel.updateCommunicationLog(date, type, notes, id)
+                    }
                 },
                 dismissBottomSheet = { showBottomSheet = false },
             )
@@ -152,6 +167,8 @@ fun ContactDetailScreen(
 private fun ContactDetailContent(
     contact: Contact,
     listState: LazyListState,
+    onEditLog: (CommunicationLog) -> Unit,
+    onDeleteLog: (CommunicationLog) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -171,22 +188,12 @@ private fun ContactDetailContent(
             )
         }
         item {
-            Text(text = "Communication Log")
-            contact.communicationLogs.forEach { log ->
-                Text(text = "${log.date} - ${log.type} - ${log.notes}")
-            }
-        }
-        item {
             if (contact.tags.isNotEmpty()) {
                 Text(text = "Tags: ${contact.tags.joinToString(", ") { it.name }}")
             }
         }
-        item {
-            Row {
-                Text("last time contacted: ${contact.lastDate ?: "Never"}")
-                Text("next contact in: ${contact.nextContactDate ?: "Never"}")
-            }
-        }
+        item { ContactDateInfo(contact) }
+
         item {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -197,7 +204,6 @@ private fun ContactDetailContent(
                         Text("Call")
                     }
 
-                    // Message Button
                     Button(onClick = { context.startTextMessage(contact.phoneNumber) }) {
                         Text("Message")
                     }
@@ -222,5 +228,11 @@ private fun ContactDetailContent(
                 Text(text = "Email: $email")
             }
         }
+
+        communicationLogItems(
+            communicationLog = contact.communicationLogs,
+            onEditLog = { onEditLog(it) },
+            onDeleteLog = { onDeleteLog(it) },
+        )
     }
 }

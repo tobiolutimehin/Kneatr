@@ -22,6 +22,27 @@
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
     <string name="date">Date</string>
-    <string name="notes">Notes</string>
+    <string name="notes_optional">Notes (Optional)</string>
     <string name="save">Save</string>
+    <string name="edit_communication_log">Edit communication log</string>
+    <string name="communication_log">Communication log</string>
+    <string name="more_options">More options</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="today">Today</string>
+    <string name="yesterday">Yesterday</string>
+    <string name="last_x_week">Last %s</string>
+    <string name="tomorrow">Tomorrow</string>
+    <string name="next_x_week">Next %s</string>
+    <string name="overdue">Overdue</string>
+    <string name="last_time_contacted">Last time contacted: %1$s</string>
+    <string name="next_contact_in">Next contact in: %1$s</string>
+    <plurals name="x_weeks_ago">
+        <item quantity="one">1 week ago</item>
+        <item quantity="other">%d weeks ago</item>
+    </plurals>
+    <plurals name="x_weeks">
+        <item quantity="one">1 week</item>
+        <item quantity="other">%d weeks</item>
+    </plurals>
 </resources>

@@ -1,4 +1,4 @@
-package com.hollowvyn.kneatr.ui.contact
+package com.hollowvyn.kneatr.ui.contact.list
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
