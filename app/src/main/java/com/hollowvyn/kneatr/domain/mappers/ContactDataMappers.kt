@@ -2,11 +2,9 @@ package com.hollowvyn.kneatr.domain.mappers
 
 import com.hollowvyn.kneatr.data.local.entity.ContactEntity
 import com.hollowvyn.kneatr.data.local.entity.relation.ContactWithDetails
-import com.hollowvyn.kneatr.data.util.DateTimeUtils
 import com.hollowvyn.kneatr.domain.model.Contact
+import com.hollowvyn.kneatr.domain.util.DateTimeUtils
 import kotlinx.datetime.LocalDate
-
-private val dateTimeUtils = DateTimeUtils
 
 fun Contact.toEntity(): ContactEntity =
     ContactEntity(
@@ -37,14 +35,14 @@ fun ContactWithDetails.toModel(): Contact {
     val nextDate: LocalDate? =
         lastDate?.let {
             model.customFrequencyDays?.let { customDays ->
-                dateTimeUtils.calculateDaysAfter(it, customDays)
+                DateTimeUtils.calculateDaysAfter(it, customDays)
             } ?: model.tier?.daysBetweenContact?.let { tierDays ->
-                dateTimeUtils.calculateDaysAfter(it, tierDays)
+                DateTimeUtils.calculateDaysAfter(it, tierDays)
             }
         }
 
-    val isOverdue = nextDate?.let { it < dateTimeUtils.today() } ?: false
-    val isDueToday = nextDate?.let { it == dateTimeUtils.today() } ?: false
+    val isOverdue = nextDate?.let { it < DateTimeUtils.today() } ?: false
+    val isDueToday = nextDate?.let { it == DateTimeUtils.today() } ?: false
 
     return model.copy(
         nextContactDate = nextDate,

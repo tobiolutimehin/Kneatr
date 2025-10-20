@@ -40,8 +40,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.hollowvyn.kneatr.R
 import com.hollowvyn.kneatr.data.local.entity.CommunicationType
-import com.hollowvyn.kneatr.data.util.DateTimeUtils
 import com.hollowvyn.kneatr.domain.model.CommunicationLog
+import com.hollowvyn.kneatr.domain.util.DateTimeUtils
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 

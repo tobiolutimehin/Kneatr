@@ -47,10 +47,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.hollowvyn.kneatr.R
-import com.hollowvyn.kneatr.data.util.DateTimeUtils
-import com.hollowvyn.kneatr.data.util.RelativeDate
 import com.hollowvyn.kneatr.domain.model.CommunicationLog
 import com.hollowvyn.kneatr.domain.model.Contact
+import com.hollowvyn.kneatr.domain.model.RelativeDate
+import com.hollowvyn.kneatr.domain.util.DateTimeUtils
 import com.hollowvyn.kneatr.domain.util.formatPhoneNumber
 import com.hollowvyn.kneatr.ui.contact.components.CommunicationLogItem
 import com.hollowvyn.kneatr.ui.contact.viewmodel.ContactDetailViewModel
@@ -313,11 +313,8 @@ fun ContactDateInfo(
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         with(contact) {
-            lastDate?.let {
-                val relativeLastDate =
-                    DateTimeUtils
-                        .formatDateRelatively(it)
-                        .getRelativeDateString()
+            lastContactedRelatedDate?.let {
+                val relativeLastDate = it.getRelativeDateString()
                 Text(
                     text = stringResource(R.string.last_time_contacted, relativeLastDate),
                     style = MaterialTheme.typography.bodyMedium,
@@ -325,13 +322,11 @@ fun ContactDateInfo(
                 )
             }
 
-            nextContactDate?.let {
-                val relativeNextDateInfo = DateTimeUtils.formatDateRelatively(it, true)
-                val relativeNextDateString = relativeNextDateInfo.getRelativeDateString()
+            nextContactDateRelated?.let {
+                val relativeNextDateString = it.getRelativeDateString()
 
-                val isOverdue = relativeNextDateInfo is RelativeDate.Overdue
                 val textColor =
-                    if (isOverdue) {
+                    if (contact.isOverdue) {
                         MaterialTheme.colorScheme.error
                     } else {
                         Color.Unspecified

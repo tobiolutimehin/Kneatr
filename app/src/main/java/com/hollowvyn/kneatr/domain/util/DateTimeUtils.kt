@@ -1,10 +1,8 @@
-// In: app/src/main/java/com/hollowvyn/kneatr/data/util/DateTimeUtils.kt
-
-package com.hollowvyn.kneatr.data.util
+package com.hollowvyn.kneatr.domain.util
 
 import androidx.compose.material3.SelectableDates
+import com.hollowvyn.kneatr.domain.model.RelativeDate
 import kotlinx.datetime.DateTimeUnit
-import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
@@ -22,11 +20,11 @@ import kotlin.time.Instant
 @OptIn(ExperimentalTime::class)
 object DateTimeUtils {
     private val clock: Clock = Clock.System
-    private val timeZone: TimeZone = TimeZone.currentSystemDefault()
+    private val timeZone: TimeZone = TimeZone.Companion.currentSystemDefault()
 
     val customFormat =
-        LocalDate.Format {
-            monthName(MonthNames.ENGLISH_ABBREVIATED)
+        LocalDate.Companion.Format {
+            monthName(MonthNames.Companion.ENGLISH_ABBREVIATED)
             char(' ')
             day(padding = Padding.ZERO)
             char(',')
@@ -34,50 +32,43 @@ object DateTimeUtils {
             year()
         }
 
-    fun formatDateRelatively(
-        date: LocalDate,
-        isFuture: Boolean = false,
-    ): RelativeDate {
+    fun formatDateRelatively(date: LocalDate): RelativeDate {
         val today = clock.todayIn(timeZone)
         val daysDifference = (today.toEpochDays() - date.toEpochDays()).toInt()
 
-        return when {
-            isFuture && daysDifference > 0 -> {
-                RelativeDate.Overdue
-            }
-
-            daysDifference in -26..-21 -> {
+        return when (daysDifference) {
+            in -26..-21 -> {
                 RelativeDate.Weeks(3)
             }
 
-            daysDifference in -20..-14 -> {
+            in -20..-14 -> {
                 RelativeDate.Weeks(3)
             }
 
-            daysDifference in -13..-7 -> {
+            in -13..-7 -> {
                 RelativeDate.Weeks(2)
             }
 
-            daysDifference in -6..-2 -> {
+            in -6..-2 -> {
                 RelativeDate.NextWeekday(date.dayOfWeek)
             }
 
-            daysDifference == -1 -> RelativeDate.Tomorrow
-            daysDifference == 0 -> RelativeDate.Today
-            daysDifference == 1 -> RelativeDate.Yesterday
-            daysDifference in 2..6 -> {
+            -1 -> RelativeDate.Tomorrow
+            0 -> RelativeDate.Today
+            1 -> RelativeDate.Yesterday
+            in 2..6 -> {
                 RelativeDate.LastWeekday(date.dayOfWeek)
             }
 
-            daysDifference in 7..13 -> {
+            in 7..13 -> {
                 RelativeDate.WeeksAgo(1)
             }
 
-            daysDifference in 14..20 -> {
+            in 14..20 -> {
                 RelativeDate.WeeksAgo(2)
             }
 
-            daysDifference in 21..26 -> {
+            in 21..26 -> {
                 RelativeDate.WeeksAgo(3)
             }
 
@@ -92,9 +83,9 @@ object DateTimeUtils {
     fun formatDate(millis: Long): String = toLocalDate(millis).format(customFormat)
 
     fun toLocalDate(millis: Long): LocalDate =
-        Instant
+        Instant.Companion
             .fromEpochMilliseconds(millis)
-            .toLocalDateTime(TimeZone.UTC)
+            .toLocalDateTime(TimeZone.Companion.UTC)
             .date
 
     fun getSelectablePastAndPresentDates() =
@@ -107,39 +98,9 @@ object DateTimeUtils {
     fun calculateDaysAfter(
         date: LocalDate,
         days: Int,
-    ): LocalDate = date.plus(days, DateTimeUnit.DAY)
+    ): LocalDate = date.plus(days, DateTimeUnit.Companion.DAY)
 
     fun today(): LocalDate = clock.todayIn(timeZone)
 
     fun toEpochMillis(date: LocalDate): Long = date.atStartOfDayIn(timeZone).toEpochMilliseconds()
-}
-
-sealed interface RelativeDate {
-    data object Today : RelativeDate
-
-    data object Yesterday : RelativeDate
-
-    data object Tomorrow : RelativeDate
-
-    data class Weeks(
-        val count: Int,
-    ) : RelativeDate
-
-    data class LastWeekday(
-        val dayOfWeek: DayOfWeek,
-    ) : RelativeDate
-
-    data class NextWeekday(
-        val dayOfWeek: DayOfWeek,
-    ) : RelativeDate
-
-    data class WeeksAgo(
-        val count: Int,
-    ) : RelativeDate
-
-    data class Absolute(
-        val date: LocalDate,
-    ) : RelativeDate
-
-    data object Overdue : RelativeDate
 }

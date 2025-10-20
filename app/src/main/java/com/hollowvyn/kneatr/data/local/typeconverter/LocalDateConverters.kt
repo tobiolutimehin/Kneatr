@@ -1,7 +1,7 @@
 package com.hollowvyn.kneatr.data.local.typeconverter
 
 import androidx.room.TypeConverter
-import com.hollowvyn.kneatr.data.util.DateTimeUtils
+import com.hollowvyn.kneatr.domain.util.DateTimeUtils
 import kotlinx.datetime.LocalDate
 import kotlin.time.ExperimentalTime
 
