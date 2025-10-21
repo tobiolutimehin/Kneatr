@@ -36,8 +36,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.hollowvyn.kneatr.R
 import com.hollowvyn.kneatr.domain.model.CommunicationLog
 import com.hollowvyn.kneatr.domain.model.Contact
 import com.hollowvyn.kneatr.domain.util.formatPhoneNumber
@@ -78,8 +80,7 @@ fun ContactDetailScreen(
     var selectedLog by remember { mutableStateOf<CommunicationLog?>(null) }
 
     var showConfirmationDialog by remember { mutableStateOf(false) }
-    var confirmationAction by remember { mutableStateOf<() -> Unit>({}) }
-    var confirmationTitle by remember { mutableStateOf("") }
+    var confirmationAction by remember { mutableStateOf({}) }
     var confirmationText by remember { mutableStateOf("") }
 
     Scaffold(
@@ -136,12 +137,11 @@ fun ContactDetailScreen(
                         onDeleteLog = { log ->
                             viewModel.deleteCommunicationLog(log)
                         },
-                        onShowConfirmation = { title, text, action ->
-                            confirmationTitle = title
+                        onShowConfirmation = { text, action ->
                             confirmationText = text
                             confirmationAction = action
                             showConfirmationDialog = true
-                        }
+                        },
                     )
                 } ?: Text("Contact not found", modifier = Modifier.padding(innerPadding))
             }
@@ -177,8 +177,7 @@ fun ContactDetailScreen(
             DeepInteractionConfirmationDialog(
                 onConfirm = confirmationAction,
                 onDismiss = { showConfirmationDialog = false },
-                title = confirmationTitle,
-                text = confirmationText
+                text = confirmationText,
             )
         }
     }
@@ -190,7 +189,7 @@ private fun ContactDetailContent(
     listState: LazyListState,
     onEditLog: (CommunicationLog) -> Unit,
     onDeleteLog: (CommunicationLog) -> Unit,
-    onShowConfirmation: (String, String, () -> Unit) -> Unit,
+    onShowConfirmation: (String, () -> Unit) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -225,23 +224,21 @@ private fun ContactDetailContent(
                     Button(
                         onClick = {
                             onShowConfirmation(
-                                "Call Contact",
-                                "Are you sure you want to call ${contact.name}?"
+                                context.getString(R.string.call_x_contact, contact.name),
                             ) { context.startPhoneCall(contact.phoneNumber) }
-                        }
+                        },
                     ) {
-                        Text("Call")
+                        Text(stringResource(R.string.call))
                     }
 
                     Button(
                         onClick = {
                             onShowConfirmation(
-                                "Message Contact",
-                                "Are you sure you want to message ${contact.name}?"
+                                context.getString(R.string.message_x_contact, contact.name),
                             ) { context.startTextMessage(contact.phoneNumber) }
-                        }
+                        },
                     ) {
-                        Text("Message")
+                        Text(stringResource(R.string.message))
                     }
                 }
 
@@ -249,12 +246,11 @@ private fun ContactDetailContent(
                     Button(
                         onClick = {
                             onShowConfirmation(
-                                "Email Contact",
-                                "Are you sure you want to email ${contact.name}?"
+                                context.getString(R.string.email_x_contact, contact.name),
                             ) { context.startEmail(email) }
-                        }
+                        },
                     ) {
-                        Text("Email")
+                        Text(stringResource(R.string.email))
                     }
                 }
             }
