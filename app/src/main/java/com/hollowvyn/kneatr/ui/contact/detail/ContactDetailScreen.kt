@@ -51,10 +51,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.hollowvyn.kneatr.R
+import com.hollowvyn.kneatr.data.local.entity.CommunicationType
 import com.hollowvyn.kneatr.domain.model.CommunicationLog
 import com.hollowvyn.kneatr.domain.model.Contact
 import com.hollowvyn.kneatr.domain.model.ContactTag
 import com.hollowvyn.kneatr.domain.model.ContactTier
+import com.hollowvyn.kneatr.domain.util.DateTimeUtils
 import com.hollowvyn.kneatr.ui.contact.DeepInteractionConfirmationDialog
 import com.hollowvyn.kneatr.ui.contact.viewmodel.ContactDetailViewModel
 import com.hollowvyn.kneatr.ui.util.startEmail
@@ -149,9 +151,12 @@ fun ContactDetailScreen(
                         onDeleteLog = { log ->
                             viewModel.deleteCommunicationLog(log)
                         },
-                        onShowConfirmation = { text, action ->
+                        onShowConfirmation = { text, type, action ->
                             confirmationText = text
-                            confirmationAction = action
+                            confirmationAction = {
+                                action()
+                                viewModel.addCommunicationLog(DateTimeUtils.today(), type)
+                            }
                             showConfirmationDialog = true
                         },
                     )
@@ -201,7 +206,7 @@ private fun ContactDetailContent(
     listState: LazyListState,
     onEditLog: (CommunicationLog) -> Unit,
     onDeleteLog: (CommunicationLog) -> Unit,
-    onShowConfirmation: (String, () -> Unit) -> Unit,
+    onShowConfirmation: (String, CommunicationType, () -> Unit) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
@@ -265,7 +270,7 @@ private fun ContactDetailContentPreview() {
         listState = rememberLazyListState(),
         onEditLog = {},
         onDeleteLog = {},
-        onShowConfirmation = { _, _ ->
+        onShowConfirmation = { _, _, _ ->
         },
         modifier = Modifier,
     )
@@ -274,7 +279,7 @@ private fun ContactDetailContentPreview() {
 @Composable
 fun ContactReachOutButtons(
     contact: Contact,
-    onShowConfirmation: (String, () -> Unit) -> Unit,
+    onShowConfirmation: (String, CommunicationType, () -> Unit) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -290,6 +295,7 @@ fun ContactReachOutButtons(
                 onClick = {
                     onShowConfirmation(
                         context.getString(R.string.call_x_contact, contact.name),
+                        CommunicationType.PHONE_CALL,
                     ) {
                         context.startPhoneCall(contact.phoneNumber)
                     }
@@ -302,6 +308,7 @@ fun ContactReachOutButtons(
                 onClick = {
                     onShowConfirmation(
                         context.getString(R.string.message_x_contact, contact.name),
+                        CommunicationType.MESSAGE,
                     ) {
                         context.startTextMessage(contact.phoneNumber)
                     }
@@ -316,6 +323,7 @@ fun ContactReachOutButtons(
                 onClick = {
                     onShowConfirmation(
                         context.getString(R.string.email_x_contact, contact.name),
+                        CommunicationType.EMAIL,
                     ) {
                         context.startEmail(email)
                     }
@@ -337,7 +345,7 @@ private fun ContactReachOutButtonsPreview() {
         )
     ContactReachOutButtons(
         contact = contact,
-        onShowConfirmation = { _, _ ->
+        onShowConfirmation = { _, _, _ ->
         },
     )
 }
@@ -354,10 +362,12 @@ fun ContactReachOutButton(
             modifier
                 .clickable {
                     onClick()
-                }.clearAndSetSemantics {
+                }
+                .clearAndSetSemantics {
                     contentDescription = text
                     role = Role.Button
-                }.wrapContentSize()
+                }
+                .wrapContentSize()
                 .padding(2.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(2.dp),
@@ -368,8 +378,10 @@ fun ContactReachOutButton(
             modifier =
                 Modifier
                     .size(36.dp)
-                    .background(color = MaterialTheme.colorScheme.outlineVariant, shape = CircleShape)
-                    .padding(8.dp),
+                    .background(
+                        color = MaterialTheme.colorScheme.outlineVariant,
+                        shape = CircleShape,
+                    ).padding(8.dp),
         )
         Text(text = text, style = MaterialTheme.typography.labelSmall)
     }
