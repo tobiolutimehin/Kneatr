@@ -22,11 +22,13 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewFontScale
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.hollowvyn.kneatr.R
 import com.hollowvyn.kneatr.data.local.entity.CommunicationType
 import com.hollowvyn.kneatr.domain.model.Contact
+import com.hollowvyn.kneatr.ui.theme.KneatrTheme
 import com.hollowvyn.kneatr.ui.util.startEmail
 import com.hollowvyn.kneatr.ui.util.startPhoneCall
 import com.hollowvyn.kneatr.ui.util.startTextMessage
@@ -117,14 +119,16 @@ private fun ContactReachOutButton(
                     .background(
                         color = MaterialTheme.colorScheme.surfaceContainer,
                         shape = CircleShape,
-                    ).padding(10.dp),
+                    )
+                    .padding(10.dp),
             tint = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         Text(text = text, style = MaterialTheme.typography.labelSmall)
     }
 }
 
-@Preview(showBackground = true)
+@PreviewLightDark
+@PreviewFontScale
 @Composable
 private fun ContactReachOutButtonsPreview() {
     val contact =
@@ -134,19 +138,25 @@ private fun ContactReachOutButtonsPreview() {
             phoneNumber = "1234567890",
             email = "john.doe@email.com",
         )
-    ContactReachOutButtons(
-        contact = contact,
-        onShowConfirmation = { _, _, _ ->
-        },
-    )
+    KneatrTheme {
+        ContactReachOutButtons(
+            contact = contact,
+            onShowConfirmation = { _, _, _ ->
+            },
+            modifier = Modifier.background(color = MaterialTheme.colorScheme.background)
+        )
+    }
 }
 
-@Preview(showBackground = true)
+@PreviewLightDark
 @Composable
 private fun ContactReachOutButtonPreview() {
-    ContactReachOutButton(
-        text = "Call",
-        icon = R.drawable.call_24px,
-        onClick = {},
-    )
+    KneatrTheme {
+        ContactReachOutButton(
+            text = "Call",
+            icon = R.drawable.call_24px,
+            onClick = {},
+            modifier = Modifier.background(color = MaterialTheme.colorScheme.background)
+        )
+    }
 }
