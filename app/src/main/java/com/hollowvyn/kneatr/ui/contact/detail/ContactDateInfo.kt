@@ -61,6 +61,7 @@ fun ContactDateInfo(
     Text(
         text = annotatedString,
         textAlign = TextAlign.Center,
+        modifier = modifier,
     )
 }
 
