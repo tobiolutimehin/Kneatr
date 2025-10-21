@@ -1,23 +1,28 @@
 package com.hollowvyn.kneatr.ui.contact.detail
 
+import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
@@ -34,15 +39,22 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.hollowvyn.kneatr.R
 import com.hollowvyn.kneatr.domain.model.CommunicationLog
 import com.hollowvyn.kneatr.domain.model.Contact
-import com.hollowvyn.kneatr.domain.util.formatPhoneNumber
+import com.hollowvyn.kneatr.domain.model.ContactTag
+import com.hollowvyn.kneatr.domain.model.ContactTier
 import com.hollowvyn.kneatr.ui.contact.DeepInteractionConfirmationDialog
 import com.hollowvyn.kneatr.ui.contact.viewmodel.ContactDetailViewModel
 import com.hollowvyn.kneatr.ui.util.startEmail
@@ -192,7 +204,6 @@ private fun ContactDetailContent(
     onShowConfirmation: (String, () -> Unit) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val context = LocalContext.current
     LazyColumn(
         modifier =
             modifier
@@ -200,13 +211,16 @@ private fun ContactDetailContent(
                 .padding(horizontal = 16.dp),
         contentPadding = PaddingValues(bottom = 16.dp),
         state = listState,
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         item {
             Text(
                 text = contact.name,
                 style = MaterialTheme.typography.headlineLarge,
-                modifier = Modifier.padding(vertical = 16.dp),
             )
+        }
+        item {
+            contact.tier?.let { Text(text = "Tier: ${contact.tier.name}") }
         }
         item {
             if (contact.tags.isNotEmpty()) {
@@ -216,56 +230,10 @@ private fun ContactDetailContent(
         item { ContactDateInfo(contact) }
 
         item {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-            ) {
-                if (contact.phoneNumber.isNotBlank()) {
-                    Button(
-                        onClick = {
-                            onShowConfirmation(
-                                context.getString(R.string.call_x_contact, contact.name),
-                            ) { context.startPhoneCall(contact.phoneNumber) }
-                        },
-                    ) {
-                        Text(stringResource(R.string.call))
-                    }
-
-                    Button(
-                        onClick = {
-                            onShowConfirmation(
-                                context.getString(R.string.message_x_contact, contact.name),
-                            ) { context.startTextMessage(contact.phoneNumber) }
-                        },
-                    ) {
-                        Text(stringResource(R.string.message))
-                    }
-                }
-
-                contact.email?.let { email ->
-                    Button(
-                        onClick = {
-                            onShowConfirmation(
-                                context.getString(R.string.email_x_contact, contact.name),
-                            ) { context.startEmail(email) }
-                        },
-                    ) {
-                        Text(stringResource(R.string.email))
-                    }
-                }
-            }
-        }
-        item {
-            contact.tier?.let { Text(text = "Tier: ${contact.tier.name}") }
-        }
-
-        item {
-            Text(
-                text = "Phone: ${contact.phoneNumber.formatPhoneNumber()}",
+            ContactReachOutButtons(
+                contact = contact,
+                onShowConfirmation = onShowConfirmation,
             )
-            contact.email?.let { email ->
-                Text(text = "Email: $email")
-            }
         }
 
         communicationLogItems(
@@ -274,4 +242,145 @@ private fun ContactDetailContent(
             onDeleteLog = { onDeleteLog(it) },
         )
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ContactDetailContentPreview() {
+    val contact =
+        Contact(
+            id = 1,
+            name = "John Doe",
+            phoneNumber = "1234567890",
+            email = "john.doe@email.com",
+            tags =
+                setOf(
+                    ContactTag(id = 1, name = "Family"),
+                    ContactTag(id = 2, name = "Work"),
+                ),
+            tier = ContactTier(id = 1, name = "Tier 1", daysBetweenContact = 30),
+        )
+    ContactDetailContent(
+        contact = contact,
+        listState = rememberLazyListState(),
+        onEditLog = {},
+        onDeleteLog = {},
+        onShowConfirmation = { _, _ ->
+        },
+        modifier = Modifier,
+    )
+}
+
+@Composable
+fun ContactReachOutButtons(
+    contact: Contact,
+    onShowConfirmation: (String, () -> Unit) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val context = LocalContext.current
+
+    Row(
+        modifier = modifier.wrapContentSize(),
+        horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
+    ) {
+        if (contact.phoneNumber.isNotBlank()) {
+            ContactReachOutButton(
+                text = context.getString(R.string.call),
+                icon = R.drawable.call_24px,
+                onClick = {
+                    onShowConfirmation(
+                        context.getString(R.string.call_x_contact, contact.name),
+                    ) {
+                        context.startPhoneCall(contact.phoneNumber)
+                    }
+                },
+            )
+
+            ContactReachOutButton(
+                text = context.getString(R.string.message),
+                icon = R.drawable.chat_bubble_24px,
+                onClick = {
+                    onShowConfirmation(
+                        context.getString(R.string.message_x_contact, contact.name),
+                    ) {
+                        context.startTextMessage(contact.phoneNumber)
+                    }
+                },
+            )
+        }
+
+        contact.email?.let { email ->
+            ContactReachOutButton(
+                text = context.getString(R.string.email),
+                icon = R.drawable.mail_24px,
+                onClick = {
+                    onShowConfirmation(
+                        context.getString(R.string.email_x_contact, contact.name),
+                    ) {
+                        context.startEmail(email)
+                    }
+                },
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ContactReachOutButtonsPreview() {
+    val contact =
+        Contact(
+            id = 1,
+            name = "John Doe",
+            phoneNumber = "1234567890",
+            email = "john.doe@email.com",
+        )
+    ContactReachOutButtons(
+        contact = contact,
+        onShowConfirmation = { _, _ ->
+        },
+    )
+}
+
+@Composable
+fun ContactReachOutButton(
+    text: String,
+    @DrawableRes icon: Int,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier =
+            modifier
+                .clickable {
+                    onClick()
+                }.clearAndSetSemantics {
+                    contentDescription = text
+                    role = Role.Button
+                }.wrapContentSize()
+                .padding(2.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(2.dp),
+    ) {
+        Icon(
+            painter = painterResource(id = icon),
+            contentDescription = null,
+            modifier =
+                Modifier
+                    .size(36.dp)
+                    .background(color = MaterialTheme.colorScheme.outlineVariant, shape = CircleShape)
+                    .padding(8.dp),
+        )
+        Text(text = text, style = MaterialTheme.typography.labelSmall)
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ContactReachOutButtonPreview() {
+    ContactReachOutButton(
+        text = "Call",
+        icon = R.drawable.call_24px,
+        onClick = {},
+    )
 }

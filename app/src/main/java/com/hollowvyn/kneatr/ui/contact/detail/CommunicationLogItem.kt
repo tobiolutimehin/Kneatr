@@ -134,6 +134,7 @@ internal fun LazyListScope.communicationLogItems(
         Text(
             stringResource(R.string.communication_log),
             style = MaterialTheme.typography.titleLarge,
+            modifier = Modifier.fillMaxWidth(),
         )
     }
 
