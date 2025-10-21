@@ -37,6 +37,12 @@
     <string name="overdue">Overdue</string>
     <string name="last_time_contacted">Last time contacted: %1$s</string>
     <string name="next_contact_in">Next contact in: %1$s</string>
+    <string name="are_you_sure">Are you sure?</string>
+    <string name="confirm">Confirm</string>
+    <string name="call_x_contact">Call %1$s?</string>
+    <string name="message_x_contact">Message %1$s?</string>
+    <string name="email_x_contact">Email %1$s?</string>
+    <string name="call">Call</string>
     <plurals name="x_weeks_ago">
         <item quantity="one">1 week ago</item>
         <item quantity="other">%d weeks ago</item>

@@ -50,7 +50,7 @@ class ContactDetailViewModel
         fun addCommunicationLog(
             date: LocalDate,
             type: CommunicationType,
-            notes: String,
+            notes: String? = null,
         ) {
             viewModelScope.launch {
                 contactIdFlow.value?.let { contactId ->
