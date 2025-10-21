@@ -286,7 +286,7 @@ fun ContactReachOutButtons(
 
     Row(
         modifier = modifier.wrapContentSize(),
-        horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
+        horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally),
     ) {
         if (contact.phoneNumber.isNotBlank()) {
             ContactReachOutButton(
@@ -368,20 +368,21 @@ fun ContactReachOutButton(
                     role = Role.Button
                 }
                 .wrapContentSize()
-                .padding(2.dp),
+                .padding(4.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(2.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
         Icon(
             painter = painterResource(id = icon),
             contentDescription = null,
             modifier =
                 Modifier
-                    .size(36.dp)
+                    .size(40.dp)
                     .background(
-                        color = MaterialTheme.colorScheme.outlineVariant,
+                        color = MaterialTheme.colorScheme.surfaceContainer,
                         shape = CircleShape,
-                    ).padding(8.dp),
+                    ).padding(10.dp),
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         Text(text = text, style = MaterialTheme.typography.labelSmall)
     }
