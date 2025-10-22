@@ -36,10 +36,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.hollowvyn.kneatr.data.local.entity.CommunicationType
+import com.hollowvyn.kneatr.domain.fakes.ContactFakes.fullContact
 import com.hollowvyn.kneatr.domain.model.CommunicationLog
 import com.hollowvyn.kneatr.domain.model.Contact
-import com.hollowvyn.kneatr.domain.model.ContactTag
-import com.hollowvyn.kneatr.domain.model.ContactTier
 import com.hollowvyn.kneatr.domain.util.DateTimeUtils
 import com.hollowvyn.kneatr.ui.contact.DeepInteractionConfirmationDialog
 import com.hollowvyn.kneatr.ui.contact.viewmodel.ContactDetailViewModel
@@ -233,26 +232,12 @@ private fun ContactDetailContent(
 @Preview(showBackground = true)
 @Composable
 private fun ContactDetailContentPreview() {
-    val contact =
-        Contact(
-            id = 1,
-            name = "John Doe",
-            phoneNumber = "1234567890",
-            email = "john.doe@email.com",
-            tags =
-                setOf(
-                    ContactTag(id = 1, name = "Family"),
-                    ContactTag(id = 2, name = "Work"),
-                ),
-            tier = ContactTier(id = 1, name = "Tier 1", daysBetweenContact = 30),
-        )
     ContactDetailContent(
-        contact = contact,
+        contact = fullContact,
         listState = rememberLazyListState(),
         onEditLog = {},
         onDeleteLog = {},
-        onShowConfirmation = { _, _, _ ->
-        },
+        onShowConfirmation = { _, _, _ -> },
         modifier = Modifier,
     )
 }

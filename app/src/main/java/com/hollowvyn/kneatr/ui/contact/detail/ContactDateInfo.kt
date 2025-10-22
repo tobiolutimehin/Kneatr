@@ -1,5 +1,6 @@
 package com.hollowvyn.kneatr.ui.contact.detail
 
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -11,6 +12,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import com.hollowvyn.kneatr.R
+import com.hollowvyn.kneatr.domain.fakes.ContactFakes.fullContact
 import com.hollowvyn.kneatr.domain.model.Contact
 import com.hollowvyn.kneatr.domain.model.RelativeDate
 import com.hollowvyn.kneatr.ui.helpers.getRelativeDateString
@@ -60,23 +62,16 @@ fun ContactDateInfo(
     Text(
         text = annotatedString,
         textAlign = TextAlign.Center,
-        modifier = modifier,
+        modifier = modifier.fillMaxWidth(),
     )
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun ContactDateInfoPreview() {
-    val contact =
-        Contact(
-            id = 1,
-            name = "John Doe",
-            phoneNumber = "1234567890",
-            email = "john.doe@example.com",
-        )
     MaterialTheme {
         ContactDateInfo(
-            contact = contact,
+            contact = fullContact,
         )
     }
 }
