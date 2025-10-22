@@ -1,7 +1,6 @@
 package com.hollowvyn.kneatr.domain.model
 
 import androidx.compose.runtime.Immutable
-import com.hollowvyn.kneatr.data.local.entity.CommunicationType
 import com.hollowvyn.kneatr.domain.util.DateTimeUtils
 import kotlinx.datetime.LocalDate
 
@@ -41,25 +40,3 @@ data class Contact(
             nextCommunicationDate?.let { DateTimeUtils.formatFutureDate(it) }
         }
 }
-
-@Immutable
-data class ContactTag(
-    val id: Long,
-    val name: String,
-)
-
-@Immutable
-data class CommunicationLog(
-    val type: CommunicationType,
-    val date: LocalDate,
-    val contactId: Long,
-    val id: Long? = null,
-    val notes: String? = null,
-)
-
-@Immutable
-data class ContactTier(
-    val id: Long,
-    val name: String,
-    val daysBetweenContact: Int,
-)
