@@ -14,15 +14,14 @@ import com.hollowvyn.kneatr.R
 import com.hollowvyn.kneatr.domain.model.Contact
 import com.hollowvyn.kneatr.domain.model.RelativeDate
 import com.hollowvyn.kneatr.ui.helpers.getRelativeDateString
-import kotlinx.datetime.LocalDate
 
 @Composable
 fun ContactDateInfo(
     contact: Contact,
     modifier: Modifier = Modifier,
 ) {
-    val lastDateString = contact.lastContactedRelatedDate?.getRelativeDateString()
-    val nextDateString = contact.nextContactDateRelated?.getRelativeDateString()
+    val lastDateString = contact.lastCommunicationDateRelative?.getRelativeDateString()
+    val nextDateString = contact.nextCommunicationDateRelative?.getRelativeDateString()
 
     if (lastDateString == null && nextDateString == null) return
 
@@ -47,7 +46,7 @@ fun ContactDateInfo(
 
             if (nextDateString != null) {
                 val nextDateStyle =
-                    if (contact.nextContactDateRelated is RelativeDate.Overdue) {
+                    if (contact.nextCommunicationDateRelative is RelativeDate.Overdue) {
                         baseStyle.copy(color = MaterialTheme.colorScheme.error)
                     } else {
                         baseStyle
@@ -74,8 +73,6 @@ private fun ContactDateInfoPreview() {
             name = "John Doe",
             phoneNumber = "1234567890",
             email = "john.doe@example.com",
-            lastDate = LocalDate.parse("2023-10-26"),
-            nextContactDate = LocalDate.parse("2023-11-10"),
         )
     MaterialTheme {
         ContactDateInfo(

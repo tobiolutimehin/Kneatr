@@ -15,23 +15,31 @@ data class Contact(
     val communicationLogs: List<CommunicationLog> = emptyList(),
     val tier: ContactTier? = null,
     val customFrequencyDays: Int? = null,
-    val isOverdue: Boolean = false,
-    val isDueToday: Boolean = false,
-    val nextContactDate: LocalDate? = null,
-    val lastDate: LocalDate? = null,
 ) {
-    val lastContactedRelatedDate: RelativeDate?
-        get() = lastDate?.let { DateTimeUtils.formatPastDate(it) }
-
-    val nextContactDateRelated: RelativeDate?
-        get() =
-            if (isDueToday) {
-                RelativeDate.Today
-            } else if (isOverdue) {
-                RelativeDate.Overdue
-            } else {
-                nextContactDate?.let { DateTimeUtils.formatFutureDate(it) }
+    private val lastCommunicationDate = communicationLogs.maxByOrNull { it.date }?.date
+    private val nextCommunicationDate: LocalDate? =
+        lastCommunicationDate?.let {
+            customFrequencyDays?.let { customDays ->
+                DateTimeUtils.calculateDaysAfter(it, customDays)
+            } ?: tier?.daysBetweenContact?.let { tierDays ->
+                DateTimeUtils.calculateDaysAfter(it, tierDays)
             }
+        }
+
+    internal val isOverdue = nextCommunicationDate?.let { it < DateTimeUtils.today() } ?: false
+    internal val isDueToday = nextCommunicationDate?.let { it == DateTimeUtils.today() } ?: false
+
+    internal val lastCommunicationDateRelative: RelativeDate? =
+        lastCommunicationDate?.let { DateTimeUtils.formatPastDate(it) }
+
+    internal val nextCommunicationDateRelative: RelativeDate? =
+        if (isDueToday) {
+            RelativeDate.Today
+        } else if (isOverdue) {
+            RelativeDate.Overdue
+        } else {
+            nextCommunicationDate?.let { DateTimeUtils.formatFutureDate(it) }
+        }
 }
 
 @Immutable
