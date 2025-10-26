@@ -147,7 +147,7 @@ fun CommunicationLogSheetContent(
 }
 
 @Composable
-private fun SheetHeader(
+fun SheetHeader(
     title: String,
     onCancel: () -> Unit,
     modifier: Modifier = Modifier,
