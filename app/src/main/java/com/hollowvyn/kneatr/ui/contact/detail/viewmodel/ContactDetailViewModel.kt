@@ -43,7 +43,8 @@ class ContactDetailViewModel
                     contactRepository
                         .getContactById(id)
                         .map { contact ->
-                            ContactDetailUiState.Success(contact = contact)
+                            contact?.let { ContactDetailUiState.Success(contact = contact) }
+                                ?: ContactDetailUiState.Error
                         }
                 }.stateIn(
                     scope = viewModelScope,
@@ -107,13 +108,9 @@ class ContactDetailViewModel
 
         fun updateTier(tier: ContactTier?) {
             viewModelScope.launch {
-                uiState.value.let {
-                    if (it is ContactDetailUiState.Success) {
-                        it.contact?.let { contact ->
-                            contactRepository.updateContact(
-                                contact.copy(tier = tier),
-                            )
-                        }
+                uiState.value.let { state ->
+                    if (state is ContactDetailUiState.Success) {
+                        contactRepository.updateContact(contact = state.contact.copy(tier = tier))
                     }
                 }
             }

@@ -55,10 +55,6 @@ fun ContactDetailScreen(
     modifier: Modifier = Modifier,
     viewModel: ContactDetailViewModel = hiltViewModel(),
 ) {
-    LaunchedEffect(key1 = contactId) {
-        viewModel.loadContactId(contactId)
-    }
-
     val uiState by viewModel.uiState.collectAsState()
     val tiers by viewModel.tiers.collectAsState()
 
@@ -78,9 +74,7 @@ fun ContactDetailScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    val title =
-                        (uiState as? ContactDetailUiState.Success)?.contact?.name
-                            ?: "" // Or a default title
+                    val title = (uiState as? ContactDetailUiState.Success)?.contact?.name ?: ""
                     AnimatedVisibility(
                         visible = isScrolled.value,
                         enter = fadeIn(spring(stiffness = Spring.StiffnessLow)),
@@ -101,7 +95,7 @@ fun ContactDetailScreen(
             ExtendedFloatingActionButton(
                 text = { Text("Add log") },
                 onClick = {
-                    selectedLog = null // Ensure we're adding a new log
+                    selectedLog = null
                     showCommunicationLogSheet = true
                 },
                 icon = {
@@ -115,49 +109,49 @@ fun ContactDetailScreen(
     ) { innerPadding ->
         when (val state = uiState) {
             is ContactDetailUiState.Success -> {
-                state.contact?.let {
-                    ContactDetailContent(
-                        contact = it,
-                        modifier = Modifier.padding(innerPadding),
-                        listState = listState,
-                        onEditLog = { log ->
-                            selectedLog = log
-                            showCommunicationLogSheet = true
-                        },
-                        onDeleteLog = { log ->
-                            viewModel.deleteCommunicationLog(log)
-                        },
-                        onShowConfirmation = { text, type, action ->
-                            confirmationText = text
-                            confirmationAction = {
-                                action()
-                                viewModel.addCommunicationLog(DateTimeUtils.today(), type)
-                            }
-                            showConfirmationDialog = true
-                        },
-                        onEditTier = { remove ->
-                            if (remove) {
-                                viewModel.updateTier(null)
-                            } else {
-                                showTierSheet = true
-                            }
-                        },
-                    )
-                    Logger.i(
-                        tag = TAG,
-                        message = "Contact loaded successfully: ${state.contact.name}",
-                    )
-                } ?: run {
-                    Text("Contact not found", modifier = Modifier.padding(innerPadding))
-                    Logger.d(tag = TAG, message = "Contact not found")
-                }
+                ContactDetailContent(
+                    contact = state.contact,
+                    modifier = Modifier.padding(innerPadding),
+                    listState = listState,
+                    onEditLog = { log ->
+                        selectedLog = log
+                        showCommunicationLogSheet = true
+                    },
+                    onDeleteLog = { log ->
+                        viewModel.deleteCommunicationLog(log)
+                    },
+                    onShowConfirmation = { text, type, action ->
+                        confirmationText = text
+                        confirmationAction = {
+                            action()
+                            viewModel.addCommunicationLog(DateTimeUtils.today(), type)
+                        }
+                        showConfirmationDialog = true
+                    },
+                    onEditTier = { remove ->
+                        if (remove) {
+                            viewModel.updateTier(null)
+                        } else {
+                            showTierSheet = true
+                        }
+                    },
+                )
+                Logger.i(
+                    tag = TAG,
+                    message = "Contact loaded successfully: ${state.contact.name}",
+                )
             }
 
-            ContactDetailUiState.Error ->
+            ContactDetailUiState.Error -> {
                 Text(
                     "Error loading contact",
                     modifier = Modifier.padding(innerPadding),
                 )
+                Logger.e(
+                    tag = TAG,
+                    message = "Error loading contact",
+                )
+            }
 
             ContactDetailUiState.Loading ->
                 Text(
@@ -198,6 +192,10 @@ fun ContactDetailScreen(
                 text = confirmationText,
             )
         }
+    }
+
+    LaunchedEffect(key1 = contactId) {
+        viewModel.loadContactId(contactId)
     }
 }
 
