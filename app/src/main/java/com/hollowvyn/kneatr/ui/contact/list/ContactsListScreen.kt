@@ -9,14 +9,19 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.hollowvyn.kneatr.domain.fakes.ContactFakes.allContacts
 import com.hollowvyn.kneatr.domain.model.Contact
 import com.hollowvyn.kneatr.ui.components.screenstates.EmptyScreen
 import com.hollowvyn.kneatr.ui.components.screenstates.ErrorScreen
 import com.hollowvyn.kneatr.ui.components.screenstates.LoadingScreen
 import com.hollowvyn.kneatr.ui.contact.viewmodel.ContactsListUiState
 import com.hollowvyn.kneatr.ui.contact.viewmodel.ContactsListViewModel
+import com.hollowvyn.kneatr.ui.theme.KneatrTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -27,23 +32,36 @@ fun ContactsListScreen(
 ) {
     val uiStateDelegate by viewModel.uiState.collectAsStateWithLifecycle()
 
-    Scaffold(
+    ContactsListScreen(
+        uiState = uiStateDelegate,
         modifier = modifier,
-    ) { innerPadding ->
+        onContactClick = onContactClick,
+        onQueryChange = viewModel::onQueryChange,
+    )
+}
+
+@Composable
+private fun ContactsListScreen(
+    uiState: ContactsListUiState,
+    modifier: Modifier = Modifier,
+    onContactClick: (Contact) -> Unit = {},
+    onQueryChange: (String) -> Unit = {},
+) {
+    Scaffold(modifier = modifier) { innerPadding ->
         val contentModifier =
             Modifier
                 .padding(innerPadding)
                 .consumeWindowInsets(WindowInsets.statusBars)
-        when (uiStateDelegate) {
+        when (uiState) {
             is ContactsListUiState.Success -> {
-                (uiStateDelegate as ContactsListUiState.Success).let { success ->
+                uiState.let { success ->
                     ContactsListSuccessContent(
                         contacts = success.contacts,
                         modifier = contentModifier,
                         onContactClick = onContactClick,
                         searchedContacts = success.searchedContacts,
                         query = success.query,
-                        onQueryChange = viewModel::onQueryChange,
+                        onQueryChange = onQueryChange,
                     )
                 }
             }
@@ -60,5 +78,31 @@ fun ContactsListScreen(
                 EmptyScreen(modifier = contentModifier)
             }
         }
+    }
+}
+
+class UserPreviewParameterProvider : PreviewParameterProvider<ContactsListUiState> {
+    override val values =
+        sequenceOf(
+            ContactsListUiState.Success(
+                contacts = allContacts,
+                searchedContacts = emptyList(),
+                query = "",
+            ),
+            ContactsListUiState.Error,
+            ContactsListUiState.Loading,
+            ContactsListUiState.Empty,
+        )
+}
+
+@Preview(showSystemUi = true)
+@Composable
+private fun ContactsListsScreenPreview(
+    @PreviewParameter(UserPreviewParameterProvider::class) uiState: ContactsListUiState,
+) {
+    KneatrTheme {
+        ContactsListScreen(
+            uiState = uiState,
+        )
     }
 }
