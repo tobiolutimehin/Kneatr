@@ -8,11 +8,13 @@ import com.hollowvyn.kneatr.data.local.dao.ContactTagCrossRefDao
 import com.hollowvyn.kneatr.data.local.dao.ContactTagDao
 import com.hollowvyn.kneatr.data.local.dao.ContactTierDao
 import com.hollowvyn.kneatr.data.local.database.KneatrDatabase
+import com.hollowvyn.kneatr.domain.model.PrepopulateData
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Provider
 import javax.inject.Singleton
 
 @Module
@@ -22,13 +24,15 @@ object DatabaseModule {
     @Singleton
     fun provideAppDatabase(
         @ApplicationContext context: Context,
+        prepopulateDataProvider: Provider<PrepopulateData>,
     ): KneatrDatabase =
         Room
             .databaseBuilder(
                 context,
-                KneatrDatabase::class.java,
-                name = "kneatr_database",
+                klass = KneatrDatabase::class.java,
+                name = "kneatr_db",
             ).fallbackToDestructiveMigration(false)
+            .addCallback(prepopulateDataProvider.get())
             .build()
 
     @Provides
