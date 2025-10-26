@@ -7,20 +7,19 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.hollowvyn.kneatr.R
 import com.hollowvyn.kneatr.domain.fakes.ContactFakes
 import com.hollowvyn.kneatr.domain.model.ContactTier
-import kotlinx.coroutines.launch
+import com.hollowvyn.kneatr.ui.components.KneatrModalBottomSheet
+import com.hollowvyn.kneatr.ui.components.SheetHeader
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -34,7 +33,7 @@ fun TierSelectorContent(
     Column(
         modifier = modifier.padding(16.dp),
     ) {
-        SheetHeader(title = "Select Tier", onCancel = onCancel)
+        SheetHeader(title = stringResource(R.string.select_tier), onCancel = onCancel)
         FlowRow(
             modifier =
                 Modifier
@@ -54,7 +53,7 @@ fun TierSelectorContent(
             }
             currentTier?.let {
                 Button(onClick = { onTierSelect(null) }) {
-                    Text(text = "Remove Tier")
+                    Text(text = stringResource(R.string.remove_tier))
                 }
             }
         }
@@ -70,35 +69,18 @@ fun TierSelectorBottomSheet(
     dismissBottomSheet: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val scope = rememberCoroutineScope()
-    val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-
-    val onCancel = {
-        scope.launch { bottomSheetState.hide() }.invokeOnCompletion {
-            if (!bottomSheetState.isVisible) {
-                dismissBottomSheet()
-            }
-        }
-    }
-
-    ModalBottomSheet(
-        onDismissRequest = dismissBottomSheet,
-        sheetState = bottomSheetState,
-        contentWindowInsets = { BottomSheetDefaults.windowInsets },
+    KneatrModalBottomSheet(
+        onDismiss = dismissBottomSheet,
         modifier = modifier,
-    ) {
+    ) { hideSheet ->
         TierSelectorContent(
             currentTier = currentTier,
             allTiers = allTiers,
-            onTierSelect = { tier ->
-                onSelectTier(tier)
-                scope.launch { bottomSheetState.hide() }.invokeOnCompletion {
-                    if (!bottomSheetState.isVisible) {
-                        dismissBottomSheet()
-                    }
-                }
+            onTierSelect = {
+                onSelectTier(it)
+                hideSheet()
             },
-            onCancel = { onCancel() },
+            onCancel = hideSheet,
         )
     }
 }

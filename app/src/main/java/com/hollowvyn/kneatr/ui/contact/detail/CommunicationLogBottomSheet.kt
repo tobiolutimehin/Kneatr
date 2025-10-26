@@ -5,18 +5,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.InputChip
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
@@ -24,13 +19,11 @@ import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,7 +35,8 @@ import com.hollowvyn.kneatr.R
 import com.hollowvyn.kneatr.data.local.entity.CommunicationType
 import com.hollowvyn.kneatr.domain.model.CommunicationLog
 import com.hollowvyn.kneatr.domain.util.DateTimeUtils
-import kotlinx.coroutines.launch
+import com.hollowvyn.kneatr.ui.components.KneatrModalBottomSheet
+import com.hollowvyn.kneatr.ui.components.SheetHeader
 import kotlinx.datetime.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -53,38 +47,17 @@ fun CommunicationLogBottomSheet(
     modifier: Modifier = Modifier,
     logToEdit: CommunicationLog? = null,
 ) {
-    val scope = rememberCoroutineScope()
-    val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-
-    ModalBottomSheet(
-        onDismissRequest = dismissBottomSheet,
-        sheetState = bottomSheetState,
-        contentWindowInsets = { BottomSheetDefaults.windowInsets },
+    KneatrModalBottomSheet(
+        onDismiss = dismissBottomSheet,
         modifier = modifier,
-    ) {
+    ) { hideSheet ->
         CommunicationLogSheetContent(
             logToEdit = logToEdit,
             onSave = { id, date, type, notes ->
                 onSave(id, date, type, notes)
-                scope
-                    .launch {
-                        bottomSheetState.hide()
-                    }.invokeOnCompletion {
-                        if (!bottomSheetState.isVisible) {
-                            dismissBottomSheet()
-                        }
-                    }
+                hideSheet()
             },
-            onCancel = {
-                scope
-                    .launch {
-                        bottomSheetState.hide()
-                    }.invokeOnCompletion {
-                        if (!bottomSheetState.isVisible) {
-                            dismissBottomSheet()
-                        }
-                    }
-            },
+            onCancel = hideSheet,
         )
     }
 }
@@ -106,7 +79,7 @@ fun CommunicationLogSheetContent(
         if (logToEdit == null) stringResource(R.string.add_communication_log) else stringResource(R.string.edit_communication_log)
 
     Column(
-        modifier = modifier.padding(horizontal = 16.dp),
+        modifier = modifier.padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
@@ -142,29 +115,6 @@ fun CommunicationLogSheetContent(
             modifier = Modifier.fillMaxWidth(),
         ) {
             Text(stringResource(R.string.save))
-        }
-    }
-}
-
-@Composable
-fun SheetHeader(
-    title: String,
-    onCancel: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
-    ) {
-        Text(
-            text = title,
-            style = MaterialTheme.typography.titleLarge,
-        )
-        IconButton(
-            onClick = onCancel,
-        ) {
-            Icon(Icons.Default.Close, contentDescription = stringResource(R.string.close))
         }
     }
 }

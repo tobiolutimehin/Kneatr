@@ -43,7 +43,9 @@
     <string name="message_x_contact">Message %1$s?</string>
     <string name="email_x_contact">Email %1$s?</string>
     <string name="call">Call</string>
-    <string name="add_tier">Add Tier\t\t\t</string>
+    <string name="add_tier">Add Tier</string>
+    <string name="select_tier">Select Tier</string>
+    <string name="remove_tier">Remove Tier</string>
     <plurals name="x_weeks_ago">
         <item quantity="one">1 week ago</item>
         <item quantity="other">%d weeks ago</item>
