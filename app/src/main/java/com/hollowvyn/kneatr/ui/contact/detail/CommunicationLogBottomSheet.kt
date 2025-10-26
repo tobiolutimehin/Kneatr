@@ -28,7 +28,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import com.hollowvyn.kneatr.R
 import com.hollowvyn.kneatr.data.local.entity.CommunicationType
 import com.hollowvyn.kneatr.domain.model.CommunicationLog
@@ -45,28 +44,6 @@ fun CommunicationLogBottomSheet(
     modifier: Modifier = Modifier,
     logToEdit: CommunicationLog? = null,
 ) {
-    KneatrModalBottomSheet(
-        onDismiss = dismissBottomSheet,
-        modifier = modifier,
-    ) { hideSheet ->
-        CommunicationLogSheetContent(
-            logToEdit = logToEdit,
-            onSave = { id, date, type, notes ->
-                onSave(id, date, type, notes)
-                hideSheet()
-            },
-            onCancel = hideSheet,
-        )
-    }
-}
-
-@Composable
-fun CommunicationLogSheetContent(
-    onSave: (id: Long?, date: LocalDate, type: CommunicationType, notes: String) -> Unit,
-    onCancel: () -> Unit,
-    modifier: Modifier = Modifier,
-    logToEdit: CommunicationLog? = null,
-) {
     var notes by remember(logToEdit) { mutableStateOf(logToEdit?.notes ?: "") }
     var selectedType by remember(logToEdit) { mutableStateOf(logToEdit?.type) }
     val initialDate =
@@ -76,41 +53,46 @@ fun CommunicationLogSheetContent(
     val title =
         if (logToEdit == null) stringResource(R.string.add_communication_log) else stringResource(R.string.edit_communication_log)
 
-    KneatrSheetContent(
-        title = title,
-        onCancel = onCancel,
+    KneatrModalBottomSheet(
+        onDismiss = dismissBottomSheet,
         modifier = modifier,
-    ) {
-        DateSelector(
-            selectedDateMillis = selectedDateMillis,
-            onDateChange = { selectedDateMillis = it },
-        )
-
-        CommunicationTypeSelector(
-            selectOption = { selectedType = it },
-            selectedOption = selectedType,
-        )
-
-        NotesInput(
-            notes = notes,
-            onNotesChange = { notes = it },
-        )
-
-        Button(
-            onClick = {
-                selectedType?.let { type ->
-                    onSave(
-                        logToEdit?.id,
-                        DateTimeUtils.toLocalDate(selectedDateMillis),
-                        type,
-                        notes,
-                    )
-                }
-            },
-            enabled = selectedType != null,
-            modifier = Modifier.fillMaxWidth(),
+    ) { hideSheet ->
+        KneatrSheetContent(
+            title = title,
+            onCancel = hideSheet,
         ) {
-            Text(stringResource(R.string.save))
+            DateSelector(
+                selectedDateMillis = selectedDateMillis,
+                onDateChange = { selectedDateMillis = it },
+            )
+
+            CommunicationTypeSelector(
+                selectOption = { selectedType = it },
+                selectedOption = selectedType,
+            )
+
+            NotesInput(
+                notes = notes,
+                onNotesChange = { notes = it },
+            )
+
+            Button(
+                onClick = {
+                    selectedType?.let { type ->
+                        onSave(
+                            logToEdit?.id,
+                            DateTimeUtils.toLocalDate(selectedDateMillis),
+                            type,
+                            notes,
+                        )
+                    }
+                    hideSheet()
+                },
+                enabled = selectedType != null,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(stringResource(R.string.save))
+            }
         }
     }
 }
@@ -230,14 +212,4 @@ fun NotesInput(
             },
         )
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun CommunicationLogSheetContentPreview() {
-    CommunicationLogSheetContent(
-        logToEdit = null,
-        onSave = { _, _, _, _ -> },
-        onCancel = { },
-    )
 }
