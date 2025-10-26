@@ -6,7 +6,6 @@ import com.hollowvyn.kneatr.data.local.entity.CommunicationType
 import com.hollowvyn.kneatr.domain.model.CommunicationLog
 import com.hollowvyn.kneatr.domain.model.ContactTier
 import com.hollowvyn.kneatr.domain.repository.ContactsRepository
-import com.hollowvyn.kneatr.ui.contact.detail.ContactDetailUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,7 +33,7 @@ class ContactDetailViewModel
                     scope = viewModelScope,
                     started = SharingStarted.WhileSubscribed(5_000),
                     initialValue = emptyList(),
-            )
+                )
 
         @OptIn(ExperimentalCoroutinesApi::class)
         val uiState: StateFlow<ContactDetailUiState> =
@@ -106,17 +105,17 @@ class ContactDetailViewModel
             }
         }
 
-    fun updateTier(tier: ContactTier?) {
-        viewModelScope.launch {
-            uiState.value.let {
-                if (it is ContactDetailUiState.Success) {
-                    it.contact?.let { contact ->
-                        contactRepository.updateContact(
-                            contact.copy(tier = tier),
-                        )
+        fun updateTier(tier: ContactTier?) {
+            viewModelScope.launch {
+                uiState.value.let {
+                    if (it is ContactDetailUiState.Success) {
+                        it.contact?.let { contact ->
+                            contactRepository.updateContact(
+                                contact.copy(tier = tier),
+                            )
+                        }
                     }
                 }
             }
         }
-    }
     }

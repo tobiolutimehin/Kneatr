@@ -34,26 +34,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.hollowvyn.kneatr.R
 import com.hollowvyn.kneatr.data.local.entity.CommunicationType
 import com.hollowvyn.kneatr.domain.fakes.ContactFakes
 import com.hollowvyn.kneatr.domain.model.CommunicationLog
 import com.hollowvyn.kneatr.domain.model.Contact
 import com.hollowvyn.kneatr.domain.util.DateTimeUtils
 import com.hollowvyn.kneatr.ui.contact.DeepInteractionConfirmationDialog
+import com.hollowvyn.kneatr.ui.contact.viewmodel.ContactDetailUiState
 import com.hollowvyn.kneatr.ui.contact.viewmodel.ContactDetailViewModel
-
-sealed class ContactDetailUiState {
-    data class Success(
-        val contact: Contact?,
-    ) : ContactDetailUiState()
-
-    data object Error : ContactDetailUiState()
-
-    data object Loading : ContactDetailUiState()
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -255,7 +248,7 @@ private fun TierButton(
 ) {
     FilledTonalButton(onClick = onEditTier) {
         Text(
-            text = tierName ?: "Add Tier",
+            text = tierName ?: stringResource(R.string.add_tier),
             style = MaterialTheme.typography.labelMedium,
         )
     }
