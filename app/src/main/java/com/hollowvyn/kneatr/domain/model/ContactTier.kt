@@ -7,4 +7,5 @@ data class ContactTier(
     val id: Long,
     val name: String,
     val daysBetweenContact: Int,
+    val canChangeOrDelete: Boolean = false,
 )
