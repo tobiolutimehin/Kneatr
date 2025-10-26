@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
@@ -30,13 +29,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.hollowvyn.kneatr.R
 import com.hollowvyn.kneatr.data.local.entity.CommunicationType
 import com.hollowvyn.kneatr.domain.model.CommunicationLog
 import com.hollowvyn.kneatr.domain.util.DateTimeUtils
 import com.hollowvyn.kneatr.ui.components.KneatrModalBottomSheet
-import com.hollowvyn.kneatr.ui.components.SheetHeader
+import com.hollowvyn.kneatr.ui.components.KneatrSheetContent
 import kotlinx.datetime.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -78,13 +76,11 @@ fun CommunicationLogSheetContent(
     val title =
         if (logToEdit == null) stringResource(R.string.add_communication_log) else stringResource(R.string.edit_communication_log)
 
-    Column(
-        modifier = modifier.padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+    KneatrSheetContent(
+        title = title,
+        onCancel = onCancel,
+        modifier = modifier,
     ) {
-        SheetHeader(title = title, onCancel = onCancel)
-
         DateSelector(
             selectedDateMillis = selectedDateMillis,
             onDateChange = { selectedDateMillis = it },

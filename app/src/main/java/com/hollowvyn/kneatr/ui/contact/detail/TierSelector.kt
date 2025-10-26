@@ -1,11 +1,9 @@
 package com.hollowvyn.kneatr.ui.contact.detail
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -19,7 +17,7 @@ import com.hollowvyn.kneatr.R
 import com.hollowvyn.kneatr.domain.fakes.ContactFakes
 import com.hollowvyn.kneatr.domain.model.ContactTier
 import com.hollowvyn.kneatr.ui.components.KneatrModalBottomSheet
-import com.hollowvyn.kneatr.ui.components.SheetHeader
+import com.hollowvyn.kneatr.ui.components.KneatrSheetContent
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -30,17 +28,17 @@ fun TierSelectorContent(
     onCancel: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(
-        modifier = modifier.padding(16.dp),
+    KneatrSheetContent(
+        title = stringResource(R.string.select_tier),
+        onCancel = onCancel,
+        modifier = modifier,
     ) {
-        SheetHeader(title = stringResource(R.string.select_tier), onCancel = onCancel)
         FlowRow(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .wrapContentHeight()
-                    .padding(vertical = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    .wrapContentHeight(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             allTiers.forEach { tier ->
