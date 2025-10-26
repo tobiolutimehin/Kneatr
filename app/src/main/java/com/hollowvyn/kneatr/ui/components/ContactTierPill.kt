@@ -1,4 +1,4 @@
-package com.hollowvyn.kneatr.ui.contact.list
+package com.hollowvyn.kneatr.ui.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background

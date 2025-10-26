@@ -16,8 +16,8 @@ import androidx.compose.ui.unit.dp
 import com.hollowvyn.kneatr.R
 import com.hollowvyn.kneatr.domain.fakes.ContactFakes
 import com.hollowvyn.kneatr.domain.model.ContactTier
-import com.hollowvyn.kneatr.ui.components.KneatrModalBottomSheet
-import com.hollowvyn.kneatr.ui.components.KneatrSheetContent
+import com.hollowvyn.kneatr.ui.components.dialog.KneatrModalBottomSheet
+import com.hollowvyn.kneatr.ui.components.dialog.KneatrSheetContent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

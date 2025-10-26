@@ -1,4 +1,4 @@
-package com.hollowvyn.kneatr.ui.contact
+package com.hollowvyn.kneatr.ui.components.dialog
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text

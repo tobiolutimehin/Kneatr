@@ -1,4 +1,4 @@
-package com.hollowvyn.kneatr.ui.contact.viewmodel
+package com.hollowvyn.kneatr.ui.contact.list.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

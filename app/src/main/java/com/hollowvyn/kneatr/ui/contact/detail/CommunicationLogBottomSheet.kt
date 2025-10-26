@@ -32,8 +32,8 @@ import com.hollowvyn.kneatr.R
 import com.hollowvyn.kneatr.data.local.entity.CommunicationType
 import com.hollowvyn.kneatr.domain.model.CommunicationLog
 import com.hollowvyn.kneatr.domain.util.DateTimeUtils
-import com.hollowvyn.kneatr.ui.components.KneatrModalBottomSheet
-import com.hollowvyn.kneatr.ui.components.KneatrSheetContent
+import com.hollowvyn.kneatr.ui.components.dialog.KneatrModalBottomSheet
+import com.hollowvyn.kneatr.ui.components.dialog.KneatrSheetContent
 import kotlinx.datetime.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)

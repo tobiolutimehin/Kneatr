@@ -42,10 +42,10 @@ import com.hollowvyn.kneatr.domain.model.CommunicationLog
 import com.hollowvyn.kneatr.domain.model.Contact
 import com.hollowvyn.kneatr.domain.util.DateTimeUtils
 import com.hollowvyn.kneatr.domain.util.Logger
-import com.hollowvyn.kneatr.ui.contact.DeepInteractionConfirmationDialog
-import com.hollowvyn.kneatr.ui.contact.list.ContactTierPill
-import com.hollowvyn.kneatr.ui.contact.viewmodel.ContactDetailUiState
-import com.hollowvyn.kneatr.ui.contact.viewmodel.ContactDetailViewModel
+import com.hollowvyn.kneatr.ui.components.ContactTierPill
+import com.hollowvyn.kneatr.ui.components.dialog.DeepInteractionConfirmationDialog
+import com.hollowvyn.kneatr.ui.contact.detail.viewmodel.ContactDetailUiState
+import com.hollowvyn.kneatr.ui.contact.detail.viewmodel.ContactDetailViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

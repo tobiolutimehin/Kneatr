@@ -1,4 +1,4 @@
-package com.hollowvyn.kneatr.ui.contact.viewmodel
+package com.hollowvyn.kneatr.ui.contact.detail.viewmodel
 
 import com.hollowvyn.kneatr.domain.model.Contact
 

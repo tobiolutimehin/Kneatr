@@ -16,6 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.hollowvyn.kneatr.domain.model.ContactTier
 import com.hollowvyn.kneatr.domain.util.formatPhoneNumber
+import com.hollowvyn.kneatr.ui.components.ContactTierPill
 
 @Composable
 fun ContactListItem(

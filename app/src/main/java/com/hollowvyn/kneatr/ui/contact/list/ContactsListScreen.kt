@@ -19,8 +19,8 @@ import com.hollowvyn.kneatr.domain.model.Contact
 import com.hollowvyn.kneatr.ui.components.screenstates.EmptyScreen
 import com.hollowvyn.kneatr.ui.components.screenstates.ErrorScreen
 import com.hollowvyn.kneatr.ui.components.screenstates.LoadingScreen
-import com.hollowvyn.kneatr.ui.contact.viewmodel.ContactsListUiState
-import com.hollowvyn.kneatr.ui.contact.viewmodel.ContactsListViewModel
+import com.hollowvyn.kneatr.ui.contact.list.viewmodel.ContactsListUiState
+import com.hollowvyn.kneatr.ui.contact.list.viewmodel.ContactsListViewModel
 import com.hollowvyn.kneatr.ui.theme.KneatrTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
