@@ -32,7 +32,7 @@ fun ContactListItem(
                 horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.Start),
             ) {
                 Text(text = name, style = MaterialTheme.typography.headlineSmall)
-                tier?.let { ContactTierPill(it) }
+                tier?.let { ContactTierPill(it, enabled = false) }
             }
         },
         supportingContent = {

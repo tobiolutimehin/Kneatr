@@ -5,6 +5,7 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -36,22 +37,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.hollowvyn.kneatr.data.local.entity.CommunicationType
-import com.hollowvyn.kneatr.domain.fakes.ContactFakes.fullContact
+import com.hollowvyn.kneatr.domain.fakes.ContactFakes
 import com.hollowvyn.kneatr.domain.model.CommunicationLog
 import com.hollowvyn.kneatr.domain.model.Contact
 import com.hollowvyn.kneatr.domain.util.DateTimeUtils
 import com.hollowvyn.kneatr.ui.contact.DeepInteractionConfirmationDialog
+import com.hollowvyn.kneatr.ui.contact.list.ContactTierPill
+import com.hollowvyn.kneatr.ui.contact.viewmodel.ContactDetailUiState
 import com.hollowvyn.kneatr.ui.contact.viewmodel.ContactDetailViewModel
-
-sealed class ContactDetailUiState {
-    data class Success(
-        val contact: Contact?,
-    ) : ContactDetailUiState()
-
-    data object Error : ContactDetailUiState()
-
-    data object Loading : ContactDetailUiState()
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -66,11 +59,13 @@ fun ContactDetailScreen(
     }
 
     val uiState by viewModel.uiState.collectAsState()
+    val tiers by viewModel.tiers.collectAsState()
 
     val listState = rememberLazyListState()
     val isScrolled = remember { derivedStateOf { listState.firstVisibleItemIndex > 0 } }
 
-    var showBottomSheet by remember { mutableStateOf(false) }
+    var showCommunicationLogSheet by remember { mutableStateOf(false) }
+    var showTierSheet by remember { mutableStateOf(false) }
     var selectedLog by remember { mutableStateOf<CommunicationLog?>(null) }
 
     var showConfirmationDialog by remember { mutableStateOf(false) }
@@ -106,7 +101,7 @@ fun ContactDetailScreen(
                 text = { Text("Add log") },
                 onClick = {
                     selectedLog = null // Ensure we're adding a new log
-                    showBottomSheet = true
+                    showCommunicationLogSheet = true
                 },
                 icon = {
                     Icon(
@@ -126,7 +121,7 @@ fun ContactDetailScreen(
                         listState = listState,
                         onEditLog = { log ->
                             selectedLog = log
-                            showBottomSheet = true
+                            showCommunicationLogSheet = true
                         },
                         onDeleteLog = { log ->
                             viewModel.deleteCommunicationLog(log)
@@ -138,6 +133,13 @@ fun ContactDetailScreen(
                                 viewModel.addCommunicationLog(DateTimeUtils.today(), type)
                             }
                             showConfirmationDialog = true
+                        },
+                        onEditTier = { remove ->
+                            if (remove) {
+                                viewModel.updateTier(null)
+                            } else {
+                                showTierSheet = true
+                            }
                         },
                     )
                 } ?: Text("Contact not found", modifier = Modifier.padding(innerPadding))
@@ -156,7 +158,7 @@ fun ContactDetailScreen(
                 )
         }
 
-        if (showBottomSheet) {
+        if (showCommunicationLogSheet) {
             CommunicationLogBottomSheet(
                 logToEdit = selectedLog,
                 onSave = { id, date, type, notes ->
@@ -166,8 +168,19 @@ fun ContactDetailScreen(
                         viewModel.updateCommunicationLog(date, type, notes, id)
                     }
                 },
-                dismissBottomSheet = { showBottomSheet = false },
+                dismissBottomSheet = { showCommunicationLogSheet = false },
             )
+        }
+
+        if (showTierSheet) {
+            (uiState as? ContactDetailUiState.Success)?.contact?.let { contact ->
+                TierSelectorBottomSheet(
+                    currentTier = contact.tier,
+                    allTiers = tiers,
+                    onSelectTier = { viewModel.updateTier(it) },
+                    dismissBottomSheet = { showTierSheet = false },
+                )
+            }
         }
 
         if (showConfirmationDialog) {
@@ -180,6 +193,7 @@ fun ContactDetailScreen(
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun ContactDetailContent(
     contact: Contact,
@@ -187,6 +201,7 @@ private fun ContactDetailContent(
     onEditLog: (CommunicationLog) -> Unit,
     onDeleteLog: (CommunicationLog) -> Unit,
     onShowConfirmation: (String, CommunicationType, () -> Unit) -> Unit,
+    onEditTier: (remove: Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
@@ -205,13 +220,15 @@ private fun ContactDetailContent(
             )
         }
         item {
-            contact.tier?.let { Text(text = "Tier: ${contact.tier.name}") }
+            ContactTierPill(
+                tier = contact.tier,
+                enabled = true,
+                onClick = { onEditTier(false) },
+                onLongClick = { onEditTier(true) },
+                modifier = Modifier.padding(vertical = 8.dp),
+            )
         }
-        item {
-            if (contact.tags.isNotEmpty()) {
-                Text(text = "Tags: ${contact.tags.joinToString(", ") { it.name }}")
-            }
-        }
+
         item { ContactDateInfo(contact) }
 
         item {
@@ -229,15 +246,17 @@ private fun ContactDetailContent(
     }
 }
 
+
 @Preview(showBackground = true)
 @Composable
 private fun ContactDetailContentPreview() {
     ContactDetailContent(
-        contact = fullContact,
+        contact = ContactFakes.fullContact,
         listState = rememberLazyListState(),
         onEditLog = {},
         onDeleteLog = {},
         onShowConfirmation = { _, _, _ -> },
+        onEditTier = {},
         modifier = Modifier,
     )
 }

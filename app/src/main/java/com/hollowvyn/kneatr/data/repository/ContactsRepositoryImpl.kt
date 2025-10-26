@@ -116,7 +116,7 @@ class ContactsRepositoryImpl
         override suspend fun updateTier(tier: ContactTier) = contactTierDao.updateTier(tier.toEntity())
 
         override fun getAllTiers(): Flow<List<ContactTier>> =
-            contactTierDao.getAllTiers().transform { tiers ->
+            contactTierDao.getAllTiers().map { tiers ->
                 tiers.map { it.toModel() }
             }
 

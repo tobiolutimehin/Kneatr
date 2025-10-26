@@ -4,19 +4,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.InputChip
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
@@ -24,25 +18,22 @@ import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.hollowvyn.kneatr.R
 import com.hollowvyn.kneatr.data.local.entity.CommunicationType
 import com.hollowvyn.kneatr.domain.model.CommunicationLog
 import com.hollowvyn.kneatr.domain.util.DateTimeUtils
-import kotlinx.coroutines.launch
+import com.hollowvyn.kneatr.ui.components.KneatrModalBottomSheet
+import com.hollowvyn.kneatr.ui.components.KneatrSheetContent
 import kotlinx.datetime.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -50,49 +41,6 @@ import kotlinx.datetime.LocalDate
 fun CommunicationLogBottomSheet(
     onSave: (id: Long?, date: LocalDate, type: CommunicationType, notes: String) -> Unit,
     dismissBottomSheet: () -> Unit,
-    modifier: Modifier = Modifier,
-    logToEdit: CommunicationLog? = null,
-) {
-    val scope = rememberCoroutineScope()
-    val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-
-    ModalBottomSheet(
-        onDismissRequest = dismissBottomSheet,
-        sheetState = bottomSheetState,
-        contentWindowInsets = { BottomSheetDefaults.windowInsets },
-        modifier = modifier,
-    ) {
-        CommunicationLogSheetContent(
-            logToEdit = logToEdit,
-            onSave = { id, date, type, notes ->
-                onSave(id, date, type, notes)
-                scope
-                    .launch {
-                        bottomSheetState.hide()
-                    }.invokeOnCompletion {
-                        if (!bottomSheetState.isVisible) {
-                            dismissBottomSheet()
-                        }
-                    }
-            },
-            onCancel = {
-                scope
-                    .launch {
-                        bottomSheetState.hide()
-                    }.invokeOnCompletion {
-                        if (!bottomSheetState.isVisible) {
-                            dismissBottomSheet()
-                        }
-                    }
-            },
-        )
-    }
-}
-
-@Composable
-fun CommunicationLogSheetContent(
-    onSave: (id: Long?, date: LocalDate, type: CommunicationType, notes: String) -> Unit,
-    onCancel: () -> Unit,
     modifier: Modifier = Modifier,
     logToEdit: CommunicationLog? = null,
 ) {
@@ -105,66 +53,46 @@ fun CommunicationLogSheetContent(
     val title =
         if (logToEdit == null) stringResource(R.string.add_communication_log) else stringResource(R.string.edit_communication_log)
 
-    Column(
-        modifier = modifier.padding(horizontal = 16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-    ) {
-        SheetHeader(title = title, onCancel = onCancel)
-
-        DateSelector(
-            selectedDateMillis = selectedDateMillis,
-            onDateChange = { selectedDateMillis = it },
-        )
-
-        CommunicationTypeSelector(
-            selectOption = { selectedType = it },
-            selectedOption = selectedType,
-        )
-
-        NotesInput(
-            notes = notes,
-            onNotesChange = { notes = it },
-        )
-
-        Button(
-            onClick = {
-                selectedType?.let { type ->
-                    onSave(
-                        logToEdit?.id,
-                        DateTimeUtils.toLocalDate(selectedDateMillis),
-                        type,
-                        notes,
-                    )
-                }
-            },
-            enabled = selectedType != null,
-            modifier = Modifier.fillMaxWidth(),
+    KneatrModalBottomSheet(
+        onDismiss = dismissBottomSheet,
+        modifier = modifier,
+    ) { hideSheet ->
+        KneatrSheetContent(
+            title = title,
+            onCancel = hideSheet,
         ) {
-            Text(stringResource(R.string.save))
-        }
-    }
-}
+            DateSelector(
+                selectedDateMillis = selectedDateMillis,
+                onDateChange = { selectedDateMillis = it },
+            )
 
-@Composable
-private fun SheetHeader(
-    title: String,
-    onCancel: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
-    ) {
-        Text(
-            text = title,
-            style = MaterialTheme.typography.titleLarge,
-        )
-        IconButton(
-            onClick = onCancel,
-        ) {
-            Icon(Icons.Default.Close, contentDescription = stringResource(R.string.close))
+            CommunicationTypeSelector(
+                selectOption = { selectedType = it },
+                selectedOption = selectedType,
+            )
+
+            NotesInput(
+                notes = notes,
+                onNotesChange = { notes = it },
+            )
+
+            Button(
+                onClick = {
+                    selectedType?.let { type ->
+                        onSave(
+                            logToEdit?.id,
+                            DateTimeUtils.toLocalDate(selectedDateMillis),
+                            type,
+                            notes,
+                        )
+                    }
+                    hideSheet()
+                },
+                enabled = selectedType != null,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(stringResource(R.string.save))
+            }
         }
     }
 }
@@ -284,14 +212,4 @@ fun NotesInput(
             },
         )
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun CommunicationLogSheetContentPreview() {
-    CommunicationLogSheetContent(
-        logToEdit = null,
-        onSave = { _, _, _, _ -> },
-        onCancel = { },
-    )
 }
