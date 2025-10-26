@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
 
-val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "app_settings")
+private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "app_settings")
 
 @Singleton
 class DataStoreManager
@@ -24,7 +24,7 @@ class DataStoreManager
         @param:ApplicationContext private val context: Context,
     ) {
         private object PreferencesKeys {
-            val IS_FIRST_RUN = booleanPreferencesKey("is_first_run")
+            val IS_FIRST_RUN = booleanPreferencesKey(IS_FIRST_RUN_TAG)
         }
 
         val isFirstRunFlow: Flow<Boolean> =
@@ -43,5 +43,9 @@ class DataStoreManager
             context.dataStore.edit { settings ->
                 settings[PreferencesKeys.IS_FIRST_RUN] = isFirstRun
             }
+        }
+
+        companion object {
+            private const val IS_FIRST_RUN_TAG = "is_first_run"
         }
     }
