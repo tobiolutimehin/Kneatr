@@ -41,6 +41,7 @@ import com.hollowvyn.kneatr.domain.fakes.ContactFakes
 import com.hollowvyn.kneatr.domain.model.CommunicationLog
 import com.hollowvyn.kneatr.domain.model.Contact
 import com.hollowvyn.kneatr.domain.util.DateTimeUtils
+import com.hollowvyn.kneatr.domain.util.Logger
 import com.hollowvyn.kneatr.ui.contact.DeepInteractionConfirmationDialog
 import com.hollowvyn.kneatr.ui.contact.list.ContactTierPill
 import com.hollowvyn.kneatr.ui.contact.viewmodel.ContactDetailUiState
@@ -142,7 +143,14 @@ fun ContactDetailScreen(
                             }
                         },
                     )
-                } ?: Text("Contact not found", modifier = Modifier.padding(innerPadding))
+                    Logger.i(
+                        tag = TAG,
+                        message = "Contact loaded successfully: ${state.contact.name}",
+                    )
+                } ?: run {
+                    Text("Contact not found", modifier = Modifier.padding(innerPadding))
+                    Logger.d(tag = TAG, message = "Contact not found")
+                }
             }
 
             ContactDetailUiState.Error ->
@@ -246,7 +254,6 @@ private fun ContactDetailContent(
     }
 }
 
-
 @Preview(showBackground = true)
 @Composable
 private fun ContactDetailContentPreview() {
@@ -260,3 +267,5 @@ private fun ContactDetailContentPreview() {
         modifier = Modifier,
     )
 }
+
+private const val TAG = "ContactDetailScreen"
