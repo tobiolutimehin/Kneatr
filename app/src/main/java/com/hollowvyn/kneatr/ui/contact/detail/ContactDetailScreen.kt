@@ -15,9 +15,9 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.AssistChip
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -246,12 +246,15 @@ private fun TierButton(
     tierName: String?,
     onEditTier: () -> Unit,
 ) {
-    FilledTonalButton(onClick = onEditTier) {
-        Text(
-            text = tierName ?: stringResource(R.string.add_tier),
-            style = MaterialTheme.typography.labelMedium,
-        )
-    }
+    AssistChip(
+        onClick = onEditTier,
+        label = {
+            Text(
+                text = tierName ?: stringResource(R.string.add_tier),
+                style = MaterialTheme.typography.labelMedium,
+            )
+        },
+    )
 }
 
 @Preview(showBackground = true)

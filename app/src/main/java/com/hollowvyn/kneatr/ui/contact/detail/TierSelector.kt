@@ -4,9 +4,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.InputChip
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -44,18 +45,17 @@ fun TierSelectorBottomSheet(
                 verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 allTiers.forEach { tier ->
-                    Button(
+                    InputChip(
+                        selected = tier == currentTier,
                         onClick = {
                             onSelectTier(tier)
                             hideSheet()
                         },
-                        enabled = tier != currentTier,
-                    ) {
-                        Text(text = tier.name)
-                    }
+                        label = { Text(text = tier.name) },
+                    )
                 }
                 currentTier?.let {
-                    Button(
+                    TextButton(
                         onClick = {
                             onSelectTier(null)
                             hideSheet()
