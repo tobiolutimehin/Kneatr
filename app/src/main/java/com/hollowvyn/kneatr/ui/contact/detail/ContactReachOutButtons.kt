@@ -102,10 +102,12 @@ private fun ContactReachOutButton(
             modifier
                 .clickable {
                     onClick()
-                }.clearAndSetSemantics {
+                }
+                .clearAndSetSemantics {
                     contentDescription = text
                     role = Role.Button
-                }.wrapContentSize()
+                }
+                .wrapContentSize()
                 .padding(4.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(4.dp),
@@ -117,11 +119,11 @@ private fun ContactReachOutButton(
                 Modifier
                     .size(40.dp)
                     .background(
-                        color = MaterialTheme.colorScheme.surfaceContainer,
+                        color = MaterialTheme.colorScheme.secondaryContainer,
                         shape = CircleShape,
                     )
                     .padding(10.dp),
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            tint = MaterialTheme.colorScheme.onSecondaryContainer,
         )
         Text(text = text, style = MaterialTheme.typography.labelSmall)
     }
