@@ -7,13 +7,15 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -243,6 +245,7 @@ private fun ContactDetailContent(
         contentPadding = PaddingValues(bottom = 16.dp),
         state = listState,
         horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         item {
             Text(
@@ -256,16 +259,6 @@ private fun ContactDetailContent(
                 enabled = true,
                 onClick = { onEditTier(false) },
                 onLongClick = { onEditTier(true) },
-                modifier = Modifier.padding(vertical = 8.dp),
-            )
-        }
-
-        item { ContactDateInfo(contact) }
-
-        item {
-            ContactReachOutButtons(
-                contact = contact,
-                onShowConfirmation = onShowConfirmation,
             )
         }
 
@@ -273,6 +266,14 @@ private fun ContactDetailContent(
             TagsSection(
                 tags = contact.tags,
                 onEditTags = onEditTags,
+            )
+        }
+        item { ContactDateInfo(contact) }
+
+        item {
+            ContactReachOutButtons(
+                contact = contact,
+                onShowConfirmation = onShowConfirmation,
             )
         }
 
@@ -291,32 +292,34 @@ fun TagsSection(
     onEditTags: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    FlowRow(
-        modifier = modifier,
+    LazyRow(
+        modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
-        verticalArrangement = Arrangement.spacedBy(4.dp),
+        contentPadding = PaddingValues(vertical = 8.dp),
     ) {
-        tags.forEach { tagName ->
+        stickyHeader {
             ElevatedSuggestionChip(
-                onClick = {},
-                enabled = false,
-                label = {
-                    Text(text = tagName.name)
+                onClick = onEditTags,
+                label = { Text(text = "Edit Tags") },
+                icon = {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = null,
+                        modifier = Modifier.size(14.dp),
+                    )
                 },
             )
         }
 
-        ElevatedSuggestionChip(
-            onClick = onEditTags,
-            label = { Text(text = "Edit Tags") },
-            icon = {
-                Icon(
-                    imageVector = Icons.Default.Edit,
-                    contentDescription = null,
-                    modifier = Modifier.size(14.dp),
-                )
-            },
-        )
+        items(tags.toList()) {
+            ElevatedSuggestionChip(
+                onClick = {},
+                enabled = false,
+                label = {
+                    Text(text = it.name)
+                },
+            )
+        }
     }
 }
 

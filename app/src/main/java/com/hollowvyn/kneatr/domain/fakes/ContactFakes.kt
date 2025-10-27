@@ -84,7 +84,7 @@ object ContactFakes {
             email = "sarah.green@email.com",
             tier = tier1,
             tags = setOf(tagFamily),
-            communicationLogs = listOf(logEmail),
+            communicationLogs = listOf(logEmail, logEmail, logTextMessage, logPhoneCall),
             customFrequencyDays = 7,
         )
 
