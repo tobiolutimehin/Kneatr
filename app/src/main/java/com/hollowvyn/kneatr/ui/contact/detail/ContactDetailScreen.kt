@@ -33,9 +33,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.hollowvyn.kneatr.R
 import com.hollowvyn.kneatr.data.local.entity.CommunicationType
 import com.hollowvyn.kneatr.domain.fakes.ContactFakes
 import com.hollowvyn.kneatr.domain.model.CommunicationLog
@@ -89,7 +91,7 @@ fun ContactDetailScreen(
                     IconButton(onClick = onNavigateBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Navigate back",
+                            contentDescription = stringResource(R.string.navigate_back),
                         )
                     }
                 },
@@ -97,7 +99,7 @@ fun ContactDetailScreen(
         },
         floatingActionButton = {
             ExtendedFloatingActionButton(
-                text = { Text("Add log") },
+                text = { Text(stringResource(R.string.add_log)) },
                 onClick = {
                     selectedLog = null
                     showCommunicationLogSheet = true
@@ -105,7 +107,7 @@ fun ContactDetailScreen(
                 icon = {
                     Icon(
                         imageVector = Icons.Filled.Add,
-                        contentDescription = "Add communication log",
+                        contentDescription = null,
                     )
                 },
             )
@@ -145,19 +147,19 @@ fun ContactDetailScreen(
                 )
                 Logger.i(
                     tag = TAG,
-                    message = "Contact loaded successfully: ${state.contact.name}",
+                    message = "$CONTACT_LOADED_LOG_MSG ${state.contact.name}",
                 )
             }
 
             ContactDetailUiState.Error -> {
                 ErrorScreen(
-                    errorMsg = "Error loading contact",
+                    errorMsg = stringResource(R.string.error_loading_contact),
                     onRetry = { viewModel.loadContactId(contactId) },
                     modifier = Modifier.padding(innerPadding),
                 )
                 Logger.e(
                     tag = TAG,
-                    message = "Error loading contact",
+                    message = ERROR_LOADING_CONTACT_LOG_MSG,
                 )
             }
 
@@ -297,3 +299,5 @@ private fun ContactDetailContentPreview() {
 }
 
 private const val TAG = "ContactDetailScreen"
+private const val ERROR_LOADING_CONTACT_LOG_MSG = "Error loading contact"
+private const val CONTACT_LOADED_LOG_MSG = "Contact loaded successfully:"

@@ -46,6 +46,9 @@
     <string name="add_tier">Add Tier</string>
     <string name="select_tier">Select Tier</string>
     <string name="remove_tier">Remove Tier</string>
+    <string name="add_log">Add log</string>
+    <string name="error_loading_contact">Error loading contact</string>
+    <string name="navigate_back">Navigate back</string>
     <plurals name="x_weeks_ago">
         <item quantity="one">1 week ago</item>
         <item quantity="other">%d weeks ago</item>
