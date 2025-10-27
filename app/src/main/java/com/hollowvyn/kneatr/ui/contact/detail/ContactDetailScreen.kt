@@ -44,6 +44,8 @@ import com.hollowvyn.kneatr.domain.util.DateTimeUtils
 import com.hollowvyn.kneatr.domain.util.Logger
 import com.hollowvyn.kneatr.ui.components.ContactTierPill
 import com.hollowvyn.kneatr.ui.components.dialog.DeepInteractionConfirmationDialog
+import com.hollowvyn.kneatr.ui.components.screenstates.ErrorScreen
+import com.hollowvyn.kneatr.ui.components.screenstates.LoadingScreen
 import com.hollowvyn.kneatr.ui.contact.detail.viewmodel.ContactDetailUiState
 import com.hollowvyn.kneatr.ui.contact.detail.viewmodel.ContactDetailViewModel
 
@@ -148,8 +150,9 @@ fun ContactDetailScreen(
             }
 
             ContactDetailUiState.Error -> {
-                Text(
-                    "Error loading contact",
+                ErrorScreen(
+                    errorMsg = "Error loading contact",
+                    onRetry = { viewModel.loadContactId(contactId) },
                     modifier = Modifier.padding(innerPadding),
                 )
                 Logger.e(
@@ -159,10 +162,7 @@ fun ContactDetailScreen(
             }
 
             ContactDetailUiState.Loading ->
-                Text(
-                    "Loading...",
-                    modifier = Modifier.padding(innerPadding),
-                )
+                LoadingScreen(modifier = Modifier.padding(innerPadding))
         }
 
         if (showCommunicationLogSheet) {
