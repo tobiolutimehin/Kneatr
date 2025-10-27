@@ -39,6 +39,7 @@ fun KneatrModalBottomSheet(
         sheetState = bottomSheetState,
         contentWindowInsets = { BottomSheetDefaults.windowInsets },
         modifier = modifier,
+        sheetGesturesEnabled = false,
     ) {
         content(hideSheet)
     }

@@ -12,10 +12,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
@@ -71,10 +69,7 @@ fun TagsSelectorBottomSheet(
             saveEnabled = hasChanges,
         ) {
             Column(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .verticalScroll(rememberScrollState()),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Column(modifier = Modifier.fillMaxWidth()) {

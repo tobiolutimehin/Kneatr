@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
@@ -34,9 +36,10 @@ fun KneatrSheetContent(
     Column(
         modifier =
             modifier
-                .padding(16.dp)
+                .padding(horizontal = 16.dp, vertical = 8.dp)
                 .fillMaxWidth()
-                .wrapContentSize(),
+                .wrapContentSize()
+                .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
