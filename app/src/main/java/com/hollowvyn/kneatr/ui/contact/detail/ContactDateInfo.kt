@@ -1,5 +1,6 @@
 package com.hollowvyn.kneatr.ui.contact.detail
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -25,45 +26,45 @@ fun ContactDateInfo(
     val lastDateString = lastCommunicationDateRelative?.getRelativeDateString()
     val nextDateString = nextCommunicationDateRelative?.getRelativeDateString()
 
-    if (lastDateString == null && nextDateString == null) return
+    AnimatedVisibility(lastDateString != null || nextDateString != null) {
+        val annotatedString =
+            buildAnnotatedString {
+                val baseStyle =
+                    MaterialTheme.typography.bodyMedium
+                        .copy(fontWeight = FontWeight.Bold)
+                        .toSpanStyle()
 
-    val annotatedString =
-        buildAnnotatedString {
-            val baseStyle =
-                MaterialTheme.typography.bodyMedium
-                    .copy(fontWeight = FontWeight.Bold)
-                    .toSpanStyle()
-
-            if (lastDateString != null) {
-                withStyle(baseStyle) {
-                    append(stringResource(R.string.last_time_contacted, lastDateString))
-                }
-            }
-
-            if (lastDateString != null && nextDateString != null) {
-                withStyle(baseStyle) {
-                    append(" • ")
-                }
-            }
-
-            if (nextDateString != null) {
-                val nextDateStyle =
-                    if (nextCommunicationDateRelative is RelativeDate.Overdue) {
-                        baseStyle.copy(color = MaterialTheme.colorScheme.error)
-                    } else {
-                        baseStyle
+                if (lastDateString != null) {
+                    withStyle(baseStyle) {
+                        append(stringResource(R.string.last_time_contacted, lastDateString))
                     }
-                withStyle(nextDateStyle) {
-                    append(stringResource(R.string.next_contact_in, nextDateString))
+                }
+
+                if (lastDateString != null && nextDateString != null) {
+                    withStyle(baseStyle) {
+                        append(" • ")
+                    }
+                }
+
+                if (nextDateString != null) {
+                    val nextDateStyle =
+                        if (nextCommunicationDateRelative is RelativeDate.Overdue) {
+                            baseStyle.copy(color = MaterialTheme.colorScheme.error)
+                        } else {
+                            baseStyle
+                        }
+                    withStyle(nextDateStyle) {
+                        append(stringResource(R.string.next_contact_in, nextDateString))
+                    }
                 }
             }
-        }
 
-    Text(
-        text = annotatedString,
-        textAlign = TextAlign.Center,
-        modifier = modifier.fillMaxWidth(),
-    )
+        Text(
+            text = annotatedString,
+            textAlign = TextAlign.Center,
+            modifier = modifier.fillMaxWidth(),
+        )
+    }
 }
 
 @Preview(showBackground = true)
