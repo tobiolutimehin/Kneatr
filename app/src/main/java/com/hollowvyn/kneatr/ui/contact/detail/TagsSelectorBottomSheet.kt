@@ -34,10 +34,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.hollowvyn.kneatr.R
 import com.hollowvyn.kneatr.domain.model.ContactTag
 import com.hollowvyn.kneatr.ui.components.dialog.KneatrModalBottomSheet
 import com.hollowvyn.kneatr.ui.components.dialog.KneatrSheetContent
@@ -60,7 +62,7 @@ fun TagsSelectorBottomSheet(
 
     KneatrModalBottomSheet(onDismiss = dismissBottomSheet, modifier = modifier) {
         KneatrSheetContent(
-            title = "Tag Selector",
+            title = stringResource(R.string.tag_selector),
             onCancel = dismissBottomSheet,
             onSave = {
                 onSave(viewModel.getSelectedTags())
@@ -76,15 +78,18 @@ fun TagsSelectorBottomSheet(
                     OutlinedTextField(
                         value = tagInput,
                         onValueChange = { viewModel.onTagInputChanged(it) },
-                        label = { Text("Add or find a tag") },
-                        placeholder = { Text("e.g., family, work_colleague") },
+                        label = { Text(stringResource(R.string.tag_selector_search_label)) },
+                        placeholder = { Text(stringResource(R.string.tag_selector_search_placeholder)) },
                         modifier = Modifier.fillMaxWidth(),
                         trailingIcon = {
                             IconButton(
                                 onClick = { viewModel.addTag(tagInput) },
                                 enabled = tagInput.isNotBlank(),
                             ) {
-                                Icon(Icons.Default.Add, contentDescription = "Add Tag")
+                                Icon(
+                                    Icons.Default.Add,
+                                    contentDescription = stringResource(R.string.add_tag),
+                                )
                             }
                         },
                         keyboardOptions =
@@ -125,7 +130,10 @@ fun TagsSelectorBottomSheet(
                 HorizontalDivider()
                 Spacer(Modifier.height(16.dp))
 
-                Text("Selected Tags", style = MaterialTheme.typography.titleMedium)
+                Text(
+                    text = stringResource(R.string.selected_tags),
+                    style = MaterialTheme.typography.titleMedium,
+                )
                 Spacer(Modifier.height(8.dp))
 
                 FlowRow(
@@ -135,7 +143,7 @@ fun TagsSelectorBottomSheet(
                 ) {
                     if (selectedTags.isEmpty()) {
                         Text(
-                            "No tags selected.",
+                            text = stringResource(R.string.no_tags_selected),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
@@ -143,12 +151,12 @@ fun TagsSelectorBottomSheet(
                         selectedTags.forEach { tag ->
                             InputChip(
                                 selected = true,
-                                onClick = { /* Could be used for editing a tag later */ },
+                                onClick = { },
                                 label = { Text(tag.name) },
                                 trailingIcon = {
                                     Icon(
                                         Icons.Default.Close,
-                                        contentDescription = "Remove Tag",
+                                        contentDescription = stringResource(R.string.remove_tag),
                                         modifier =
                                             Modifier
                                                 .size(InputChipDefaults.IconSize)

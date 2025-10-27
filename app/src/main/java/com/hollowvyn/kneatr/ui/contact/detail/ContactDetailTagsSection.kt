@@ -16,7 +16,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.hollowvyn.kneatr.R
 import com.hollowvyn.kneatr.domain.model.ContactTag
 
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
@@ -34,7 +36,7 @@ fun ContactDetailTagsSection(
         stickyHeader {
             ElevatedSuggestionChip(
                 onClick = onEditTags,
-                label = { Text(text = "Edit Tags") },
+                label = { Text(text = stringResource(R.string.edit_tags)) },
                 icon = {
                     Icon(
                         imageVector = Icons.Default.Edit,
