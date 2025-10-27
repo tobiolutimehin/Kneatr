@@ -15,7 +15,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun LoadingScreen(modifier: Modifier = Modifier) {
+fun LoadingScreen(
+    modifier: Modifier = Modifier,
+    loadingMsg: String = "Loading...",
+) {
     Column(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
@@ -26,7 +29,7 @@ fun LoadingScreen(modifier: Modifier = Modifier) {
         )
 
         Text(
-            text = "Loading",
+            text = loadingMsg,
             style = MaterialTheme.typography.headlineSmall,
             textAlign = TextAlign.Center,
         )

@@ -46,6 +46,17 @@
     <string name="add_tier">Add Tier</string>
     <string name="select_tier">Select Tier</string>
     <string name="remove_tier">Remove Tier</string>
+    <string name="add_log">Add log</string>
+    <string name="error_loading_contact">Error loading contact</string>
+    <string name="navigate_back">Navigate back</string>
+    <string name="edit_tags">Edit Tags</string>
+    <string name="tag_selector">Tag Selector</string>
+    <string name="tag_selector_search_label">Add or find a tag</string>
+    <string name="tag_selector_search_placeholder">e.g., family, work_colleague</string>
+    <string name="add_tag">Add Tag</string>
+    <string name="selected_tags">Selected Tags</string>
+    <string name="no_tags_selected">No tags selected.</string>
+    <string name="remove_tag">Remove Tag</string>
     <plurals name="x_weeks_ago">
         <item quantity="one">1 week ago</item>
         <item quantity="other">%d weeks ago</item>

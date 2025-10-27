@@ -16,3 +16,5 @@ fun ContactTagEntity.toModel(): ContactTag =
     )
 
 fun List<ContactTagEntity>.toModelSet(): Set<ContactTag> = map { it.toModel() }.toSet()
+
+fun List<ContactTag>.toListEntity(): List<ContactTagEntity> = map { it.toEntity() }

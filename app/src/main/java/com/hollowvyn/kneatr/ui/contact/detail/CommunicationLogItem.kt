@@ -138,11 +138,20 @@ internal fun LazyListScope.communicationLogItems(
         )
     }
 
-    items(communicationLog.take(10)) {
+    items(
+        items = communicationLog.take(10),
+        key = {
+            it.id ?: Math.random()
+        },
+        contentType = {
+            it::class.java
+        },
+    ) {
         CommunicationLogItem(
             log = it,
             onEdit = { onEditLog(it) },
             onDelete = { onDeleteLog(it) },
+            modifier = Modifier.animateItem(),
         )
     }
 }

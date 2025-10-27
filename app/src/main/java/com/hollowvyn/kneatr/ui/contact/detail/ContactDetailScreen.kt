@@ -5,6 +5,7 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,7 +20,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -33,9 +33,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.hollowvyn.kneatr.R
 import com.hollowvyn.kneatr.data.local.entity.CommunicationType
 import com.hollowvyn.kneatr.domain.fakes.ContactFakes
 import com.hollowvyn.kneatr.domain.model.CommunicationLog
@@ -44,6 +46,8 @@ import com.hollowvyn.kneatr.domain.util.DateTimeUtils
 import com.hollowvyn.kneatr.domain.util.Logger
 import com.hollowvyn.kneatr.ui.components.ContactTierPill
 import com.hollowvyn.kneatr.ui.components.dialog.DeepInteractionConfirmationDialog
+import com.hollowvyn.kneatr.ui.components.screenstates.ErrorScreen
+import com.hollowvyn.kneatr.ui.components.screenstates.LoadingScreen
 import com.hollowvyn.kneatr.ui.contact.detail.viewmodel.ContactDetailUiState
 import com.hollowvyn.kneatr.ui.contact.detail.viewmodel.ContactDetailViewModel
 
@@ -57,11 +61,13 @@ fun ContactDetailScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val tiers by viewModel.tiers.collectAsState()
+    val allTags by viewModel.allTags.collectAsState()
 
     val listState = rememberLazyListState()
     val isScrolled = remember { derivedStateOf { listState.firstVisibleItemIndex > 0 } }
 
     var showCommunicationLogSheet by remember { mutableStateOf(false) }
+    var showTagsSheet by remember { mutableStateOf(false) }
     var showTierSheet by remember { mutableStateOf(false) }
     var selectedLog by remember { mutableStateOf<CommunicationLog?>(null) }
 
@@ -85,7 +91,7 @@ fun ContactDetailScreen(
                     IconButton(onClick = onNavigateBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Navigate back",
+                            contentDescription = stringResource(R.string.navigate_back),
                         )
                     }
                 },
@@ -93,7 +99,7 @@ fun ContactDetailScreen(
         },
         floatingActionButton = {
             ExtendedFloatingActionButton(
-                text = { Text("Add log") },
+                text = { Text(stringResource(R.string.add_log)) },
                 onClick = {
                     selectedLog = null
                     showCommunicationLogSheet = true
@@ -101,7 +107,7 @@ fun ContactDetailScreen(
                 icon = {
                     Icon(
                         imageVector = Icons.Filled.Add,
-                        contentDescription = "Add communication log",
+                        contentDescription = null,
                     )
                 },
             )
@@ -135,29 +141,30 @@ fun ContactDetailScreen(
                             showTierSheet = true
                         }
                     },
+                    onEditTags = {
+                        showTagsSheet = true
+                    },
                 )
                 Logger.i(
                     tag = TAG,
-                    message = "Contact loaded successfully: ${state.contact.name}",
+                    message = "$CONTACT_LOADED_LOG_MSG ${state.contact.name}",
                 )
             }
 
             ContactDetailUiState.Error -> {
-                Text(
-                    "Error loading contact",
+                ErrorScreen(
+                    errorMsg = stringResource(R.string.error_loading_contact),
+                    onRetry = { viewModel.loadContactId(contactId) },
                     modifier = Modifier.padding(innerPadding),
                 )
                 Logger.e(
                     tag = TAG,
-                    message = "Error loading contact",
+                    message = ERROR_LOADING_CONTACT_LOG_MSG,
                 )
             }
 
             ContactDetailUiState.Loading ->
-                Text(
-                    "Loading...",
-                    modifier = Modifier.padding(innerPadding),
-                )
+                LoadingScreen(modifier = Modifier.padding(innerPadding))
         }
 
         if (showCommunicationLogSheet) {
@@ -192,6 +199,19 @@ fun ContactDetailScreen(
                 text = confirmationText,
             )
         }
+
+        if (showTagsSheet) {
+            (uiState as? ContactDetailUiState.Success)?.contact?.let { contact ->
+                TagsSelectorBottomSheet(
+                    currentTags = contact.tags,
+                    allTags = allTags.toMutableList(),
+                    onSave = { updatedTags ->
+                        viewModel.updateTags(updatedTags)
+                    },
+                    dismissBottomSheet = { showTagsSheet = false },
+                )
+            }
+        }
     }
 
     LaunchedEffect(key1 = contactId) {
@@ -203,12 +223,13 @@ fun ContactDetailScreen(
 @Composable
 private fun ContactDetailContent(
     contact: Contact,
-    listState: LazyListState,
     onEditLog: (CommunicationLog) -> Unit,
     onDeleteLog: (CommunicationLog) -> Unit,
     onShowConfirmation: (String, CommunicationType, () -> Unit) -> Unit,
     onEditTier: (remove: Boolean) -> Unit,
+    onEditTags: () -> Unit,
     modifier: Modifier = Modifier,
+    listState: LazyListState = rememberLazyListState(),
 ) {
     LazyColumn(
         modifier =
@@ -218,28 +239,40 @@ private fun ContactDetailContent(
         contentPadding = PaddingValues(bottom = 16.dp),
         state = listState,
         horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         item {
-            Text(
-                text = contact.name,
-                style = MaterialTheme.typography.headlineLarge,
-            )
+            ContactDetailNameTitle(name = contact.name)
         }
+
         item {
             ContactTierPill(
                 tier = contact.tier,
                 enabled = true,
                 onClick = { onEditTier(false) },
                 onLongClick = { onEditTier(true) },
-                modifier = Modifier.padding(vertical = 8.dp),
             )
         }
 
-        item { ContactDateInfo(contact) }
+        item {
+            ContactDetailTagsSection(
+                tags = contact.tags,
+                onEditTags = onEditTags,
+            )
+        }
+
+        item {
+            ContactDateInfo(
+                lastCommunicationDateRelative = contact.lastCommunicationDateRelative,
+                nextCommunicationDateRelative = contact.nextCommunicationDateRelative,
+            )
+        }
 
         item {
             ContactReachOutButtons(
-                contact = contact,
+                phoneNumber = contact.phoneNumber,
+                name = contact.name,
+                email = contact.email,
                 onShowConfirmation = onShowConfirmation,
             )
         }
@@ -257,13 +290,14 @@ private fun ContactDetailContent(
 private fun ContactDetailContentPreview() {
     ContactDetailContent(
         contact = ContactFakes.fullContact,
-        listState = rememberLazyListState(),
         onEditLog = {},
         onDeleteLog = {},
         onShowConfirmation = { _, _, _ -> },
         onEditTier = {},
-        modifier = Modifier,
+        onEditTags = {},
     )
 }
 
 private const val TAG = "ContactDetailScreen"
+private const val ERROR_LOADING_CONTACT_LOG_MSG = "Error loading contact"
+private const val CONTACT_LOADED_LOG_MSG = "Contact loaded successfully:"

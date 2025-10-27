@@ -18,9 +18,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ErrorScreen(modifier: Modifier = Modifier) {
+fun ErrorScreen(
+    modifier: Modifier = Modifier,
+    errorMsg: String = "Oops! Something went wrong.",
+    onRetry: () -> Unit = {},
+) {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -30,12 +34,12 @@ fun ErrorScreen(modifier: Modifier = Modifier) {
             modifier = Modifier.size(80.dp),
         )
         Text(
-            text = "Oops! Something went wrong.",
+            text = errorMsg,
             style = MaterialTheme.typography.headlineSmall,
             textAlign = TextAlign.Center,
         )
         Button(
-            onClick = { /* TODO */ },
+            onClick = onRetry,
         ) {
             Text("Retry")
         }

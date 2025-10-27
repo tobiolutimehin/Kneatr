@@ -35,6 +35,7 @@ fun TierSelectorBottomSheet(
         KneatrSheetContent(
             title = stringResource(R.string.select_tier),
             onCancel = hideSheet,
+            onSave = null,
         ) {
             FlowRow(
                 modifier =

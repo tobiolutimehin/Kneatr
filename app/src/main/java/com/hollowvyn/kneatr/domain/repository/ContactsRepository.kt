@@ -29,6 +29,11 @@ interface ContactsRepository {
         tagId: Long,
     )
 
+    suspend fun addTagsToContact(
+        contactId: Long,
+        tagIds: List<ContactTag>,
+    )
+
     suspend fun removeTagFromContact(
         contactId: Long,
         tagId: Long,

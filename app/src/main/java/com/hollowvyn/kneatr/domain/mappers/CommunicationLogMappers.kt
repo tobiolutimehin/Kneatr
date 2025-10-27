@@ -21,4 +21,4 @@ fun CommunicationLogEntity.toModel(): CommunicationLog =
         contactId = contactId,
     )
 
-fun List<CommunicationLogEntity>.toModelList(): List<CommunicationLog> = map { it.toModel() }
+fun List<CommunicationLogEntity>.toModelList(): List<CommunicationLog> = map { it.toModel() }.sortedByDescending { it.date }
