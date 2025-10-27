@@ -5,7 +5,6 @@ import com.hollowvyn.kneatr.data.local.dao.ContactDao
 import com.hollowvyn.kneatr.data.local.dao.ContactTagCrossRefDao
 import com.hollowvyn.kneatr.data.local.dao.ContactTagDao
 import com.hollowvyn.kneatr.data.local.dao.ContactTierDao
-import com.hollowvyn.kneatr.data.local.entity.ContactTagEntity
 import com.hollowvyn.kneatr.data.local.entity.crossRef.ContactTagCrossRef
 import com.hollowvyn.kneatr.data.remote.ContactFetcher
 import com.hollowvyn.kneatr.domain.mappers.toEntity
@@ -209,5 +208,3 @@ class ContactsRepositoryImpl
             }
         }
     }
-
-private fun List<ContactTag>.toListEntity(): List<ContactTagEntity> = this.map { it.toEntity() }
