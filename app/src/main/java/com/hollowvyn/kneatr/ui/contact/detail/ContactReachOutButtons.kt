@@ -35,7 +35,9 @@ import com.hollowvyn.kneatr.ui.util.startTextMessage
 
 @Composable
 internal fun ContactReachOutButtons(
-    contact: Contact,
+    phoneNumber: String,
+    email: String?,
+    name: String,
     onShowConfirmation: (String, CommunicationType, () -> Unit) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -45,16 +47,16 @@ internal fun ContactReachOutButtons(
         modifier = modifier.wrapContentSize(),
         horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally),
     ) {
-        if (contact.phoneNumber.isNotBlank()) {
+        if (phoneNumber.isNotBlank()) {
             ContactReachOutButton(
                 text = context.getString(R.string.call),
                 icon = R.drawable.call_24px,
                 onClick = {
                     onShowConfirmation(
-                        context.getString(R.string.call_x_contact, contact.name),
+                        context.getString(R.string.call_x_contact, name),
                         CommunicationType.PHONE_CALL,
                     ) {
-                        context.startPhoneCall(contact.phoneNumber)
+                        context.startPhoneCall(phoneNumber)
                     }
                 },
             )
@@ -64,22 +66,22 @@ internal fun ContactReachOutButtons(
                 icon = R.drawable.chat_bubble_24px,
                 onClick = {
                     onShowConfirmation(
-                        context.getString(R.string.message_x_contact, contact.name),
+                        context.getString(R.string.message_x_contact, name),
                         CommunicationType.MESSAGE,
                     ) {
-                        context.startTextMessage(contact.phoneNumber)
+                        context.startTextMessage(phoneNumber)
                     }
                 },
             )
         }
 
-        contact.email?.let { email ->
+        email?.let { email ->
             ContactReachOutButton(
                 text = context.getString(R.string.email),
                 icon = R.drawable.mail_24px,
                 onClick = {
                     onShowConfirmation(
-                        context.getString(R.string.email_x_contact, contact.name),
+                        context.getString(R.string.email_x_contact, name),
                         CommunicationType.EMAIL,
                     ) {
                         context.startEmail(email)
@@ -102,12 +104,10 @@ private fun ContactReachOutButton(
             modifier
                 .clickable {
                     onClick()
-                }
-                .clearAndSetSemantics {
+                }.clearAndSetSemantics {
                     contentDescription = text
                     role = Role.Button
-                }
-                .wrapContentSize()
+                }.wrapContentSize()
                 .padding(4.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(4.dp),
@@ -142,10 +142,12 @@ private fun ContactReachOutButtonsPreview() {
         )
     KneatrTheme {
         ContactReachOutButtons(
-            contact = contact,
+            phoneNumber = contact.phoneNumber,
+            email = contact.email,
+            name = contact.name,
             onShowConfirmation = { _, _, _ ->
             },
-            modifier = Modifier.background(color = MaterialTheme.colorScheme.background)
+            modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
         )
     }
 }
@@ -158,7 +160,7 @@ private fun ContactReachOutButtonPreview() {
             text = "Call",
             icon = R.drawable.call_24px,
             onClick = {},
-            modifier = Modifier.background(color = MaterialTheme.colorScheme.background)
+            modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
         )
     }
 }

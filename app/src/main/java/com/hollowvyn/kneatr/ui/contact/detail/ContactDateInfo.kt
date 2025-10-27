@@ -12,18 +12,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import com.hollowvyn.kneatr.R
-import com.hollowvyn.kneatr.domain.fakes.ContactFakes.fullContact
-import com.hollowvyn.kneatr.domain.model.Contact
+import com.hollowvyn.kneatr.domain.fakes.ContactFakes
 import com.hollowvyn.kneatr.domain.model.RelativeDate
 import com.hollowvyn.kneatr.ui.helpers.getRelativeDateString
 
 @Composable
 fun ContactDateInfo(
-    contact: Contact,
+    lastCommunicationDateRelative: RelativeDate?,
+    nextCommunicationDateRelative: RelativeDate?,
     modifier: Modifier = Modifier,
 ) {
-    val lastDateString = contact.lastCommunicationDateRelative?.getRelativeDateString()
-    val nextDateString = contact.nextCommunicationDateRelative?.getRelativeDateString()
+    val lastDateString = lastCommunicationDateRelative?.getRelativeDateString()
+    val nextDateString = nextCommunicationDateRelative?.getRelativeDateString()
 
     if (lastDateString == null && nextDateString == null) return
 
@@ -48,7 +48,7 @@ fun ContactDateInfo(
 
             if (nextDateString != null) {
                 val nextDateStyle =
-                    if (contact.nextCommunicationDateRelative is RelativeDate.Overdue) {
+                    if (nextCommunicationDateRelative is RelativeDate.Overdue) {
                         baseStyle.copy(color = MaterialTheme.colorScheme.error)
                     } else {
                         baseStyle
@@ -69,9 +69,11 @@ fun ContactDateInfo(
 @Preview(showBackground = true)
 @Composable
 private fun ContactDateInfoPreview() {
+    val contact = ContactFakes.fullContact
     MaterialTheme {
         ContactDateInfo(
-            contact = fullContact,
+            lastCommunicationDateRelative = contact.lastCommunicationDateRelative,
+            nextCommunicationDateRelative = contact.nextCommunicationDateRelative,
         )
     }
 }

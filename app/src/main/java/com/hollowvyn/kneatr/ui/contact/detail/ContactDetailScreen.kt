@@ -221,13 +221,13 @@ fun ContactDetailScreen(
 @Composable
 private fun ContactDetailContent(
     contact: Contact,
-    listState: LazyListState,
     onEditLog: (CommunicationLog) -> Unit,
     onDeleteLog: (CommunicationLog) -> Unit,
     onShowConfirmation: (String, CommunicationType, () -> Unit) -> Unit,
     onEditTier: (remove: Boolean) -> Unit,
     onEditTags: () -> Unit,
     modifier: Modifier = Modifier,
+    listState: LazyListState = rememberLazyListState(),
 ) {
     LazyColumn(
         modifier =
@@ -242,6 +242,7 @@ private fun ContactDetailContent(
         item {
             ContactDetailNameTitle(name = contact.name)
         }
+
         item {
             ContactTierPill(
                 tier = contact.tier,
@@ -257,11 +258,19 @@ private fun ContactDetailContent(
                 onEditTags = onEditTags,
             )
         }
-        item { ContactDateInfo(contact) }
+
+        item {
+            ContactDateInfo(
+                lastCommunicationDateRelative = contact.lastCommunicationDateRelative,
+                nextCommunicationDateRelative = contact.nextCommunicationDateRelative,
+            )
+        }
 
         item {
             ContactReachOutButtons(
-                contact = contact,
+                phoneNumber = contact.phoneNumber,
+                name = contact.name,
+                email = contact.email,
                 onShowConfirmation = onShowConfirmation,
             )
         }
@@ -279,13 +288,11 @@ private fun ContactDetailContent(
 private fun ContactDetailContentPreview() {
     ContactDetailContent(
         contact = ContactFakes.fullContact,
-        listState = rememberLazyListState(),
         onEditLog = {},
         onDeleteLog = {},
         onShowConfirmation = { _, _, _ -> },
         onEditTier = {},
         onEditTags = {},
-        modifier = Modifier,
     )
 }
 
