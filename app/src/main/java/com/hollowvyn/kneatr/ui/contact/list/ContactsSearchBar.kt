@@ -14,11 +14,14 @@ import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.hollowvyn.kneatr.R
@@ -36,6 +39,16 @@ fun ContactsSearchBar(
     modifier: Modifier = Modifier,
 ) {
     var expanded by rememberSaveable { mutableStateOf(false) }
+    val focusManager = LocalFocusManager.current
+    var isInitialComposition by remember { mutableStateOf(true) }
+
+    LaunchedEffect(Unit) {
+        if (isInitialComposition && expanded) {
+            focusManager.clearFocus()
+            expanded = false
+            isInitialComposition = false
+        }
+    }
 
     SearchBar(
         modifier = modifier.fillMaxWidth(),
@@ -43,7 +56,10 @@ fun ContactsSearchBar(
             SearchBarDefaults.InputField(
                 query = query,
                 onQueryChange = onQueryChange,
-                onSearch = { expanded = false },
+                onSearch = {
+                    expanded = false
+                    focusManager.clearFocus()
+                },
                 expanded = expanded,
                 onExpandedChange = { expanded = it },
                 placeholder = { Text(text = stringResource(id = R.string.contact_list_search_hint)) },
@@ -52,7 +68,6 @@ fun ContactsSearchBar(
                 },
                 trailingIcon = {
                     Icon(
-                        // make this more accessible by updating label and state
                         Icons.Default.Close,
                         contentDescription =
                             stringResource(
@@ -68,11 +83,12 @@ fun ContactsSearchBar(
                             ) {
                                 if (query.isEmpty()) {
                                     expanded = false
+                                    focusManager.clearFocus()
                                 } else {
                                     onQueryChange("")
-                                }
-                            },
-                    )
+                            }
+                        },
+                                )
                 },
             )
         },
@@ -83,6 +99,7 @@ fun ContactsSearchBar(
             contacts = searchedContacts,
             onContactClick = {
                 expanded = false
+                focusManager.clearFocus()
                 onQueryChange("")
                 onContactClick(it)
             },
@@ -90,9 +107,10 @@ fun ContactsSearchBar(
                 Modifier
                     .fillMaxSize()
                     .clickable {
-                        expanded = false
-                    },
-        )
+                    expanded = false
+                    focusManager.clearFocus()
+                },
+                )
     }
 }
 
