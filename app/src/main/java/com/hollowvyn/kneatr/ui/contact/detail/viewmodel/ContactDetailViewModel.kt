@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hollowvyn.kneatr.data.local.entity.CommunicationType
 import com.hollowvyn.kneatr.domain.model.CommunicationLog
+import com.hollowvyn.kneatr.domain.model.ContactTag
 import com.hollowvyn.kneatr.domain.model.ContactTier
 import com.hollowvyn.kneatr.domain.repository.ContactsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -34,6 +35,15 @@ class ContactDetailViewModel
                     started = SharingStarted.WhileSubscribed(5_000),
                     initialValue = emptyList(),
                 )
+
+        val allTags: StateFlow<Set<ContactTag>> =
+            contactRepository
+                .getAllTags()
+                .stateIn(
+                    scope = viewModelScope,
+                    started = SharingStarted.WhileSubscribed(5_000),
+                    initialValue = emptySet(),
+            )
 
         @OptIn(ExperimentalCoroutinesApi::class)
         val uiState: StateFlow<ContactDetailUiState> =
@@ -115,4 +125,16 @@ class ContactDetailViewModel
                 }
             }
         }
+
+    fun updateTags(tags: Set<ContactTag>) {
+        val currentState = uiState.value
+        if (currentState is ContactDetailUiState.Success) {
+            viewModelScope.launch {
+                contactRepository.addTagsToContact(
+                    contactId = currentState.contact.id,
+                    tagIds = tags.toMutableList(),
+                )
+            }
+        }
+    }
     }

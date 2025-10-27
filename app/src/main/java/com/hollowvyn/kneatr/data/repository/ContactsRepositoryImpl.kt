@@ -5,6 +5,7 @@ import com.hollowvyn.kneatr.data.local.dao.ContactDao
 import com.hollowvyn.kneatr.data.local.dao.ContactTagCrossRefDao
 import com.hollowvyn.kneatr.data.local.dao.ContactTagDao
 import com.hollowvyn.kneatr.data.local.dao.ContactTierDao
+import com.hollowvyn.kneatr.data.local.entity.ContactTagEntity
 import com.hollowvyn.kneatr.data.local.entity.crossRef.ContactTagCrossRef
 import com.hollowvyn.kneatr.data.remote.ContactFetcher
 import com.hollowvyn.kneatr.domain.mappers.toEntity
@@ -69,6 +70,12 @@ class ContactsRepositoryImpl
             tagId: Long,
         ) = contactTagCrossRefDao.addTagToContact(ContactTagCrossRef(contactId, tagId))
 
+        // Tag CrossRef operations
+        override suspend fun addTagsToContact(
+            contactId: Long,
+            tagIds: List<ContactTag>,
+        ) = contactTagDao.updateContactTags(contactId, tagIds.toListEntity())
+
         override suspend fun removeTagFromContact(
             contactId: Long,
             tagId: Long,
@@ -80,7 +87,7 @@ class ContactsRepositoryImpl
             )
 
         // Tag operations
-        override fun getAllTags(): Flow<Set<ContactTag>> = contactTagDao.getAllTags().transform { it.toModelSet() }
+        override fun getAllTags(): Flow<Set<ContactTag>> = contactTagDao.getAllTags().map { it.toModelSet() }
 
         override fun getTagsWithContacts(): Flow<List<Pair<ContactTag, List<Contact>>>> =
             contactTagDao
@@ -202,3 +209,5 @@ class ContactsRepositoryImpl
             }
         }
     }
+
+private fun List<ContactTag>.toListEntity(): List<ContactTagEntity> = this.map { it.toEntity() }

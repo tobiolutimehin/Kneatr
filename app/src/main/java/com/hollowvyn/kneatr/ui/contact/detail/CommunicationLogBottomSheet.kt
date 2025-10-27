@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -60,6 +59,18 @@ fun CommunicationLogBottomSheet(
         KneatrSheetContent(
             title = title,
             onCancel = hideSheet,
+            onSave = {
+                selectedType?.let { type ->
+                    onSave(
+                        logToEdit?.id,
+                        DateTimeUtils.toLocalDate(selectedDateMillis),
+                        type,
+                        notes,
+                    )
+                }
+                hideSheet()
+            },
+            saveEnabled = selectedType != null,
         ) {
             DateSelector(
                 selectedDateMillis = selectedDateMillis,
@@ -75,24 +86,6 @@ fun CommunicationLogBottomSheet(
                 notes = notes,
                 onNotesChange = { notes = it },
             )
-
-            Button(
-                onClick = {
-                    selectedType?.let { type ->
-                        onSave(
-                            logToEdit?.id,
-                            DateTimeUtils.toLocalDate(selectedDateMillis),
-                            type,
-                            notes,
-                        )
-                    }
-                    hideSheet()
-                },
-                enabled = selectedType != null,
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Text(stringResource(R.string.save))
-            }
         }
     }
 }

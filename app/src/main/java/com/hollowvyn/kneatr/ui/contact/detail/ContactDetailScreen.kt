@@ -5,16 +5,24 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.ElevatedSuggestionChip
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
@@ -33,6 +41,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -40,6 +49,7 @@ import com.hollowvyn.kneatr.data.local.entity.CommunicationType
 import com.hollowvyn.kneatr.domain.fakes.ContactFakes
 import com.hollowvyn.kneatr.domain.model.CommunicationLog
 import com.hollowvyn.kneatr.domain.model.Contact
+import com.hollowvyn.kneatr.domain.model.ContactTag
 import com.hollowvyn.kneatr.domain.util.DateTimeUtils
 import com.hollowvyn.kneatr.domain.util.Logger
 import com.hollowvyn.kneatr.ui.components.ContactTierPill
@@ -57,11 +67,13 @@ fun ContactDetailScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val tiers by viewModel.tiers.collectAsState()
+    val allTags by viewModel.allTags.collectAsState()
 
     val listState = rememberLazyListState()
     val isScrolled = remember { derivedStateOf { listState.firstVisibleItemIndex > 0 } }
 
     var showCommunicationLogSheet by remember { mutableStateOf(false) }
+    var showTagsSheet by remember { mutableStateOf(false) }
     var showTierSheet by remember { mutableStateOf(false) }
     var selectedLog by remember { mutableStateOf<CommunicationLog?>(null) }
 
@@ -135,6 +147,9 @@ fun ContactDetailScreen(
                             showTierSheet = true
                         }
                     },
+                    onEditTags = {
+                        showTagsSheet = true
+                    },
                 )
                 Logger.i(
                     tag = TAG,
@@ -192,6 +207,19 @@ fun ContactDetailScreen(
                 text = confirmationText,
             )
         }
+
+        if (showTagsSheet) {
+            (uiState as? ContactDetailUiState.Success)?.contact?.let { contact ->
+                TagsSelectorBottomSheet(
+                    currentTags = contact.tags,
+                    allTags = allTags.toMutableList(),
+                    onSave = { updatedTags ->
+                        viewModel.updateTags(updatedTags)
+                    },
+                    dismissBottomSheet = { showTagsSheet = false },
+                )
+            }
+        }
     }
 
     LaunchedEffect(key1 = contactId) {
@@ -208,6 +236,7 @@ private fun ContactDetailContent(
     onDeleteLog: (CommunicationLog) -> Unit,
     onShowConfirmation: (String, CommunicationType, () -> Unit) -> Unit,
     onEditTier: (remove: Boolean) -> Unit,
+    onEditTags: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
@@ -244,11 +273,70 @@ private fun ContactDetailContent(
             )
         }
 
+        item {
+            TagsSection(
+                tags = contact.tags,
+                onEditTags = onEditTags,
+            )
+        }
+
         communicationLogItems(
             communicationLog = contact.communicationLogs,
             onEditLog = { onEditLog(it) },
             onDeleteLog = { onDeleteLog(it) },
         )
+    }
+}
+
+@OptIn(
+    ExperimentalLayoutApi::class,
+    ExperimentalMaterial3Api::class,
+) // Add ExperimentalMaterial3Api
+@Composable
+fun TagsSection(
+    tags: Set<ContactTag>,
+    onEditTags: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier.padding(top = 8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        Row(
+            modifier = Modifier.clickable(onClick = onEditTags), // Make the row clickable
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            Text(
+                text = "Tags",
+                style = MaterialTheme.typography.bodySmall,
+                fontWeight = FontWeight.Bold,
+            )
+            Icon(
+                imageVector = Icons.Default.Edit,
+                contentDescription = "Edit Tags",
+                modifier = Modifier.size(14.dp),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            tags.forEach { tagName ->
+                ElevatedSuggestionChip(
+                    onClick = {},
+                    enabled = false,
+                    label = {
+                        Text(
+                            text = tagName.name,
+                            style = MaterialTheme.typography.labelSmall,
+                        )
+                    },
+                )
+            }
+        }
     }
 }
 
@@ -262,6 +350,7 @@ private fun ContactDetailContentPreview() {
         onDeleteLog = {},
         onShowConfirmation = { _, _, _ -> },
         onEditTier = {},
+        onEditTags = {},
         modifier = Modifier,
     )
 }

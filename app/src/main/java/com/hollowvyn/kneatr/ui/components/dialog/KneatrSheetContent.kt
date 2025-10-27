@@ -6,8 +6,10 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -24,14 +26,17 @@ import com.hollowvyn.kneatr.R
 fun KneatrSheetContent(
     title: String,
     onCancel: () -> Unit,
+    onSave: (() -> Unit)?,
     modifier: Modifier = Modifier,
+    saveEnabled: Boolean = true,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     Column(
         modifier =
             modifier
                 .padding(16.dp)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .wrapContentSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
@@ -40,6 +45,28 @@ fun KneatrSheetContent(
             onCancel = onCancel,
         )
         content()
+
+        onSave?.let {
+            SheetFooter(
+                onSave = onSave,
+                saveEnabled = saveEnabled,
+            )
+        }
+    }
+}
+
+@Composable
+private fun SheetFooter(
+    onSave: () -> Unit,
+    modifier: Modifier = Modifier,
+    saveEnabled: Boolean = true,
+) {
+    Button(
+        onClick = onSave,
+        enabled = saveEnabled,
+        modifier = modifier.fillMaxWidth(),
+    ) {
+        Text(stringResource(R.string.save))
     }
 }
 
@@ -49,6 +76,7 @@ private fun KneatrSheetContentPreview() {
     KneatrSheetContent(
         title = "Preview Title",
         onCancel = {},
+        onSave = {},
     ) {
         Text("This is the preview content.")
         Text("It can contain multiple composables.")
