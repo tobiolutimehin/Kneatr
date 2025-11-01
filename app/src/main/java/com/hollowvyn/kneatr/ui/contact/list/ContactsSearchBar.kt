@@ -1,7 +1,10 @@
 package com.hollowvyn.kneatr.ui.contact.list
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
@@ -10,6 +13,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
@@ -21,10 +25,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.unit.dp
 import com.hollowvyn.kneatr.R
 import com.hollowvyn.kneatr.domain.model.Contact
 import com.hollowvyn.kneatr.domain.model.ContactTier
@@ -37,6 +44,8 @@ fun ContactsSearchBar(
     searchedContacts: List<Contact>,
     onQueryChange: (String) -> Unit,
     onContactClick: (Contact) -> Unit,
+    onResyncClick: () -> Unit,
+    onFiltersClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var expanded by rememberSaveable { mutableStateOf(false) }
@@ -51,64 +60,95 @@ fun ContactsSearchBar(
         }
     }
 
-    SearchBar(
-        modifier = modifier.fillMaxWidth(),
-        inputField = {
-            SearchBarDefaults.InputField(
-                query = query,
-                onQueryChange = onQueryChange,
-                onSearch = {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        SearchBar(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+            inputField = {
+                SearchBarDefaults.InputField(
+                    query = query,
+                    onQueryChange = onQueryChange,
+                    onSearch = {
+                        expanded = false
+                        focusManager.clearFocus()
+                    },
+                    expanded = expanded,
+                    onExpandedChange = { expanded = it },
+                    placeholder = { Text(text = stringResource(id = R.string.contact_list_search_hint)) },
+                    leadingIcon = {
+                        Icon(Icons.Default.Search, contentDescription = null)
+                    },
+                    trailingIcon = {
+                        Icon(
+                            Icons.Default.Close,
+                            contentDescription =
+                                stringResource(
+                                    if (query.isEmpty() && expanded) {
+                                        R.string.contact_list_close_search_icon_description
+                                    } else {
+                                        R.string.contact_list_clear_search_icon_description
+                                    },
+                                ),
+                            modifier =
+                                Modifier.clickable(
+                                    enabled = expanded || query.isNotEmpty(),
+                                ) {
+                                    if (query.isEmpty()) {
+                                        expanded = false
+                                        focusManager.clearFocus()
+                                    } else {
+                                        onQueryChange("")
+                                    }
+                                },
+                        )
+                    },
+                )
+            },
+            expanded = expanded,
+            onExpandedChange = { expanded = it },
+        ) {
+            SearchContactsList(
+                searchedContacts = searchedContacts,
+                onLayoutClick = {
                     expanded = false
                     focusManager.clearFocus()
                 },
-                expanded = expanded,
-                onExpandedChange = { expanded = it },
-                placeholder = { Text(text = stringResource(id = R.string.contact_list_search_hint)) },
-                leadingIcon = {
-                    Icon(Icons.Default.Search, contentDescription = null)
-                },
-                trailingIcon = {
-                    Icon(
-                        Icons.Default.Close,
-                        contentDescription =
-                            stringResource(
-                                if (query.isEmpty() && expanded) {
-                                    R.string.contact_list_close_search_icon_description
-                                } else {
-                                    R.string.contact_list_clear_search_icon_description
-                                },
-                            ),
-                        modifier =
-                            Modifier.clickable(
-                                enabled = expanded || query.isNotEmpty(),
-                            ) {
-                                if (query.isEmpty()) {
-                                    expanded = false
-                                    focusManager.clearFocus()
-                                } else {
-                                    onQueryChange("")
-                                }
-                            },
-                    )
+                onContactClick = {
+                    expanded = false
+                    focusManager.clearFocus()
+                    onQueryChange("")
+                    onContactClick(it)
                 },
             )
-        },
-        expanded = expanded,
-        onExpandedChange = { expanded = it },
-    ) {
-        SearchContactsList(
-            searchedContacts = searchedContacts,
-            onLayoutClick = {
-                expanded = false
-                focusManager.clearFocus()
-            },
-            onContactClick = {
-                expanded = false
-                focusManager.clearFocus()
-                onQueryChange("")
-                onContactClick(it)
-            },
-        )
+        }
+
+        AnimatedVisibility(!expanded) {
+            Row {
+                IconButton(
+                    onClick = onFiltersClick,
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.filter_list_24px),
+                        contentDescription = stringResource(R.string.contact_list_filter_icon_description),
+                    )
+                }
+
+                IconButton(
+                    onClick = onResyncClick,
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.cached_24px),
+                        contentDescription = stringResource(R.string.contact_list_refresh_icon_description),
+                    )
+                }
+            }
+        }
     }
 }
 
@@ -160,6 +200,8 @@ private fun ContactsSearchBarPreview() {
             searchedContacts = contacts,
             onQueryChange = {},
             onContactClick = {},
+            onResyncClick = {},
+            onFiltersClick = {},
             modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
         )
     }

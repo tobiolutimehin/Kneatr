@@ -1,11 +1,17 @@
 package com.hollowvyn.kneatr.ui.contact.list
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -18,6 +24,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hollowvyn.kneatr.KneatrApplication
 import com.hollowvyn.kneatr.domain.fakes.ContactFakes.allContacts
 import com.hollowvyn.kneatr.domain.model.Contact
+import com.hollowvyn.kneatr.domain.model.ContactTag
+import com.hollowvyn.kneatr.domain.model.ContactTier
 import com.hollowvyn.kneatr.ui.components.screenstates.EmptyScreen
 import com.hollowvyn.kneatr.ui.components.screenstates.ErrorScreen
 import com.hollowvyn.kneatr.ui.components.screenstates.LoadingScreen
@@ -113,5 +121,60 @@ private fun ContactsListsScreenPreview(
         ContactsListScreen(
             uiState = uiState,
         )
+    }
+}
+
+@Composable
+fun ContactsListFilter(
+    tags: List<ContactTag>,
+    tiers: List<ContactTier>,
+    selectedTags: List<ContactTag>,
+    selectedTiers: List<ContactTier>,
+    overdueSelected: Boolean,
+    dueTodaySelected: Boolean,
+    onSelectDueToday: (Boolean) -> Unit,
+    onSelectOverDue: (Boolean) -> Unit,
+    onSelectTag: (ContactTag) -> Unit,
+    onSelectTier: (ContactTier) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier =
+            modifier
+                .wrapContentHeight()
+                .fillMaxWidth(),
+    ) {
+        Text("Contact Filters")
+        Text("Tier:")
+        Text("Tags(Searchable):")
+        Text("Due state:")
+        Text("Sort by:")
+    }
+}
+
+@Preview
+@Composable
+private fun ContactsListFilterPreview() {
+    KneatrTheme {
+        ContactsListFilter(
+            tags = listOf(ContactTag(name = "Family"), ContactTag(name = "Work")),
+            tiers =
+                listOf(
+                    ContactTier(id = 1, name = "Tier 1", daysBetweenContact = 7),
+                    ContactTier(id = 2, name = "Tier 2", daysBetweenContact = 30),
+                ),
+            selectedTags = listOf(ContactTag(name = "Family")),
+            selectedTiers = listOf(ContactTier(id = 1, name = "Tier 1", daysBetweenContact = 7)),
+            overdueSelected = false,
+            dueTodaySelected = true,
+            onSelectDueToday = {},
+            onSelectOverDue = {},
+            onSelectTag = {},
+            onSelectTier = {},
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.background),
+                )
     }
 }
