@@ -13,7 +13,7 @@ import com.hollowvyn.kneatr.domain.model.ContactTier
 
 @Composable
 fun ContactsListSuccessContent(
-    contacts: List<Contact>,
+    groupedContacts: Map<String, List<Contact>>,
     searchedContacts: List<Contact>,
     query: String,
     modifier: Modifier = Modifier,
@@ -35,7 +35,7 @@ fun ContactsListSuccessContent(
         // todo Mini filter for overdue contacts, find by pills, etc. lazy row for options
 
         ContactsList(
-            contacts = contacts,
+            grouped = groupedContacts,
             onContactClick = onContactClick,
         )
     }
@@ -62,7 +62,7 @@ private fun ContactsListSuccessContentPreview() {
             ),
         )
     ContactsListSuccessContent(
-        contacts = contacts,
+        groupedContacts = contacts.groupBy { it.name[0].uppercase() },
         searchedContacts = contacts,
         query = "",
     )

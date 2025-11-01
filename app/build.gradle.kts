@@ -134,4 +134,5 @@ dependencies {
 
     // Google
     implementation(libs.google.libphonenumber)
+    implementation(libs.lazycolumnscrollbar)
 }

@@ -1,3 +1,4 @@
+
 package com.hollowvyn.kneatr.ui.contact.list.viewmodel
 
 import com.hollowvyn.kneatr.domain.model.Contact
@@ -9,7 +10,16 @@ sealed interface ContactsListUiState {
         val contacts: List<Contact>,
         val searchedContacts: List<Contact>,
         val query: String,
-    ) : ContactsListUiState
+    ) : ContactsListUiState {
+        val groupedContacts: Map<String, List<Contact>> =
+            contacts.groupBy {
+                if (it.name[0].isLetter()) {
+                    it.name[0].uppercase()
+                } else {
+                    "#"
+                }
+            }
+    }
 
     data object Error : ContactsListUiState
 
