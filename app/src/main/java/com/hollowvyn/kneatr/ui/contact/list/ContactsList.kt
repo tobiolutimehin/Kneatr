@@ -6,12 +6,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.hollowvyn.kneatr.domain.model.Contact
 import com.hollowvyn.kneatr.domain.model.ContactTier
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -20,12 +23,28 @@ fun ContactsList(
     modifier: Modifier = Modifier,
     onContactClick: (Contact) -> Unit = {},
 ) {
+    val listState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
+    val groupIndexes = mutableMapOf<String, Int>()
+    var currentIndex = 0
+    grouped.forEach {
+        groupIndexes[it.key] = currentIndex
+        currentIndex += it.value.size + 1
+    }
+
     LazyColumn(
+        state = listState,
         modifier = modifier.fillMaxSize(),
     ) {
         grouped.forEach { (initial, contactsForInitial) ->
             stickyHeader {
-                CharacterHeader(initial)
+                CharacterHeader(initial) {
+                    coroutineScope.launch {
+                        groupIndexes[initial]?.let { index ->
+                            listState.animateScrollToItem(index)
+                        }
+                    }
+                }
             }
 
             contactsItems(contactsForInitial) {

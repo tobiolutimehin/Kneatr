@@ -1,6 +1,7 @@
 package com.hollowvyn.kneatr.ui.contact.list
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -15,6 +16,7 @@ import androidx.compose.ui.unit.dp
 fun CharacterHeader(
     letter: String,
     modifier: Modifier = Modifier,
+    onClick: () -> Unit = {},
 ) {
     Text(
         text = letter,
@@ -26,7 +28,8 @@ fun CharacterHeader(
                 .wrapContentHeight()
                 .background(
                     color = MaterialTheme.colorScheme.secondaryContainer,
-                ).padding(8.dp),
+                ).clickable { onClick() }
+                .padding(8.dp),
     )
 }
 
