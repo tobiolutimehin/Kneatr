@@ -33,6 +33,7 @@ fun ContactsList(
 ) {
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
+
     val groupIndexes = mutableMapOf<String, Int>()
     var currentIndex = 0
     grouped.forEach {
