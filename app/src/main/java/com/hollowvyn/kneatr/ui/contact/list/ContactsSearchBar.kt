@@ -96,21 +96,39 @@ fun ContactsSearchBar(
         expanded = expanded,
         onExpandedChange = { expanded = it },
     ) {
-        LazyColumn(
-            modifier =
-                Modifier
-                    .fillMaxSize()
-                    .clickable {
-                        expanded = false
-                        focusManager.clearFocus()
-                    },
-        ) {
-            contactsItems(searchedContacts) {
+        SearchContactsList(
+            searchedContacts = searchedContacts,
+            onLayoutClick = {
+                expanded = false
+                focusManager.clearFocus()
+            },
+            onContactClick = {
                 expanded = false
                 focusManager.clearFocus()
                 onQueryChange("")
                 onContactClick(it)
-            }
+            },
+        )
+    }
+}
+
+@Composable
+fun SearchContactsList(
+    searchedContacts: List<Contact>,
+    onLayoutClick: () -> Unit,
+    onContactClick: (Contact) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    LazyColumn(
+        modifier =
+            modifier
+                .fillMaxSize()
+                .clickable {
+                    onLayoutClick()
+                },
+    ) {
+        contactsItems(searchedContacts) {
+            onContactClick(it)
         }
     }
 }
