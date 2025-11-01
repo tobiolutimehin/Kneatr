@@ -9,11 +9,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.hollowvyn.kneatr.KneatrApplication
 import com.hollowvyn.kneatr.domain.fakes.ContactFakes.allContacts
 import com.hollowvyn.kneatr.domain.model.Contact
 import com.hollowvyn.kneatr.ui.components.screenstates.EmptyScreen
@@ -31,12 +33,17 @@ fun ContactsListScreen(
     onContactClick: (Contact) -> Unit = {},
 ) {
     val uiStateDelegate by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+    val application = context.applicationContext as KneatrApplication
 
     ContactsListScreen(
         uiState = uiStateDelegate,
         modifier = modifier,
         onContactClick = onContactClick,
         onQueryChange = viewModel::onQueryChange,
+        onReSyncContacts = {
+            application.triggerImmediateContactSync(context)
+        },
     )
 }
 
@@ -46,6 +53,7 @@ private fun ContactsListScreen(
     modifier: Modifier = Modifier,
     onContactClick: (Contact) -> Unit = {},
     onQueryChange: (String) -> Unit = {},
+    onReSyncContacts: () -> Unit = {},
 ) {
     Scaffold(modifier = modifier) { innerPadding ->
         val contentModifier =
@@ -62,6 +70,7 @@ private fun ContactsListScreen(
                         searchedContacts = success.searchedContacts,
                         query = success.query,
                         onQueryChange = onQueryChange,
+                        onReSyncContacts = onReSyncContacts,
                     )
                 }
             }

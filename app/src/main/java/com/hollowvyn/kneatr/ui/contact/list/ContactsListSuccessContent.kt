@@ -2,7 +2,12 @@ package com.hollowvyn.kneatr.ui.contact.list
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Abc
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,18 +24,31 @@ fun ContactsListSuccessContent(
     modifier: Modifier = Modifier,
     onContactClick: (Contact) -> Unit = {},
     onQueryChange: (String) -> Unit = {},
+    onReSyncContacts: () -> Unit = {},
 ) {
     Column(
         modifier = modifier.padding(horizontal = 12.dp),
         verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.Top),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        ContactsSearchBar(
-            query = query,
-            onQueryChange = onQueryChange,
-            searchedContacts = searchedContacts,
-            onContactClick = onContactClick,
-        )
+        Row {
+            ContactsSearchBar(
+                query = query,
+                onQueryChange = onQueryChange,
+                searchedContacts = searchedContacts,
+                onContactClick = onContactClick,
+                modifier = Modifier.weight(1f),
+            )
+
+            IconButton(
+                onClick = onReSyncContacts,
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Abc,
+                    contentDescription = "Sort by name",
+                )
+            }
+        }
 
         // todo Mini filter for overdue contacts, find by pills, etc. lazy row for options
 
