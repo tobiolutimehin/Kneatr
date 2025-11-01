@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
@@ -86,31 +87,31 @@ fun ContactsSearchBar(
                                     focusManager.clearFocus()
                                 } else {
                                     onQueryChange("")
-                            }
-                        },
-                                )
+                                }
+                            },
+                    )
                 },
             )
         },
         expanded = expanded,
         onExpandedChange = { expanded = it },
     ) {
-        ContactsList(
-            contacts = searchedContacts,
-            onContactClick = {
-                expanded = false
-                focusManager.clearFocus()
-                onQueryChange("")
-                onContactClick(it)
-            },
+        LazyColumn(
             modifier =
                 Modifier
                     .fillMaxSize()
                     .clickable {
-                    expanded = false
-                    focusManager.clearFocus()
-                },
-                )
+                        expanded = false
+                        focusManager.clearFocus()
+                    },
+        ) {
+            contactsItems(searchedContacts) {
+                expanded = false
+                focusManager.clearFocus()
+                onQueryChange("")
+                onContactClick(it)
+            }
+        }
     }
 }
 

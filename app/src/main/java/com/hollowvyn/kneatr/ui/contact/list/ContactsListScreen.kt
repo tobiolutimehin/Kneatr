@@ -56,7 +56,7 @@ private fun ContactsListScreen(
             is ContactsListUiState.Success -> {
                 uiState.let { success ->
                     ContactsListSuccessContent(
-                        contacts = success.contacts,
+                        groupedContacts = success.groupedContacts,
                         modifier = contentModifier,
                         onContactClick = onContactClick,
                         searchedContacts = success.searchedContacts,
