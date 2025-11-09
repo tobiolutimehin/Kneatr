@@ -5,6 +5,18 @@ import com.hollowvyn.kneatr.R
 import kotlinx.serialization.Serializable
 
 @Serializable
+data object Home :
+    TopLevelRoute {
+    override val icon: Int
+        get() = R.drawable.home_24px
+    override val label: Int
+        get() = R.string.home
+
+    override val contentDescription: Int
+        get() = R.string.home_tab_content_description
+}
+
+@Serializable
 data object ContactsList :
     TopLevelRoute {
     override val icon: Int

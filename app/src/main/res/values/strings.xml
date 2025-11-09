@@ -59,6 +59,8 @@
     <string name="remove_tag">Remove Tag</string>
     <string name="contact_list_filter_icon_description">Filter contacts</string>
     <string name="contact_list_refresh_icon_description">Resync contacts</string>
+    <string name="home">Home</string>
+    <string name="home_tab_content_description">Home, tab</string>
     <plurals name="x_weeks_ago">
         <item quantity="one">1 week ago</item>
         <item quantity="other">%d weeks ago</item>
