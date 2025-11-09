@@ -5,6 +5,7 @@ import com.hollowvyn.kneatr.data.local.dao.ContactDao
 import com.hollowvyn.kneatr.data.local.dao.ContactTagCrossRefDao
 import com.hollowvyn.kneatr.data.local.dao.ContactTagDao
 import com.hollowvyn.kneatr.data.local.dao.ContactTierDao
+import com.hollowvyn.kneatr.data.local.datastore.DataStoreManager
 import com.hollowvyn.kneatr.data.local.entity.crossRef.ContactTagCrossRef
 import com.hollowvyn.kneatr.data.remote.ContactFetcher
 import com.hollowvyn.kneatr.domain.mappers.toEntity
@@ -18,6 +19,7 @@ import com.hollowvyn.kneatr.domain.model.ContactTag
 import com.hollowvyn.kneatr.domain.model.ContactTier
 import com.hollowvyn.kneatr.domain.model.RelativeDate
 import com.hollowvyn.kneatr.domain.repository.ContactsRepository
+import com.hollowvyn.kneatr.domain.util.DateTimeUtils
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -28,6 +30,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.transform
 import kotlinx.datetime.LocalDate
 import javax.inject.Inject
+import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ContactsRepositoryImpl
@@ -39,6 +42,7 @@ class ContactsRepositoryImpl
         private val contactTierDao: ContactTierDao,
         private val communicationLogDao: CommunicationLogDao,
         private val contactFetcher: ContactFetcher,
+        private val dataStoreManager: DataStoreManager,
     ) : ContactsRepository {
         // Contact operations
         override suspend fun insertContact(contact: Contact) =
@@ -78,9 +82,20 @@ class ContactsRepositoryImpl
                 }
             }
 
+        @OptIn(ExperimentalTime::class)
         override fun getRandomHomeContacts(): Flow<List<Contact>> =
-            getAllContacts()
-                .map { allContacts ->
+            combine(
+                dataStoreManager.dailyRandomContactIdsFlow,
+                dataStoreManager.dailyRandomContactsTimestampFlow,
+                getAllContacts(),
+            ) { ids, timestamp, allContacts ->
+                val now = DateTimeUtils.today()
+                val lastUpdate = DateTimeUtils.toLocalDate(timestamp)
+                val needsRefresh =
+                    now.toEpochDays() !=
+                        lastUpdate.toEpochDays() || ids.isEmpty()
+
+                if (needsRefresh) {
                     val nonUrgentContacts =
                         allContacts.filterNot {
                             it.isOverdue || it.isDueToday ||
@@ -90,20 +105,27 @@ class ContactsRepositoryImpl
                                 it.lastCommunicationDateRelative is RelativeDate.LastWeekday
                         }
 
+                val newRandomContacts =
                     if (nonUrgentContacts.size <= 7) {
-                        return@map nonUrgentContacts.shuffled()
+                        nonUrgentContacts.shuffled()
+                    } else {
+                        val (prioritized, others) = nonUrgentContacts.partition { it.tier != null || it.tags.isNotEmpty() }
+
+                        val shuffledPrioritized = prioritized.shuffled()
+                        val shuffledOthers = others.shuffled()
+
+                        val randomContacts =
+                            (shuffledPrioritized.take(5) + shuffledOthers).distinctBy { it.id }
+
+                        randomContacts.take(7)
                     }
-
-                    val (prioritized, others) = nonUrgentContacts.partition { it.tier != null || it.tags.isNotEmpty() }
-
-                    val shuffledPrioritized = prioritized.shuffled()
-                    val shuffledOthers = others.shuffled()
-
-                    val randomContacts =
-                        (shuffledPrioritized.take(5) + shuffledOthers).distinctBy { it.id }
-
-                    randomContacts.take(7)
-                }.distinctUntilChanged()
+                dataStoreManager.saveDailyRandomContacts(newRandomContacts.map { it.id })
+                newRandomContacts
+            } else {
+                val idSet = ids.map { it.toLong() }.toSet()
+                allContacts.filter { it.id in idSet }
+            }
+        }.distinctUntilChanged()
 
         override fun getContactsByTierId(tierId: Long): Flow<List<Contact>> =
             contactDao

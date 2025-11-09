@@ -7,7 +7,10 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
+import androidx.datastore.preferences.core.longPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.hollowvyn.kneatr.domain.util.DateTimeUtils
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -25,6 +28,9 @@ class DataStoreManager
     ) {
         private object PreferencesKeys {
             val IS_FIRST_RUN = booleanPreferencesKey(IS_FIRST_RUN_TAG)
+            val DAILY_RANDOM_CONTACT_IDS = stringSetPreferencesKey(DAILY_RANDOM_CONTACT_IDS_TAG)
+            val DAILY_RANDOM_CONTACTS_TIMESTAMP =
+                longPreferencesKey(DAILY_RANDOM_CONTACTS_TIMESTAMP_TAG)
         }
 
         val isFirstRunFlow: Flow<Boolean> =
@@ -45,7 +51,43 @@ class DataStoreManager
             }
         }
 
+        val dailyRandomContactIdsFlow: Flow<Set<String>> =
+            context.dataStore.data
+                .catch { exception ->
+                    if (exception is IOException) {
+                        emit(emptyPreferences())
+                    } else {
+                        throw exception
+                    }
+                }.map { preferences ->
+                    preferences[PreferencesKeys.DAILY_RANDOM_CONTACT_IDS] ?: emptySet()
+                }
+
+        val dailyRandomContactsTimestampFlow: Flow<Long> =
+            context.dataStore.data
+                .catch { exception ->
+                    if (exception is IOException) {
+                        emit(emptyPreferences())
+                    } else {
+                        throw exception
+                    }
+                }.map { preferences ->
+                    preferences[PreferencesKeys.DAILY_RANDOM_CONTACTS_TIMESTAMP] ?: 0L
+                }
+
+        suspend fun saveDailyRandomContacts(contactIds: List<Long>) {
+            context.dataStore.edit { settings ->
+                settings[PreferencesKeys.DAILY_RANDOM_CONTACT_IDS] =
+                    contactIds.map { it.toString() }.toSet()
+                settings[PreferencesKeys.DAILY_RANDOM_CONTACTS_TIMESTAMP] =
+                DateTimeUtils.toEpochMillis(DateTimeUtils.today())
+            }
+        }
+
         companion object {
             private const val IS_FIRST_RUN_TAG = "is_first_run"
+            private const val DAILY_RANDOM_CONTACT_IDS_TAG = "daily_random_contact_ids"
+            private const val DAILY_RANDOM_CONTACTS_TIMESTAMP_TAG =
+                "daily_random_contacts_timestamp"
         }
     }
