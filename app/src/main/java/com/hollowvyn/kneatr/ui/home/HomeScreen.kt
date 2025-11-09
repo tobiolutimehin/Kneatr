@@ -114,31 +114,14 @@ fun HomeSuccessContent(
         verticalArrangement = Arrangement.spacedBy(4.dp),
         contentPadding = PaddingValues(vertical = 12.dp),
     ) {
-        homeScreenContactSections(
-            section = HomeScreenSection.Overdue,
-            state = state,
-            openContact = openContact,
-            markAsComplete = markAsComplete,
-        )
-        homeScreenContactSections(
-            section = HomeScreenSection.Random,
-            state = state,
-            openContact = openContact,
-            markAsComplete = markAsComplete,
-        )
-
-        homeScreenContactSections(
-            section = HomeScreenSection.Upcoming,
-            state = state,
-            openContact = openContact,
-            markAsComplete = markAsComplete,
-        )
-        homeScreenContactSections(
-            section = HomeScreenSection.DueToday,
-            state = state,
-            openContact = openContact,
-            markAsComplete = markAsComplete,
-        )
+        HomeScreenSection.entries.forEach { section ->
+            homeScreenContactSections(
+                section = section,
+                state = state,
+                openContact = openContact,
+                markAsComplete = markAsComplete,
+            )
+        }
     }
 }
 
@@ -197,7 +180,7 @@ fun LazyListScope.homeScreenContactSections(
                     Modifier
                         .fillMaxWidth()
                         .padding(8.dp),
-                    )
+            )
         }
     }
 }
@@ -260,5 +243,5 @@ enum class HomeScreenSection(
     DueToday(
         title = "Contacts Due Today",
         filter = { it.contactDueToday },
-    );
+    ),
 }
