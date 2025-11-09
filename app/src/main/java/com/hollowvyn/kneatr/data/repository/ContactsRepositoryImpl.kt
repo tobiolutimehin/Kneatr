@@ -16,11 +16,13 @@ import com.hollowvyn.kneatr.domain.model.CommunicationLog
 import com.hollowvyn.kneatr.domain.model.Contact
 import com.hollowvyn.kneatr.domain.model.ContactTag
 import com.hollowvyn.kneatr.domain.model.ContactTier
+import com.hollowvyn.kneatr.domain.model.RelativeDate
 import com.hollowvyn.kneatr.domain.repository.ContactsRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.transform
@@ -49,6 +51,59 @@ class ContactsRepositoryImpl
         override suspend fun updateContact(contact: Contact) = contact.toEntity().let { contactDao.updateContact(it) }
 
         override fun getAllContacts(): Flow<List<Contact>> = contactDao.getAllContacts().map { contacts -> contacts.toListModel() }
+
+        override fun getOverdueContacts(): Flow<List<Contact>> =
+            getAllContacts().map {
+                it.filter { contact ->
+                    contact.isOverdue
+                }
+            }
+
+        override fun getUpcomingContacts(relativeDate: RelativeDate.Weeks): Flow<List<Contact>> =
+            getAllContacts().map {
+                it.filter { contact ->
+                    contact.nextCommunicationDateRelative is RelativeDate.Tomorrow ||
+                        contact.nextCommunicationDateRelative is RelativeDate.NextWeekday ||
+                        (
+                            contact.nextCommunicationDateRelative is RelativeDate.Weeks &&
+                                contact.nextCommunicationDateRelative.count <= relativeDate.count
+                        )
+                }
+            }
+
+        override fun getContactsDueToday(): Flow<List<Contact>> =
+            getAllContacts().map {
+                it.filter { contact ->
+                    contact.isDueToday
+                }
+            }
+
+        override fun getRandomHomeContacts(): Flow<List<Contact>> =
+            getAllContacts()
+                .map { allContacts ->
+                    val nonUrgentContacts =
+                        allContacts.filterNot {
+                            it.isOverdue || it.isDueToday ||
+                                (it.nextCommunicationDateRelative is RelativeDate.Weeks && it.nextCommunicationDateRelative.count <= 1) ||
+                                it.lastCommunicationDateRelative is RelativeDate.Today ||
+                                it.lastCommunicationDateRelative is RelativeDate.Yesterday ||
+                                it.lastCommunicationDateRelative is RelativeDate.LastWeekday
+                        }
+
+                    if (nonUrgentContacts.size <= 7) {
+                        return@map nonUrgentContacts.shuffled()
+                    }
+
+                    val (prioritized, others) = nonUrgentContacts.partition { it.tier != null || it.tags.isNotEmpty() }
+
+                    val shuffledPrioritized = prioritized.shuffled()
+                    val shuffledOthers = others.shuffled()
+
+                    val randomContacts =
+                        (shuffledPrioritized.take(5) + shuffledOthers).distinctBy { it.id }
+
+                randomContacts.take(7)
+            }.distinctUntilChanged()
 
         override fun getContactsByTierId(tierId: Long): Flow<List<Contact>> =
             contactDao

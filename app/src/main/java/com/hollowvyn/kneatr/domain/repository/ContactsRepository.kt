@@ -4,6 +4,7 @@ import com.hollowvyn.kneatr.domain.model.CommunicationLog
 import com.hollowvyn.kneatr.domain.model.Contact
 import com.hollowvyn.kneatr.domain.model.ContactTag
 import com.hollowvyn.kneatr.domain.model.ContactTier
+import com.hollowvyn.kneatr.domain.model.RelativeDate
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.LocalDate
 
@@ -16,6 +17,14 @@ interface ContactsRepository {
     suspend fun updateContact(contact: Contact)
 
     fun getAllContacts(): Flow<List<Contact>>
+
+    fun getOverdueContacts(): Flow<List<Contact>>
+
+    fun getUpcomingContacts(relativeDate: RelativeDate.Weeks): Flow<List<Contact>>
+
+    fun getRandomHomeContacts(): Flow<List<Contact>>
+
+    fun getContactsDueToday(): Flow<List<Contact>>
 
     fun getContactsByTierId(tierId: Long): Flow<List<Contact>>
 

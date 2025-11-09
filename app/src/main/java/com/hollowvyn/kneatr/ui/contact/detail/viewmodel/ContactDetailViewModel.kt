@@ -43,7 +43,7 @@ class ContactDetailViewModel
                     scope = viewModelScope,
                     started = SharingStarted.WhileSubscribed(5_000),
                     initialValue = emptySet(),
-            )
+                )
 
         @OptIn(ExperimentalCoroutinesApi::class)
         val uiState: StateFlow<ContactDetailUiState> =
@@ -126,15 +126,15 @@ class ContactDetailViewModel
             }
         }
 
-    fun updateTags(tags: Set<ContactTag>) {
-        val currentState = uiState.value
-        if (currentState is ContactDetailUiState.Success) {
-            viewModelScope.launch {
-                contactRepository.addTagsToContact(
-                    contactId = currentState.contact.id,
-                    tagIds = tags.toMutableList(),
-                )
-            }
+        fun updateTags(tags: Set<ContactTag>) {
+            val currentState = uiState.value
+            if (currentState is ContactDetailUiState.Success) {
+                viewModelScope.launch {
+                    contactRepository.addTagsToContact(
+                        contactId = currentState.contact.id,
+                        tagIds = tags.toMutableList(),
+                    )
+                }
         }
     }
     }
