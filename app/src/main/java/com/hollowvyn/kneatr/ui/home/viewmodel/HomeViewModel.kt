@@ -1,4 +1,4 @@
-package com.hollowvyn.kneatr.ui.home
+package com.hollowvyn.kneatr.ui.home.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -50,7 +50,7 @@ class HomeViewModel
                 initialValue = HomeUiState.Loading,
             )
 
-        fun addCommunicationLog(contactId: Long) {
+        fun markContactAsCompleted(contactId: Long) {
             viewModelScope.launch {
                 contactRepository.insertCommunicationLog(
                     log =
