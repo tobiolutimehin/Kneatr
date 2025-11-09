@@ -66,12 +66,14 @@ class ContactsRepositoryImpl
         override fun getUpcomingContacts(relativeDate: RelativeDate.Weeks): Flow<List<Contact>> =
             getAllContacts().map {
                 it.filter { contact ->
-                    contact.nextCommunicationDateRelative is RelativeDate.Tomorrow ||
-                        contact.nextCommunicationDateRelative is RelativeDate.NextWeekday ||
-                        (
-                            contact.nextCommunicationDateRelative is RelativeDate.Weeks &&
-                                contact.nextCommunicationDateRelative.count <= relativeDate.count
-                        )
+                    (
+                        contact.nextCommunicationDateRelative is RelativeDate.Tomorrow ||
+                            contact.nextCommunicationDateRelative is RelativeDate.NextWeekday ||
+                            (
+                                contact.nextCommunicationDateRelative is RelativeDate.Weeks &&
+                                    contact.nextCommunicationDateRelative.count <= relativeDate.count
+                            )
+                    ) && !contact.reachedOutToday
                 }
             }
 
@@ -105,27 +107,27 @@ class ContactsRepositoryImpl
                                 it.lastCommunicationDateRelative is RelativeDate.LastWeekday
                         }
 
-                val newRandomContacts =
-                    if (nonUrgentContacts.size <= 7) {
-                        nonUrgentContacts.shuffled()
-                    } else {
-                        val (prioritized, others) = nonUrgentContacts.partition { it.tier != null || it.tags.isNotEmpty() }
+                    val newRandomContacts =
+                        if (nonUrgentContacts.size <= 7) {
+                            nonUrgentContacts.shuffled()
+                        } else {
+                            val (prioritized, others) = nonUrgentContacts.partition { it.tier != null || it.tags.isNotEmpty() }
 
-                        val shuffledPrioritized = prioritized.shuffled()
-                        val shuffledOthers = others.shuffled()
+                            val shuffledPrioritized = prioritized.shuffled()
+                            val shuffledOthers = others.shuffled()
 
-                        val randomContacts =
-                            (shuffledPrioritized.take(5) + shuffledOthers).distinctBy { it.id }
+                            val randomContacts =
+                                (shuffledPrioritized.take(5) + shuffledOthers).distinctBy { it.id }
 
-                        randomContacts.take(7)
-                    }
-                dataStoreManager.saveDailyRandomContacts(newRandomContacts.map { it.id })
-                newRandomContacts
-            } else {
-                val idSet = ids.map { it.toLong() }.toSet()
-                allContacts.filter { it.id in idSet }
-            }
-        }.distinctUntilChanged()
+                            randomContacts.take(7)
+                        }
+                    dataStoreManager.saveDailyRandomContacts(newRandomContacts.map { it.id })
+                    newRandomContacts
+                } else {
+                    val idSet = ids.map { it.toLong() }.toSet()
+                    allContacts.filter { it.id in idSet }
+                }
+            }.distinctUntilChanged()
 
         override fun getContactsByTierId(tierId: Long): Flow<List<Contact>> =
             contactDao

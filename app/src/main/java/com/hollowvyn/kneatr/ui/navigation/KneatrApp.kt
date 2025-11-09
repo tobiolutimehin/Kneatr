@@ -65,7 +65,11 @@ fun KneatrApp(
                     }
 
                     entry<Home> {
-                        HomeScreen()
+                        HomeScreen(
+                            openContact = {
+                                topLevelBackStack.add(ContactDetail(id = it.id))
+                            },
+                        )
                     }
                 },
         )

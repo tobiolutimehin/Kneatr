@@ -1,6 +1,7 @@
 package com.hollowvyn.kneatr.ui.home
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ListItem
@@ -23,6 +24,7 @@ import com.hollowvyn.kneatr.ui.helpers.getRelativeDateString
 
 @Composable
 fun HomeScreen(
+    openContact: (Contact) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
@@ -31,13 +33,12 @@ fun HomeScreen(
     Scaffold(modifier = modifier) { innerPadding ->
         when (uiState) {
             is HomeUiState.Success -> {
-                LazyColumn {
-                    items((uiState as HomeUiState.Success).randomContacts) {
-                        ContactCard(it) {
-                            viewModel.addCommunicationLog(it.id)
-                        }
-                    }
-                }
+                HomeSuccessContent(
+                    state = uiState as HomeUiState.Success,
+                    openContact = openContact,
+                    markAsComplete = { viewModel.addCommunicationLog(it.id) },
+                    modifier = Modifier.padding(innerPadding),
+                )
             }
 
             is HomeUiState.Error -> {
@@ -47,8 +48,6 @@ fun HomeScreen(
 
             is HomeUiState.Loading -> {
             }
-
-            else -> {}
         }
     }
 }
@@ -70,16 +69,95 @@ fun ContactCard(
             }
         },
         trailingContent = {
-            TextButton(
-                onClick = onMarkAsComplete,
-                content = {
-                    Text(
-                        text = "Mark as Complete",
-                        style = MaterialTheme.typography.labelSmall,
-                    )
-                },
-            )
+            if (contact.reachedOutToday) {
+                Text(
+                    text = "Reached out tody!",
+                    style = MaterialTheme.typography.labelSmall,
+                )
+            } else {
+                TextButton(
+                    onClick = onMarkAsComplete,
+                    content = {
+                        Text(
+                            text = "Mark as Complete",
+                            style = MaterialTheme.typography.labelSmall,
+                        )
+                    },
+                )
+            }
         },
+    )
+}
+
+@Composable
+fun HomeSuccessContent(
+    state: HomeUiState.Success,
+    openContact: (Contact) -> Unit,
+    markAsComplete: (Contact) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    LazyColumn(
+        modifier = modifier,
+    ) {
+        item {
+            Text("Reach out to friends")
+        }
+        items(state.randomContacts) {
+            ContactCard(
+                it,
+                onClick = { openContact(it) },
+                onMarkAsComplete = { markAsComplete(it) },
+            )
+        }
+
+        item {
+            Text("Reach out to them today!")
+        }
+        items(state.contactDueToday) {
+            ContactCard(
+                it,
+                onClick = { openContact(it) },
+                onMarkAsComplete = { markAsComplete(it) },
+            )
+        }
+
+        item {
+            Text("Uh oh! These are overdue")
+        }
+        items(state.overdueContacts) {
+            ContactCard(
+                it,
+                onClick = { openContact(it) },
+                onMarkAsComplete = { markAsComplete(it) },
+            )
+        }
+
+        item {
+            Text("These are coming up")
+        }
+        items(state.upcomingContacts) {
+            ContactCard(
+                it,
+                onClick = { openContact(it) },
+                onMarkAsComplete = { markAsComplete(it) },
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun HomeSuccessContentPreview() {
+    HomeSuccessContent(
+        state =
+            HomeUiState.Success(
+                overdueContacts = ContactFakes.allContacts.take(5),
+                randomContacts = ContactFakes.allContacts.take(5),
+                upcomingContacts = ContactFakes.allContacts.take(5),
+                contactDueToday = ContactFakes.allContacts.take(5),
+            ),
+        openContact = {},
+        markAsComplete = {},
     )
 }
 
