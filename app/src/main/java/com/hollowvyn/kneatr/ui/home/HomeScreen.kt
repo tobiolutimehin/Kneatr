@@ -33,6 +33,7 @@ import com.hollowvyn.kneatr.R
 import com.hollowvyn.kneatr.domain.fakes.ContactFakes
 import com.hollowvyn.kneatr.domain.model.Contact
 import com.hollowvyn.kneatr.ui.components.screenstates.ErrorScreen
+import com.hollowvyn.kneatr.ui.components.screenstates.LoadingScreen
 import com.hollowvyn.kneatr.ui.helpers.getRelativeDateString
 
 @Composable
@@ -55,11 +56,15 @@ fun HomeScreen(
             }
 
             is HomeUiState.Error -> {
-                ErrorScreen {
-                }
+                ErrorScreen(
+                    modifier = Modifier.padding(innerPadding),
+                )
             }
 
             is HomeUiState.Loading -> {
+                LoadingScreen(
+                    modifier = Modifier.padding(innerPadding),
+                )
             }
         }
     }
@@ -222,11 +227,7 @@ sealed interface HomeUiState {
     object Loading : HomeUiState
 }
 
-enum class HomeScreenSection(
-    val title: String,
-    val filter: (HomeUiState.Success) -> List<Contact>,
-    val onRefresh: (() -> Unit)? = null,
-) {
+enum class HomeScreenSection {
     Overdue(
         title = "Overdue",
         filter = { it.overdueContacts },
@@ -244,4 +245,19 @@ enum class HomeScreenSection(
         title = "Contacts Due Today",
         filter = { it.contactDueToday },
     ),
+    ;
+
+    val title: String
+    val filter: (HomeUiState.Success) -> List<Contact>
+    val onRefresh: (() -> Unit)?
+
+    constructor(
+        title: String,
+        filter: (HomeUiState.Success) -> List<Contact>,
+        onRefresh: (() -> Unit)? = null,
+    ) {
+        this.title = title
+        this.filter = filter
+        this.onRefresh = onRefresh
+    }
 }
