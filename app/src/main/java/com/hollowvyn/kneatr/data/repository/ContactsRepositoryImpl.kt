@@ -102,8 +102,8 @@ class ContactsRepositoryImpl
                     val randomContacts =
                         (shuffledPrioritized.take(5) + shuffledOthers).distinctBy { it.id }
 
-                randomContacts.take(7)
-            }.distinctUntilChanged()
+                    randomContacts.take(7)
+                }.distinctUntilChanged()
 
         override fun getContactsByTierId(tierId: Long): Flow<List<Contact>> =
             contactDao
