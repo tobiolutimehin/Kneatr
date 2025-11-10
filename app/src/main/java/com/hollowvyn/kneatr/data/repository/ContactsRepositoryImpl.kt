@@ -85,7 +85,7 @@ class ContactsRepositoryImpl
             }
 
         @OptIn(ExperimentalTime::class)
-        override fun getRandomHomeContacts(): Flow<List<Contact>> =
+        override fun getRandomHomeContacts(forceRefresh: Boolean): Flow<List<Contact>> =
             combine(
                 dataStoreManager.dailyRandomContactIdsFlow,
                 dataStoreManager.dailyRandomContactsTimestampFlow,
@@ -94,7 +94,8 @@ class ContactsRepositoryImpl
                 val now = DateTimeUtils.today()
                 val lastUpdate = DateTimeUtils.toLocalDate(timestamp)
                 val needsRefresh =
-                    now.toEpochDays() !=
+                    forceRefresh ||
+                        now.toEpochDays() !=
                         lastUpdate.toEpochDays() || ids.isEmpty()
 
                 if (needsRefresh) {

@@ -8,27 +8,40 @@ import com.hollowvyn.kneatr.domain.model.RelativeDate
 import com.hollowvyn.kneatr.domain.repository.ContactsRepository
 import com.hollowvyn.kneatr.domain.util.DateTimeUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class HomeViewModel
     @Inject
     constructor(
         private val contactRepository: ContactsRepository,
     ) : ViewModel() {
+        private val _forceRefreshRandom = MutableStateFlow(false)
+
+        private val randomContactsFlow =
+            _forceRefreshRandom.flatMapLatest { force ->
+                contactRepository.getRandomHomeContacts(forceRefresh = force)
+            }
+
         val uiState: StateFlow<HomeUiState> =
             combine(
                 contactRepository.getOverdueContacts(),
                 contactRepository.getUpcomingContacts(RelativeDate.Weeks(2)),
                 contactRepository.getContactsDueToday(),
-                contactRepository.getRandomHomeContacts(),
+                randomContactsFlow,
             ) { overdueContacts, upcomingContacts, contactDueToday, randomContacts ->
 
+                _forceRefreshRandom.value = false
                 if (
                     overdueContacts.isEmpty() &&
                     randomContacts.isEmpty() &&
@@ -63,4 +76,21 @@ class HomeViewModel
                 )
             }
         }
+
+    fun refreshRandomContacts() {
+        viewModelScope.launch {
+            delay(200)
+            _forceRefreshRandom.value = true
+        }
+    }
+
+    fun refreshContacts(section: HomeScreenSection) {
+        when (section) {
+            HomeScreenSection.Random -> {
+                refreshRandomContacts()
+            }
+
+            else -> {}
+        }
+    }
     }

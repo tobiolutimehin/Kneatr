@@ -29,6 +29,7 @@ internal fun HomeScreen(
                     state = uiState as HomeUiState.Success,
                     openContact = openContact,
                     markAsComplete = { viewModel.markContactAsCompleted(it.id) },
+                    onSectionRefresh = { viewModel.refreshContacts(it) },
                     modifier = contentModifier,
                 )
             }

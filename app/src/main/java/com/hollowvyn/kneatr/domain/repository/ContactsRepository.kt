@@ -22,7 +22,7 @@ interface ContactsRepository {
 
     fun getUpcomingContacts(relativeDate: RelativeDate.Weeks): Flow<List<Contact>>
 
-    fun getRandomHomeContacts(): Flow<List<Contact>>
+    fun getRandomHomeContacts(forceRefresh: Boolean = false): Flow<List<Contact>>
 
     fun getContactsDueToday(): Flow<List<Contact>>
 

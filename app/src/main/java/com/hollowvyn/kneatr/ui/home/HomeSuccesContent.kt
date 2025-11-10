@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -18,9 +16,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.hollowvyn.kneatr.R
 import com.hollowvyn.kneatr.domain.fakes.ContactFakes
 import com.hollowvyn.kneatr.domain.model.Contact
 import com.hollowvyn.kneatr.ui.home.viewmodel.HomeScreenSection
@@ -31,6 +31,7 @@ internal fun HomeSuccessContent(
     state: HomeUiState.Success,
     openContact: (Contact) -> Unit,
     markAsComplete: (Contact) -> Unit,
+    onSectionRefresh: ((HomeScreenSection) -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
@@ -44,6 +45,7 @@ internal fun HomeSuccessContent(
                 state = state,
                 openContact = openContact,
                 markAsComplete = markAsComplete,
+                onSectionRefresh = onSectionRefresh,
             )
         }
     }
@@ -54,6 +56,7 @@ private fun LazyListScope.homeScreenContactSections(
     state: HomeUiState.Success,
     openContact: (Contact) -> Unit,
     markAsComplete: (Contact) -> Unit,
+    onSectionRefresh: ((HomeScreenSection) -> Unit)? = null,
 ) {
     item {
         Row(
@@ -73,11 +76,11 @@ private fun LazyListScope.homeScreenContactSections(
 
             section.onRefresh?.let {
                 IconButton(
-                    onClick = it,
+                    onClick = { onSectionRefresh?.invoke(section) },
                 ) {
                     Icon(
-                        imageVector = Icons.Filled.AccessTime,
-                        contentDescription = null,
+                        painter = painterResource(R.drawable.refresh_24px),
+                        contentDescription = "Refresh ${section.title}",
                         tint = MaterialTheme.colorScheme.onSecondaryContainer,
                     )
                 }
@@ -87,11 +90,16 @@ private fun LazyListScope.homeScreenContactSections(
 
     val contacts = section.filter(state)
     if (contacts.isNotEmpty()) {
-        items(contacts) {
+        items(
+            contacts,
+            key = { it.id },
+            contentType = { it::class.java },
+        ) {
             HomeContactCard(
                 it,
                 onClick = { openContact(it) },
                 onMarkAsComplete = { markAsComplete(it) },
+                modifier = Modifier.animateItem(),
             )
         }
     } else {
@@ -103,7 +111,8 @@ private fun LazyListScope.homeScreenContactSections(
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .padding(8.dp),
+                        .padding(20.dp)
+                        .animateItem(),
             )
         }
     }
