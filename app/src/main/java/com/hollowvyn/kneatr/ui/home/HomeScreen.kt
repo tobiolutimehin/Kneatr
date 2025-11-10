@@ -22,26 +22,23 @@ internal fun HomeScreen(
     val uiState by viewModel.uiState.collectAsState()
 
     Scaffold(modifier = modifier) { innerPadding ->
+        val contentModifier = Modifier.padding(innerPadding)
         when (uiState) {
             is HomeUiState.Success -> {
                 HomeSuccessContent(
                     state = uiState as HomeUiState.Success,
                     openContact = openContact,
                     markAsComplete = { viewModel.markContactAsCompleted(it.id) },
-                    modifier = Modifier.padding(innerPadding),
+                    modifier = contentModifier,
                 )
             }
 
             is HomeUiState.Error -> {
-                ErrorScreen(
-                    modifier = Modifier.padding(innerPadding),
-                )
+                ErrorScreen(modifier = contentModifier)
             }
 
             is HomeUiState.Loading -> {
-                LoadingScreen(
-                    modifier = Modifier.padding(innerPadding),
-                )
+                LoadingScreen(modifier = contentModifier)
             }
         }
     }
