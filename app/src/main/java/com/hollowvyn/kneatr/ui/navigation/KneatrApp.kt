@@ -37,11 +37,19 @@ fun KneatrApp(
         modifier = modifier,
     ) {
         NavDisplay(
-            backStack = topLevelBackStack.backStack,
+            backStack = topLevelBackStack.backStack.value,
             onBack = { topLevelBackStack.removeLast() },
             sceneStrategy = listDetailStrategy,
             entryProvider =
                 entryProvider {
+                    entry<Home> {
+                        HomeScreen(
+                            openContact = {
+                                topLevelBackStack.add(ContactDetail(id = it.id))
+                            },
+                        )
+                    }
+
                     entry<ContactsList>(
                         metadata =
                             ListDetailSceneStrategy.listPane(
@@ -60,14 +68,6 @@ fun KneatrApp(
                             contactId = contactDetail.id,
                             onNavigateBack = {
                                 topLevelBackStack.removeLast()
-                            },
-                        )
-                    }
-
-                    entry<Home> {
-                        HomeScreen(
-                            openContact = {
-                                topLevelBackStack.add(ContactDetail(id = it.id))
                             },
                         )
                     }

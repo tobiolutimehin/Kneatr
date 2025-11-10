@@ -1,41 +1,39 @@
 package com.hollowvyn.kneatr.ui.navigation
 
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.toMutableStateList
 
 class TopLevelBackStack<T : Any>(
     startKey: T,
 ) {
-    // Maintain a stack for each top level route
     private var topLevelStacks: LinkedHashMap<T, SnapshotStateList<T>> =
         linkedMapOf(
-            startKey to mutableStateListOf(startKey),
+            startKey to listOf(startKey).toMutableStateList(),
         )
 
-    // Expose the current top level route for consumers
     var topLevelKey by mutableStateOf(startKey)
         private set
 
-    // Expose the back stack so it can be rendered by the NavDisplay
-    val backStack = mutableStateListOf(startKey)
+    private val _backStack = mutableStateOf(listOf(startKey))
 
-    private fun updateBackStack() =
-        backStack.apply {
-            clear()
-            // This now correctly flattens the map of stacks into a single list
-            // The LinkedHashMap ensures the order is preserved (current tab is last)
-            addAll(topLevelStacks.values.flatten())
-        }
+    val backStack: State<List<T>> = _backStack
 
+    @Synchronized
+    private fun updateBackStack() {
+        _backStack.value = topLevelStacks.values.flatten()
+    }
+
+    @Synchronized
     fun addTopLevel(key: T) {
         if (key == topLevelKey) {
             return
         }
         if (topLevelStacks[key] == null) {
-            topLevelStacks[key] = mutableStateListOf(key)
+            topLevelStacks[key] = listOf(key).toMutableStateList()
         }
         // Move the stack associated with the key to the end to make it current
         topLevelStacks.remove(key)?.let {
@@ -46,7 +44,13 @@ class TopLevelBackStack<T : Any>(
         updateBackStack()
     }
 
+    @Synchronized
     fun add(key: T) {
+        // Prevent adding duplicate screens at the top of the stack
+        if (topLevelStacks[topLevelKey]?.lastOrNull() == key) {
+            return
+        }
+
         if (topLevelStacks[topLevelKey]?.last()?.javaClass == key.javaClass) {
             topLevelStacks[topLevelKey]?.removeLastOrNull()
         }
@@ -54,17 +58,13 @@ class TopLevelBackStack<T : Any>(
         updateBackStack()
     }
 
+    @Synchronized
     fun removeLast() {
         val currentStack = topLevelStacks[topLevelKey]
 
-        // If we can pop from the current top-level stack without it being empty, just pop.
-//        if (currentStack?.last() == Home) {
-//            // pop pop up and away todo
-//        } else
         if ((currentStack?.size ?: 0) > 1) {
             currentStack?.removeLastOrNull()
         } else {
-            // Otherwise, we are at the root of a top-level stack. Remove it.
             if (topLevelStacks.size > 1) {
                 topLevelStacks.remove(topLevelKey)
                 topLevelKey = topLevelStacks.keys.last()
