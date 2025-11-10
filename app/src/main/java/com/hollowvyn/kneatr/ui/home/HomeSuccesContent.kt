@@ -74,9 +74,15 @@ private fun LazyListScope.homeScreenContactSections(
                 color = MaterialTheme.colorScheme.onSecondaryContainer,
             )
 
-            section.onRefresh?.let {
+            if (section.onRefresh != null) {
+                // Use the debounced click handler here
+                val debouncedRefresh =
+                    rememberDebouncedOnClick {
+                        onSectionRefresh?.invoke(section)
+                    }
+
                 IconButton(
-                    onClick = { onSectionRefresh?.invoke(section) },
+                    onClick = debouncedRefresh,
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.refresh_24px),
