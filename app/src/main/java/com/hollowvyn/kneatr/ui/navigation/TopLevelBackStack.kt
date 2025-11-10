@@ -58,6 +58,9 @@ class TopLevelBackStack<T : Any>(
         val currentStack = topLevelStacks[topLevelKey]
 
         // If we can pop from the current top-level stack without it being empty, just pop.
+//        if (currentStack?.last() == Home) {
+//            // pop pop up and away todo
+//        } else
         if ((currentStack?.size ?: 0) > 1) {
             currentStack?.removeLastOrNull()
         } else {
