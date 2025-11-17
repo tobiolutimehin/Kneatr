@@ -21,6 +21,7 @@ import androidx.navigation3.scene.SceneStrategy
 import androidx.navigation3.ui.NavDisplay
 import com.hollowvyn.kneatr.ui.contact.detail.ContactDetailScreen
 import com.hollowvyn.kneatr.ui.contact.list.ContactsListScreen
+import com.hollowvyn.kneatr.ui.home.HomeScreen
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
@@ -36,15 +37,24 @@ fun KneatrApp(
         modifier = modifier,
     ) {
         NavDisplay(
-            backStack = topLevelBackStack.backStack,
+            backStack = topLevelBackStack.backStack.value,
             onBack = { topLevelBackStack.removeLast() },
             sceneStrategy = listDetailStrategy,
             entryProvider =
                 entryProvider {
+                    entry<Home> {
+                        HomeScreen(
+                            openContact = {
+                                topLevelBackStack.add(ContactDetail(id = it.id))
+                            },
+                        )
+                    }
+
                     entry<ContactsList>(
-                        metadata = ListDetailSceneStrategy.listPane(
-                            detailPlaceholder = { DetailPlaceholder() },
-                        ),
+                        metadata =
+                            ListDetailSceneStrategy.listPane(
+                                detailPlaceholder = { DetailPlaceholder() },
+                            ),
                     ) {
                         ContactsListScreen(
                             onContactClick = { contact ->

@@ -10,5 +10,5 @@ import javax.inject.Inject
 class NavigationViewModel
     @Inject
     constructor() : ViewModel() {
-        val topLevelBackStack = mutableStateOf(TopLevelBackStack<NavKey>(ContactsList))
+        val topLevelBackStack = mutableStateOf(TopLevelBackStack<NavKey>(Home))
     }

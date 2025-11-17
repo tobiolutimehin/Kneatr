@@ -39,4 +39,6 @@ data class Contact(
         } else {
             nextCommunicationDate?.let { DateTimeUtils.formatFutureDate(it) }
         }
+
+    internal val reachedOutToday = lastCommunicationDateRelative is RelativeDate.Today
 }
