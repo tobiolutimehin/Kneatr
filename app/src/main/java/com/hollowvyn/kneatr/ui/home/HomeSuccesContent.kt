@@ -31,8 +31,8 @@ internal fun HomeSuccessContent(
     state: HomeUiState.Success,
     openContact: (Contact) -> Unit,
     markAsComplete: (Contact) -> Unit,
-    onSectionRefresh: ((HomeScreenSection) -> Unit)? = null,
     modifier: Modifier = Modifier,
+    onSectionRefresh: ((HomeScreenSection) -> Unit)? = null,
 ) {
     LazyColumn(
         modifier = modifier,
@@ -130,10 +130,10 @@ private fun HomeSuccessContentPreview() {
     HomeSuccessContent(
         state =
             HomeUiState.Success(
-                overdueContacts = ContactFakes.allContacts.take(5),
-                randomContacts = ContactFakes.allContacts.take(4),
-                upcomingContacts = ContactFakes.allContacts.take(2),
-                contactDueToday = ContactFakes.allContacts.take(3),
+                overdueContacts = ContactFakes.allContacts.take(2),
+                randomContacts = emptyList(),
+                upcomingContacts = emptyList(),
+                contactDueToday = emptyList(),
             ),
         openContact = {},
         markAsComplete = {},
