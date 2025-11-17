@@ -76,34 +76,6 @@ fun KneatrApp(
     }
 }
 
-// @Composable
-// fun KneatrNavigationBar(
-//    topLevelBackStack: TopLevelBackStack<NavKey>,
-//    modifier: Modifier = Modifier,
-// ) {
-//    NavigationBar(modifier = modifier) {
-//        TopLevelRoute.entries.forEach { topLevelRoute ->
-//            val isSelected = topLevelRoute == topLevelBackStack.topLevelKey
-//
-//            NavigationBarItem(
-//                selected = isSelected,
-//                onClick = {
-//                    topLevelBackStack.addTopLevel(topLevelRoute)
-//                },
-//                icon = {
-//                    Icon(
-//                        painter = painterResource(topLevelRoute.icon),
-//                        contentDescription = stringResource(topLevelRoute.contentDescription),
-//                    )
-//                },
-//                label = {
-//                    Text(stringResource(topLevelRoute.label))
-//                },
-//            )
-//        }
-//    }
-// }
-
 private fun NavigationSuiteScope.kneatrNavigationItems(topLevelBackStack: TopLevelBackStack<NavKey>) {
     TopLevelRoute.entries.forEach { topLevelRoute ->
         val selected = topLevelRoute == topLevelBackStack.topLevelKey

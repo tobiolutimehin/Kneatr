@@ -15,10 +15,12 @@ sealed interface TopLevelRoute : NavKey {
     val contentDescription: Int
 
     companion object {
-        val entries: List<TopLevelRoute>
-            get() =
-                TopLevelRoute::class
-                    .sealedSubclasses
-                    .mapNotNull { it.objectInstance }
+//        val entries: List<TopLevelRoute>
+//            get() =
+//                TopLevelRoute::class
+//                    .sealedSubclasses
+//                    .mapNotNull { it.objectInstance }
+
+        val entries = listOf(Home, ContactsList)
     }
 }
