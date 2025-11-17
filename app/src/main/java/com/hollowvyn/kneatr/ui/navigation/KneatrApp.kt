@@ -27,10 +27,10 @@ import com.hollowvyn.kneatr.ui.home.HomeScreen
 @Composable
 fun KneatrApp(
     modifier: Modifier = Modifier,
-    navViewModel: NavigationViewModel = hiltViewModel(),
+    appViewModel: AppViewModel = hiltViewModel(),
 ) {
     val listDetailStrategy: SceneStrategy<NavKey> = rememberListDetailSceneStrategy()
-    val topLevelBackStack = navViewModel.topLevelBackStack.value
+    val topLevelBackStack = appViewModel.topLevelBackStack.value
 
     NavigationSuiteScaffold(
         navigationSuiteItems = { kneatrNavigationItems(topLevelBackStack) },

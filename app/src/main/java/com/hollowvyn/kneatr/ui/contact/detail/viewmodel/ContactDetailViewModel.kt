@@ -27,23 +27,6 @@ class ContactDetailViewModel
         private val contactRepository: ContactsRepository,
     ) : ViewModel() {
         private val contactIdFlow = MutableStateFlow<Long?>(null)
-        val tiers: StateFlow<List<ContactTier>> =
-            contactRepository
-                .getAllTiers()
-                .stateIn(
-                    scope = viewModelScope,
-                    started = SharingStarted.WhileSubscribed(5_000),
-                    initialValue = emptyList(),
-                )
-
-        val allTags: StateFlow<Set<ContactTag>> =
-            contactRepository
-                .getAllTags()
-                .stateIn(
-                    scope = viewModelScope,
-                    started = SharingStarted.WhileSubscribed(5_000),
-                    initialValue = emptySet(),
-                )
 
         @OptIn(ExperimentalCoroutinesApi::class)
         val uiState: StateFlow<ContactDetailUiState> =
@@ -135,6 +118,6 @@ class ContactDetailViewModel
                         tagIds = tags.toMutableList(),
                     )
                 }
+            }
         }
-    }
     }

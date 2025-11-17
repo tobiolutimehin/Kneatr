@@ -43,21 +43,23 @@ import com.hollowvyn.kneatr.R
 import com.hollowvyn.kneatr.domain.model.ContactTag
 import com.hollowvyn.kneatr.ui.components.dialog.KneatrModalBottomSheet
 import com.hollowvyn.kneatr.ui.components.dialog.KneatrSheetContent
+import com.hollowvyn.kneatr.ui.navigation.AppViewModel
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun TagsSelectorBottomSheet(
     currentTags: Set<ContactTag>,
-    allTags: List<ContactTag>,
     onSave: (Set<ContactTag>) -> Unit,
     dismissBottomSheet: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: TagSelectorViewModel = hiltViewModel(),
+    appViewModel: AppViewModel = hiltViewModel(),
 ) {
     val selectedTags by viewModel.selectedTags.collectAsState()
     val tagInput by viewModel.tagInput.collectAsState()
     val suggestions by viewModel.suggestions.collectAsState()
     val hasChanges by viewModel.hasChanges.collectAsState()
+    val allTags by appViewModel.allTags.collectAsState()
     val focusManager = LocalFocusManager.current
 
     KneatrModalBottomSheet(onDismiss = dismissBottomSheet, modifier = modifier) {
@@ -174,6 +176,6 @@ fun TagsSelectorBottomSheet(
     }
 
     LaunchedEffect(currentTags, allTags) {
-        viewModel.initialize(currentTags, allTags)
+        viewModel.initialize(currentTags, allTags.toList())
     }
 }

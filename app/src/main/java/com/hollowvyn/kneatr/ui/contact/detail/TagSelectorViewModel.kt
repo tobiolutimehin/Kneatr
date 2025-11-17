@@ -3,24 +3,29 @@ package com.hollowvyn.kneatr.ui.contact.detail
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hollowvyn.kneatr.domain.model.ContactTag
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import javax.inject.Inject
 
-class TagSelectorViewModel : ViewModel() {
-    private val _selectedTags = MutableStateFlow<Set<ContactTag>>(emptySet())
-    val selectedTags: StateFlow<Set<ContactTag>> = _selectedTags.asStateFlow()
+@HiltViewModel
+class TagSelectorViewModel
+    @Inject
+    constructor() : ViewModel() {
+        private val _selectedTags = MutableStateFlow<Set<ContactTag>>(emptySet())
+        val selectedTags: StateFlow<Set<ContactTag>> = _selectedTags.asStateFlow()
 
-    private val _tagInput = MutableStateFlow("")
-    val tagInput: StateFlow<String> = _tagInput.asStateFlow()
+        private val _tagInput = MutableStateFlow("")
+        val tagInput: StateFlow<String> = _tagInput.asStateFlow()
 
-    private val allContactTags = MutableStateFlow<List<ContactTag>>(emptyList())
+        private val allContactTags = MutableStateFlow<List<ContactTag>>(emptyList())
 
-    private val _hasChanges = MutableStateFlow(false)
-    val hasChanges: StateFlow<Boolean> = _hasChanges.asStateFlow()
+        private val _hasChanges = MutableStateFlow(false)
+        val hasChanges: StateFlow<Boolean> = _hasChanges.asStateFlow()
 
     private var initialTags: Set<ContactTag> = emptySet()
 
@@ -71,7 +76,7 @@ class TagSelectorViewModel : ViewModel() {
             findTagByName(normalizedName, allContactTags.value)
                 ?: ContactTag(name = normalizedName)
 
-        _selectedTags.value = _selectedTags.value + tagToAdd
+        _selectedTags.value += tagToAdd
         _tagInput.value = ""
         updateHasChanges()
     }
@@ -80,7 +85,7 @@ class TagSelectorViewModel : ViewModel() {
      * Remove a tag from the selected tags
      */
     fun removeTag(tag: ContactTag) {
-        _selectedTags.value = _selectedTags.value - tag
+        _selectedTags.value -= tag
         updateHasChanges()
     }
 

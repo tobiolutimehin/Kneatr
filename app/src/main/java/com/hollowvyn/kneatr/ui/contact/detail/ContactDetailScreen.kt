@@ -60,8 +60,6 @@ fun ContactDetailScreen(
     viewModel: ContactDetailViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val tiers by viewModel.tiers.collectAsState()
-    val allTags by viewModel.allTags.collectAsState()
 
     val listState = rememberLazyListState()
     val isScrolled = remember { derivedStateOf { listState.firstVisibleItemIndex > 0 } }
@@ -185,7 +183,6 @@ fun ContactDetailScreen(
             (uiState as? ContactDetailUiState.Success)?.contact?.let { contact ->
                 TierSelectorBottomSheet(
                     currentTier = contact.tier,
-                    allTiers = tiers,
                     onSelectTier = { viewModel.updateTier(it) },
                     dismissBottomSheet = { showTierSheet = false },
                 )
@@ -204,7 +201,6 @@ fun ContactDetailScreen(
             (uiState as? ContactDetailUiState.Success)?.contact?.let { contact ->
                 TagsSelectorBottomSheet(
                     currentTags = contact.tags,
-                    allTags = allTags.toMutableList(),
                     onSave = { updatedTags ->
                         viewModel.updateTags(updatedTags)
                     },
