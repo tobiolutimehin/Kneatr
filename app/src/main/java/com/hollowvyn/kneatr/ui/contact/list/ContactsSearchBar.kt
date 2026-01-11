@@ -85,28 +85,31 @@ fun ContactsSearchBar(
                         Icon(Icons.Default.Search, contentDescription = null)
                     },
                     trailingIcon = {
-                        Icon(
-                            Icons.Default.Close,
-                            contentDescription =
-                                stringResource(
-                                    if (query.isEmpty() && expanded) {
-                                        R.string.contact_list_close_search_icon_description
-                                    } else {
-                                        R.string.contact_list_clear_search_icon_description
+                        val shouldShow = query.isNotEmpty() || expanded
+                        AnimatedVisibility(shouldShow) {
+                            Icon(
+                                Icons.Default.Close,
+                                contentDescription =
+                                    stringResource(
+                                        if (query.isEmpty() && expanded) {
+                                            R.string.contact_list_close_search_icon_description
+                                        } else {
+                                            R.string.contact_list_clear_search_icon_description
+                                        },
+                                    ),
+                                modifier =
+                                    Modifier.clickable(
+                                        enabled = expanded || query.isNotEmpty(),
+                                    ) {
+                                        if (query.isEmpty()) {
+                                            expanded = false
+                                            focusManager.clearFocus()
+                                        } else {
+                                            onQueryChange("")
+                                        }
                                     },
-                                ),
-                            modifier =
-                                Modifier.clickable(
-                                    enabled = expanded || query.isNotEmpty(),
-                                ) {
-                                    if (query.isEmpty()) {
-                                        expanded = false
-                                        focusManager.clearFocus()
-                                    } else {
-                                        onQueryChange("")
-                                    }
-                                },
-                        )
+                            )
+                        }
                     },
                 )
             },
