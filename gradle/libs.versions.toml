@@ -16,7 +16,7 @@ lifecycleRuntimeKtx = "2.10.0"
 lifecycleViewmodelNav3 = "2.10.0"
 
 # AndroidX Activity / Compose
-activityCompose = "1.12.1"
+activityCompose = "1.12.2"
 composeBom = "2025.12.00"
 androidxComposeMaterial3Adaptive = "1.2.0"
 
