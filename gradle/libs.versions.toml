@@ -2,7 +2,7 @@
 # Core
 agp = "8.13.2"
 datastorePreferences = "1.2.0"
-kotlin = "2.2.21"
+kotlin = "2.3.0"
 kotlinReflect = "2.2.10"
 kotlinSerialization = "2.2.21"
 kotlinxCoroutinesTest = "1.10.2"
