@@ -35,7 +35,7 @@ ui-test-manifest = "1.10.0"
 
 # DI / Tooling
 hilt = "2.57.2"
-ksp = "2.2.10-2.0.2"
+ksp = "2.3.5"
 
 # Room
 room = "2.8.4"
