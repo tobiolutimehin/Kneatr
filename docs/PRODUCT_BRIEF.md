@@ -1,183 +1,175 @@
-# 🌟 PRODUCT_BRIEF.md
+# Product brief
 
-## Project Name
+## Product summary
 
-**Kneatr** – Relationships, brilliantly organized
+Kneatr is an Android app that helps people maintain meaningful relationships through structure,
+visibility, and low-friction follow-through. It imports contacts from the device, lets users
+organize them by importance, highlights who needs attention, and records outreach so the next check
+in is always clear.
 
----
+Tagline: **Relationships, brilliantly organized.**
 
-## 📖 What It Is
+## Problem
 
-Kneatr is a **relationship maintenance app** designed to help users—especially **neurodivergent
-professionals**—stay in touch with the people who matter to them.  
-Through a structured, tier-based contact system and personalized, non-intrusive reminders, users can
-intentionally nurture their social connections.
+Many people care deeply about staying in touch, but struggle to do it consistently. Existing tools
+usually fail in one of two ways:
 
-The app’s core philosophy:  
-**“Remove friction from maintaining meaningful connections, without overwhelming the user.”**
+- Generic contacts apps store information but do not create a repeatable maintenance loop.
+- Social, CRM, or task tools feel noisy, transactional, or too heavy for personal relationships.
 
----
+For neurodivergent users in particular, the real problem is not desire. It is remembering,
+prioritizing, and acting without cognitive overload.
 
-## 👥 Who It's For
+## Target users
 
-- Neurodivergent professionals (e.g., ADHD, Autism)
-- Busy individuals with intentional social habits
-- People who want to nurture a small-to-mid-sized circle of important relationships
-- Users who prefer **order, routine, and clarity** over chaos and guesswork
+### Primary audience
 
----
+- Neurodivergent professionals, especially people with ADHD or executive function challenges
+- Users who prefer routine, clarity, and predictable systems over social spontaneity
+- People maintaining a deliberate circle of important relationships rather than managing a massive
+  address book
 
-## 💡 Core Features (MVP Scope)
+### Secondary audience
 
-These are the non-negotiables that make Kneatr usable, purposeful, and differentiating from day one.
+- Busy professionals with family, mentor, colleague, and friendship circles
+- People rebuilding relationship habits after burnout, relocation, or major life changes
 
-- Pull contacts from Android Contacts Provider
-- Tier-based contact assignment (1–4)
-- Reminder scheduling (based on assigned tier)
-- Contact detail screen (name, tier, tags, last/next contact date)
-- Mark communication as complete (auto-updates nextContactDate)
-- Timeline / history of communications (manual log: call, text, email, in-person, other)
-- Overdue contact list
-- Randomized daily “people to reach out to” feed (3-4 contacts)
-- Notifications for overdue contacts & daily check-in reminder
-- Local Room database (offline-first, no backend)
-- Onboarding flow (permission handling, dummy data mode)
-- Canonical responsive layouts:
-    - **Phones:** Bottom Navigation + Single-pane navigation
-    - **Tablets / Foldables:** Navigation Rail + List/Detail split
-    - **Uses:** Material3 Scaffold, WindowSizeClass
+## Jobs to be done
 
----
+Users hire Kneatr to help them:
 
-## 🎯 Phase 2 Goals (Power User Enhancements)
+- Know who they should reach out to without mentally scanning their whole social graph
+- Turn "I should check in on them" into a concrete next action
+- Keep a lightweight record of communication history
+- Build a sustainable relationship habit without guilt, noise, or gamification
 
-These features enhance flexibility, personalization, and daily usability.
+## Product principles
 
-- Custom communication frequencies per contact
-- Tagging system (family, work, friends, etc.)
-- Skip this cycle / skip future cycles
-- Birthday / anniversary reminders (from Contacts)
-- Prioritized daily task list
-- Manual notes per interaction
-- Local analytics (most contacted, longest overdue)
-- Archive functionality for unused contacts
-- Android App Shortcuts (Static/Dynamic)
-- Basic Android Widgets (e.g., “Today’s People to Reach Out To”)
+### 1. Calm over noisy
 
----
+The product should feel assistive, not nagging. Every screen should reduce decision fatigue.
 
-## 🔮 Phase 3 Goals (Advanced Systems)
+### 2. Structure without shame
 
-These features improve intelligence, integration, and long-term stickiness.
+Kneatr supports follow-through through organization and visibility, not guilt or streak pressure.
 
-- Contact Strength Score (recency/frequency)
-- Weekly summaries of engagement
-- Calendar integration (event previews)
-- Smart rotation for contact suggestions
-- Call/SMS history ingestion (with permission)
-- Email integration (e.g., Gmail API)
-- Cloud sync (Firebase / Google Drive)
+### 3. Local-first and private by default
+
+Personal relationship data should stay on device for the MVP unless the user explicitly opts into
+future sync features.
+
+### 4. One clear action at a time
+
+Each screen should make the next step obvious: review, reach out, log, or organize.
+
+### 5. Useful on bad days
+
+The app must remain usable when the user has low energy, limited attention, or little time.
+
+## Core product loop
+
+1. Import device contacts.
+2. Assign tiers and optional tags.
+3. Surface overdue, due soon, and curated daily contacts.
+4. Reach out using the user's normal tools.
+5. Log the communication.
+6. Recalculate when that contact should appear again.
+
+## MVP vision
+
+The MVP is an Android-only, offline-first relationship maintenance tool with:
+
+- Contact import from Android Contacts Provider
+- A simple prioritization system using default tiers
+- A daily dashboard that helps the user decide who to contact
+- A contact detail view that supports quick actions and communication logging
+- Local persistence with no backend dependency
+- Responsive Android layouts for phones and larger screens
+
+## MVP feature set
+
+The launch blueprint includes:
+
+- Permission handling for contact access
+- Contact sync from the device into a local Room database
+- Tier assignment and basic tag support
+- Home dashboard with overdue, due today, upcoming, and random contact sections
+- Searchable contacts list
+- Contact detail view with tier, tags, last contact, next contact, and communication history
+- Quick reach-out affordances for phone, text, and email actions where data is available
+- Manual communication logging
+- Background contact sync
+- Reminder and notification support as a planned MVP-completion item
+
+## Non-goals
+
+Kneatr is not intended to be:
+
+- A social network
+- A team CRM or shared workspace
+- A messaging client
+- A habit streak game
+- An AI conversation generator
+- A cloud-first product at launch
+
+## Success metrics
+
+The initial product should optimize for:
+
+- Activation: user grants contacts permission and completes initial sync
+- Organization: user assigns tiers to a meaningful subset of contacts
+- Engagement: user logs communication from the app repeatedly over time
+- Usefulness: users can identify who to contact in under a minute
+- Retention signal: users return for weekly or daily check-ins
+
+## Design and experience requirements
+
+- Material 3 visual language
+- Calm, neurodivergent-friendly interface
+- Large tap targets and predictable interactions
+- Clear loading, empty, success, and error states
+- Responsive layout behavior for phone and tablet/foldable patterns
+- Dark-mode-ready color and contrast choices
+
+## Constraints
+
+- Platform: Android only
+- Package: `com.hollowvyn.kneatr`
+- Local-first MVP, no backend required
+- Contacts permission is required for the main value loop
+- Current codebase is a single `app` module
+- Minimum SDK is Android 11 (`minSdk = 30`)
+
+## Current repo status summary
+
+As of this doc update, the repository already includes:
+
+- Adaptive app shell with Home, Contacts, and Contact Detail routes
+- Room persistence, tags, tiers, and communication logs
+- DataStore-backed daily random contact selection
+- WorkManager-based contact sync
+
+The biggest remaining gaps between the intended MVP and the implemented app are:
+
+- Reminder notifications
+- A more explicit first-run onboarding flow
+- Settings and user-facing explanation of tier behavior
+- Finalized design handoff artifacts
+
+## Future phases
+
+### Phase 2
+
+- Custom frequencies and skips
+- Birthdays and anniversaries
+- Better task prioritization
+- Widgets and shortcuts
+- Local analytics
+
+### Phase 3
+
+- Smart suggestions
+- Calendar and communication integrations
+- Cloud backup and sync
 - Multi-device support
-- Export data (CSV/JSON)
-
----
-
-## 🎨 Design Requirements
-
-### Visual Identity
-
-- **Framework:** Material3 for Android (required)
-- **Icons:** Google Material Icons
-- **Fonts:** Google Fonts (TBD via design collaboration)
-- **Colors:** Electric blue primary, minimalist white/gray backgrounds
-- **Accessibility:** Fully responsive, accessible color contrasts, dark mode ready
-
-### UX Patterns
-
-- Minimalist, neurodivergent-friendly interface
-- Large tap targets
-- Clear UI states (loading, empty, success, error)
-- Simple, predictable animations only
-- Canonical Layout adherence (per Android guidelines):
-    - Bottom Navigation on phones
-    - Navigation Rail on tablets / foldables
-    - List / Supporting Pane / Detail layout
-    - Material3 Scaffold + WindowSizeClass responsiveness
-
----
-
-## 🎨 Assets Needed from Designer
-
-These deliverables should be prepared within **Figma**, using the **Material Design Kit** and *
-*Material Theme Builder**.
-
-| Asset             | Purpose                                                                                    |
-|-------------------|--------------------------------------------------------------------------------------------|
-| Logo              | Brand identity, aligned with tagline                                                       |
-| App Launcher Icon | Co-designed with developer                                                                 |
-| Banners           | Onboarding, empty states, marketing                                                        |
-| UI Loop Journey   | Visual flow from onboarding to daily use                                                   |
-| Component Library | Standardized components page (inputs, lists, buttons, states)                              |
-| Color System      | Primary, secondary, tertiary, error, neutral, neutral-variant tokens (Material3 compliant) |
-
----
-
-### 🔧 Tooling Clarification
-
-- All design work must be provided in **Figma**.
-- Designer is encouraged to
-  use [Material Theme Builder](https://material-foundation.github.io/material-theme-builder/) to
-  generate system-compliant tokens and themes.
-- **Material3 Design Kit** must be used for components and spacing.
-
----
-
-## 💼 Development Plan: Iterations
-
-### **Phase 1: MVP Foundation**
-
-- Core relationship management loop
-- Offline-first, Android-native UX
-- Ready for internal testing and feedback
-
-### **Phase 2: Power User Features**
-
-- Customization, tagging, enhanced organization
-- Surface power features for obsessive users
-
-### **Phase 3: Smart UX & Sync**
-
-- Analytics, suggestions, syncing
-- More automation, deeper integrations
-- Ready for larger audiences
-
----
-
-## 💰 Monetization Strategy
-
-| Feature                   | Monetize? | Plan                                 |
-|---------------------------|-----------|--------------------------------------|
-| Cloud Sync / Backup       | ✅ Yes     | Anchor feature for "Pro"             |
-| Advanced Analytics        | Optional  | Paid in Phase 4                      |
-| Custom Tiers / Tags       | Maybe     | Allow limited free, expand in Pro    |
-| AI Features               | ✅ Yes     | Locked behind Pro (costs to run GPT) |
-| Export Data               | Optional  | Free or Pro, TBD                     |
-| App Lock (PIN/Biometrics) | Optional  | Bundle with Pro                      |
-| Tip Jar / Donations       | ✅ Yes     | One-time support option              |
-| Ads                       | ❌ No      | Never included                       |
-
-Monetization focuses on **respectful upsells, not exploitation**. No ads.
-
----
-
-## 🚀 Summary for Collaborators / Designers
-
-Kneatr is designed for a clear purpose: **organizing, maintaining, and protecting meaningful human
-connections** through structured, flexible reminders and thoughtful UX.
-
-It is **not a social network.**  
-It is **not a gamified leaderboard.**  
-It is a **quiet, assistive tool** for people who care about intentional relationships.
-
-The MVP solves this first.  
-Phases 2+ make it sustainable, extensible, and smart.
+- Export and advanced insights

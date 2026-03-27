@@ -1,19 +1,5 @@
-# Architecture Decisions - Kneatr
+# Architecture decisions
 
-## Module Structure
+This file is kept only as a compatibility pointer.
 
-- Single monolithic module (`app`)
-
-## Tech Stack
-
-- Kotlin
-- Jetpack Compose
-- Room Database
-- WorkManager for reminders
-- ViewModel + StateFlow
-
-## Decisions
-
-- Room used for local persistence (no sync yet)
-- WorkManager handles recurring reminders
-- Jetpack Compose used across the entire UI layer
+Use the canonical document instead: `ARCHITECTURE_DECISIONS.md`

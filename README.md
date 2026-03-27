@@ -5,42 +5,49 @@
 **Tagline:** Relationships, brilliantly organized.  
 **Package:** `com.hollowvyn.kneatr`
 
-Kneatr is a minimalist Android app designed to help users maintain meaningful relationships through
-structured, personalized reminders. Built with neurodivergent users in mind, Kneatr keeps your
-social life organized without overwhelming you.
+Kneatr is an Android app for people who want a calmer, more intentional way to maintain
+relationships. It imports contacts, helps users organize them by importance, surfaces who needs
+attention, and makes it easy to log outreach without turning relationships into a noisy social CRM.
 
----
+## Core idea
 
-## What It Does
+The product is built around a simple loop:
 
-- Organizes contacts by communication tiers (e.g., weekly, monthly)
-- Reminds you when it’s time to reach out
-- Tracks when you last connected with someone
-- Helps surface overdue contacts
-- Provides a simple, clear interface for staying on top of your relationships
+1. Import and organize important contacts.
+2. Let Kneatr surface who is overdue, due soon, or worth checking in on.
+3. Reach out and log the interaction.
+4. Recalculate the next time that person should come back into view.
 
----
+## Who it is for
 
-## Who It's For
+- People with ADHD or other executive function challenges
+- Busy professionals who want structure without social noise
+- Users who prefer calm routines, clear prioritization, and low-friction task completion
 
-- People with ADHD or executive function challenges
-- Anyone who struggles to keep in touch with their people — and wants a system that works
+## Built with
 
----
+- Kotlin
+- Jetpack Compose + Material 3
+- Navigation 3 + adaptive layouts for phone and tablet/foldable patterns
+- Room for local persistence
+- DataStore for lightweight app preferences
+- WorkManager for background sync work
+- Hilt for dependency injection
 
-## Built With
+## Project structure
 
-- **Kotlin** and **Jetpack Compose** for modern Android UI
-- **Room** for local persistence
-- **WorkManager** for background scheduling
-- **Notification Channels** for custom reminders
+- `app/` - Android application module
+- `docs/` - Product, UX, architecture, and design documentation
+- `.github/` - CI and GitHub project configuration
 
----
+## Documentation
 
-## Project Structure
+Start with the docs index: [`docs/README.md`](docs/README.md)
 
-- `app/` – Android application module
-- `docs/` – Design, planning, and technical documentation
+Recommended reading order:
 
-For full technical scope and planning, see [`docs/MVP_SCOPE.md`](docs/MVP_SCOPE.md).
-
+1. [`docs/PRODUCT_BRIEF.md`](docs/PRODUCT_BRIEF.md)
+2. [`docs/MVP_SCOPE.md`](docs/MVP_SCOPE.md)
+3. [`docs/UX_BLUEPRINT.md`](docs/UX_BLUEPRINT.md)
+4. [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
+5. [`docs/DESIGN_SPEC.md`](docs/DESIGN_SPEC.md)

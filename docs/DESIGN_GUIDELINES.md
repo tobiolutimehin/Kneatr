@@ -1,72 +1,89 @@
-# 🎨 DESIGN\_GUIDELINES.md
+# Design guidelines
 
-These are the design standards for Kneatr to ensure consistency and brand clarity across all
-components.
+This document captures the design rules that should remain stable even as the product evolves. For
+screen-by-screen handoff details, use `DESIGN_SPEC.md`.
 
-## Brand Keywords
+## Brand promise
 
-"Relationships, brilliantly organized"
+Kneatr should feel like a calm personal system for maintaining relationships, not a social app and
+not a corporate CRM.
 
-* Precise
-* Clean
-* Neurodivergent-friendly
-* Minimalist
+## Brand attributes
 
-## Color Palette
+- Precise
+- Calm
+- Organized
+- Gentle
+- Trustworthy
+- Neurodivergent-friendly
 
-* **Primary:** Electric Blue (`#007aff`)
-* **Background:** White (`#ffffff`)
-* **Surface:** Light Gray (`#f4f4f4`)
-* **Accent/Success:** Jade Green
-* **Error:** Red (`#ff3b30`)
+## Visual direction
 
-## Typography
+- Base the UI on Material 3 for Android
+- Keep layouts open, breathable, and low-noise
+- Use color to support clarity, not decoration overload
+- Prefer neutral surfaces with a confident accent color
+- Preserve a sense of warmth even inside structured productivity flows
 
-* Google Fonts (TBD with designer)
-* Vary font size by tier (headline, body, caption)
+## UX principles
 
-## Component Principles
+### Reduce decision fatigue
 
-* Large tap targets
-* No crowded screens
-* Clear states: empty, loading, success, error
-* Task-focused UI
+The interface should narrow choices. Users should not need to think hard about what to do next.
+
+### Make urgency legible
+
+Overdue, due today, upcoming, and random contacts should feel meaningfully different at a glance.
+
+### Keep actions close to context
+
+Users should be able to log communication or take the next step from the screen where they discover
+the need.
+
+### Avoid shame mechanics
+
+No streak language, guilt-driven messaging, or manipulative notifications.
+
+## Accessibility requirements
+
+- Support large tap targets throughout
+- Maintain strong color contrast in both light and dark themes
+- Do not rely on color alone to communicate due state
+- Respect reduced-motion expectations
+- Use clear typography hierarchy and avoid dense information blocks
 
 ## Motion
 
-* Simple transitions only (fade/slide in)
-* Reduce motion/animations for accessibility
-
-## Interaction
-
-- Primary action always visible
-- Undo/snackbar for destructive actions
+- Keep motion subtle and functional
+- Use transitions to reinforce continuity between list, detail, and sheet states
+- Avoid decorative motion that competes with task completion
 
 ## Iconography
 
-* Use Google Material Icons only
-* Geometric, line-based, consistent
+- Use Material icons or a closely aligned icon set only
+- Prefer simple, line-based icons
+- Use iconography to reinforce action categories, not for ornament
 
-## Design Framework
+## Copy tone
 
-* **Material3 for Android**
-* All UI must adhere to M3 components, shapes, and accessibility
+- Clear
+- Brief
+- Supportive
+- Non-judgmental
 
-## Visual Assets Needed
+Avoid language that sounds like nagging, scoring, or surveillance.
 
-* Launcher icon (to be co-decided with developer)
-* Logo (aligned with "Kneatr" brand and tagline)
-* Banners (for onboarding, empty states, and marketing)
-* Components page (standardized visual spec sheet for UI components)
-* Full UI loop journey (from onboarding to usage cycle)
+## Layout guidance
 
-## Canonical Layout Strategy (For Responsive Design)
+- Phones: compact navigation, single primary pane, clear top-level section switching
+- Tablets and foldables: larger-screen navigation with list/detail behavior where appropriate
+- Maintain strong hierarchy between section headers, contact cards, and detail content
 
-- Phones: Bottom Navigation + Single-Pane Navigation (List → Detail)
-- Tablets / Foldables (Unfolded): Navigation Rail + List-Detail Split Pane
-- Leverage Material3 Scaffold, Navigation Components, and WindowSizeClass for responsiveness.
+## Visual assets still required
 
-This ensures Kneatr looks intentional and modern across screen sizes, and aligns with Android's
-canonical layout guidelines for productivity-focused apps.
-
----
+- App launcher icon
+- Brand mark or wordmark
+- Empty-state illustrations or banners, if used
+- Foundations page in Figma
+- Component library page in Figma
+- Full app flow and prototype links in Figma
